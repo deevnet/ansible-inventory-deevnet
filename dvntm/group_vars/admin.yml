@@ -10,3 +10,29 @@ dev_users:
       - wheel
     home: /home/cdeever
     github_keys_url: "https://github.com/cdeever.keys"
+
+nginx_artifacts_root: /srv/dvntm-http
+
+# Artifacts that admin hosts (artifact servers) should host under nginx_artifacts_root
+artifacts_to_fetch:
+
+  # ---------------------------------------------------------
+  # Fedora Server 43 (netinst, x86_64)
+  # ---------------------------------------------------------
+  - name: "fedora-server-43-netinst-x86_64"
+    type: "fedora_iso"
+    iso_url: "https://download.fedoraproject.org/pub/fedora/linux/releases/43/Server/x86_64/iso/Fedora-Server-netinst-x86_64-43-1.6.iso"
+    checksum_url: "https://download.fedoraproject.org/pub/fedora/linux/releases/43/Server/x86_64/iso/Fedora-Server-43-1.6-x86_64-CHECKSUM"
+    gpg_key_url: "https://fedoraproject.org/fedora.gpg"
+    dest_subdir: "iso/fedora/43.1-6"
+    dest_filename: "Fedora-Server-netinst-x86_64-43-1.6.iso"
+
+  # ---------------------------------------------------------
+  # Pi OS Lite (Trixie, ARM64, 2025-11-24)
+  # ---------------------------------------------------------
+  - name: "raspios-trixie-arm64-lite-2025-11-24"
+    type: "generic"
+    url: "https://downloads.raspberrypi.com/raspios_lite_arm64/images/raspios_lite_arm64-2025-11-24/2025-11-24-raspios-trixie-arm64-lite.img.xz"
+    sha256: "1d448a6e665e1ae8100bc28b35408619ec626a2fddfd6579ec99e7996fa09a56"
+    dest_subdir: "pi-images/raspios-lite-arm64/2025-11-24"
+    dest_filename: "2025-11-24-raspios-trixie-arm64-lite.img.xz"
