@@ -1,0 +1,4 @@
+# group_vars/base.yml
+
+# Use system Python that plays nicest with dnf/dnf5
+ansible_python_interpreter: /usr/bin/python3
