@@ -7,3 +7,20 @@ dev_users:
     home: /home/cdeever
     github_keys_url: "https://github.com/cdeever.keys"
 
+# HashiCorp tools customization (optional - defaults provided by role)
+# Uncomment to override:
+# hashicorp_packages:
+#   - terraform
+#   - packer
+#   - vault
+#   - consul
+
+# Dev tools customization (optional - defaults provided by role)
+# dev_tool_packages:
+#   - git
+#   - vim
+#   - tmux
+#   - golang
+#   - nmap-ncat
+#   - neovim
+#   - jq
