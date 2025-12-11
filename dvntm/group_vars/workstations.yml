@@ -28,5 +28,20 @@ dev_tool_packages:
   - tmux
   - golang
   - nmap-ncat
-#   - neovim
-#   - jq
+  - jq
+  - qemu-kvm
+  - libvirt
+  - libvirt-daemon
+  - libvirt-daemon-config-network
+  - libvirt-daemon-kvm
+  - squashfs-tools
+  - genisoimage
+  - xorriso
+  - syslinux
+  - wget
+  - curl
+
+x11_packages:
+  - firefox              # GUI browser for X11 over SSH
+  - xorg-x11-xauth       # needed for SSH X11 forwarding
+  - xeyes                # another X test app (optional)
