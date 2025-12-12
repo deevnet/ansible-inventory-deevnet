@@ -4,6 +4,8 @@ dev_users:
     primary_group: cdeever
     extra_groups:
       - wheel
+      - libvirt
+      - kvm
     home: /home/cdeever
     github_keys_url: "https://github.com/cdeever.keys"
 
@@ -29,17 +31,25 @@ dev_tool_packages:
   - golang
   - nmap-ncat
   - jq
+  - wget
+  - curl
+
+# ISO/image building tools
+iso_packages:
+  - squashfs-tools
+  - genisoimage
+  - xorriso
+  - syslinux
+
+# Virtualization packages for KVM/libvirt
+virtualization_packages:
   - qemu-kvm
   - libvirt
   - libvirt-daemon
   - libvirt-daemon-config-network
   - libvirt-daemon-kvm
-  - squashfs-tools
-  - genisoimage
-  - xorriso
-  - syslinux
-  - wget
-  - curl
+  - virt-install
+  - virt-manager
 
 x11_packages:
   - firefox              # GUI browser for X11 over SSH

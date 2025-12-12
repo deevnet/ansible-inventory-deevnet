@@ -50,3 +50,11 @@ artifacts_to_fetch:
     dest_subdir: "pi-images/2025-11-24"
     dest_filename: "2025-11-24-raspios-bookworm-arm64-lite.img.xz"
 
+  # ---------------------------------------------------------
+  # Fedora 43 Server Netboot (vmlinuz + initrd.img for PXE)
+  # ---------------------------------------------------------
+  - name: "fedora-server-43-netboot-x86_64"
+    type: "fedora_netboot"
+    base_url: "https://download.fedoraproject.org/pub/fedora/linux/releases/43/Server/x86_64/os/images/pxeboot"
+    dest_subdir: "netboot/fedora/43"
+

@@ -1,0 +1,59 @@
+# PXE Boot Server Configuration for bootstrap_nodes
+# ------------------------------------------------------------------------------
+
+# Network interface for DHCP/TFTP services
+# IMPORTANT: Adjust this to match the actual interface on your bootstrap node
+bootstrap_dhcp_interface: "enp1s0"
+
+# DHCP Configuration
+# ------------------------------------------------------------------------------
+# DHCP range for PXE clients (adjust based on your network)
+bootstrap_dhcp_range_start: "192.168.10.200"
+bootstrap_dhcp_range_end: "192.168.10.250"
+bootstrap_dhcp_lease_time: "1h"
+
+# Network options
+bootstrap_dhcp_gateway: "192.168.10.1"
+bootstrap_dhcp_netmask: "255.255.255.0"
+bootstrap_dhcp_dns_servers:
+  - "192.168.10.1"
+
+# Optional DHCP domain
+bootstrap_dhcp_domain: "dvntm.local"
+
+# Artifact Server Configuration
+# ------------------------------------------------------------------------------
+# admin02 is also the artifact server, so we use its IP
+bootstrap_artifact_server: "http://192.168.10.97"
+
+# TFTP directories to create
+bootstrap_tftp_dirs:
+  - pxelinux.cfg
+  - fedora
+  - fedora/43
+
+# Netboot Images
+# ------------------------------------------------------------------------------
+# Images to fetch from the artifact server and serve via PXE
+bootstrap_netboot_images:
+  - name: "Fedora 43 Server"
+    artifact_path: "netboot/fedora/43"
+    dest_subdir: "fedora/43"
+    kernel_filename: "vmlinuz"
+    initrd_filename: "initrd.img"
+    boot_options: "inst.repo=http://192.168.10.97/iso/fedora/43.1-6 inst.stage2=http://192.168.10.97/iso/fedora/43.1-6"
+
+# PXE Boot Menu Configuration
+# ------------------------------------------------------------------------------
+bootstrap_pxe_boot_prompt: "Press <Tab> for boot options, <Enter> to boot default"
+bootstrap_pxe_timeout: 300
+
+# DNS Configuration
+# ------------------------------------------------------------------------------
+# Set to true if you want dnsmasq to also serve DNS
+bootstrap_enable_dns: false
+
+# Logging (useful for debugging)
+# ------------------------------------------------------------------------------
+bootstrap_dnsmasq_log_queries: false
+bootstrap_dnsmasq_log_dhcp: true
