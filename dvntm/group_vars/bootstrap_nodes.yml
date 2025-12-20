@@ -1,6 +1,9 @@
 # PXE Boot Server Configuration for bootstrap_nodes
 # ------------------------------------------------------------------------------
 
+# Artifact server URL (for inst.repo, inst.ks, etc.)
+bootstrap_artifact_server: "http://192.168.10.97"
+
 # Network interface for DHCP/TFTP services
 # IMPORTANT: Adjust this to match the actual interface on your bootstrap node
 bootstrap_dhcp_interface: "enp1s0"
@@ -21,27 +24,22 @@ bootstrap_dhcp_dns_servers:
 # Optional DHCP domain
 bootstrap_dhcp_domain: "dvntm.local"
 
-# Artifact Server Configuration
-# ------------------------------------------------------------------------------
-# admin02 is also the artifact server, so we use its IP
-bootstrap_artifact_server: "http://192.168.10.97"
-
 # TFTP directories to create
 bootstrap_tftp_dirs:
   - pxelinux.cfg
   - fedora
   - fedora/43
 
-# Netboot Images
+# Netboot Menu Entries
 # ------------------------------------------------------------------------------
-# Images to fetch from the artifact server and serve via PXE
+# Boot menu entries for PXE. Files must be pre-staged by artifacts role.
 bootstrap_netboot_images:
   - name: "Fedora 43 Server"
-    artifact_path: "netboot/fedora/43"
     dest_subdir: "fedora/43"
-    kernel_filename: "vmlinuz"
-    initrd_filename: "initrd.img"
-    boot_options: "inst.repo=http://192.168.10.97/iso/fedora/43.1-6 inst.stage2=http://192.168.10.97/iso/fedora/43.1-6"
+    boot_options: >-
+      inst.repo=http://192.168.10.97/iso/fedora/43.1-6
+      inst.stage2=http://192.168.10.97/iso/fedora/43.1-6
+      inst.ks=http://192.168.10.97/kickstart/builder-node.ks
 
 # PXE Boot Menu Configuration
 # ------------------------------------------------------------------------------
@@ -52,6 +50,11 @@ bootstrap_pxe_timeout: 300
 # ------------------------------------------------------------------------------
 # Set to true if you want dnsmasq to also serve DNS
 bootstrap_enable_dns: false
+
+# Service Configuration
+# ------------------------------------------------------------------------------
+# Enable dnsmasq service to start on boot
+bootstrap_dnsmasq_service_enabled: true
 
 # Logging (useful for debugging)
 # ------------------------------------------------------------------------------

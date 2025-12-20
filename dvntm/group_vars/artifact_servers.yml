@@ -1,6 +1,11 @@
 # Artifacts root directory
 nginx_artifacts_root: /srv/dvntm-http
 
+# TFTP Staging Configuration
+# Enable to copy netboot files to TFTP root (for hosts that are also bootstrap nodes)
+artifacts_tftp_staging_enabled: true
+artifacts_tftp_staging_root: /srv/tftp
+
 # Public key for auto-provisioning
 artifacts_ssh_keys:
   - name: "a_autoprov_rsa"
@@ -52,9 +57,19 @@ artifacts_to_fetch:
 
   # ---------------------------------------------------------
   # Fedora 43 Server Netboot (vmlinuz + initrd.img for PXE)
+  # Downloads to HTTP root and stages to TFTP root
   # ---------------------------------------------------------
   - name: "fedora-server-43-netboot-x86_64"
-    type: "fedora_netboot"
+    type: "netboot_tftp"
     base_url: "https://download.fedoraproject.org/pub/fedora/linux/releases/43/Server/x86_64/os/images/pxeboot"
     dest_subdir: "netboot/fedora/43"
+    tftp_dest_subdir: "fedora/43"
+
+  # ---------------------------------------------------------
+  # Fedora 43 Server Install Tree (full mirror for inst.repo)
+  # ---------------------------------------------------------
+  - name: "Fedora 43 Server Install Tree"
+    type: "fedora_install_tree"
+    rsync_url: "rsync://dl.fedoraproject.org/fedora-enchilada/linux/releases/43/Server/x86_64/os/"
+    dest_subdir: "iso/fedora/43.1-6"
 

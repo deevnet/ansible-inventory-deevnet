@@ -31,6 +31,7 @@ dev_tool_packages:
   - jq
   - wget
   - curl
+  - tftp
 
 # ISO/image building tools
 iso_packages:
