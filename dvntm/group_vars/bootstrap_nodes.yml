@@ -37,8 +37,8 @@ bootstrap_netboot_images:
   - name: "Fedora 43 Server"
     dest_subdir: "fedora/43"
     boot_options: >-
-      inst.repo=http://artifacts.dvntm.deevnet.net/iso/fedora/43.1-6
-      inst.stage2=http://artifacts.dvntm.deevnet.net/iso/fedora/43.1-6
+      inst.repo=http://artifacts.dvntm.deevnet.net/fedora/43/mirror
+      inst.stage2=http://artifacts.dvntm.deevnet.net/fedora/43/mirror
       inst.ks=http://artifacts.dvntm.deevnet.net/kickstart/builder-node.ks
 
 # PXE Boot Menu Configuration

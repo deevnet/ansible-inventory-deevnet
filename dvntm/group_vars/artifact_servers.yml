@@ -32,7 +32,7 @@ artifacts_to_fetch:
     iso_url: "https://download.fedoraproject.org/pub/fedora/linux/releases/43/Server/x86_64/iso/Fedora-Server-netinst-x86_64-43-1.6.iso"
     checksum_url: "https://download.fedoraproject.org/pub/fedora/linux/releases/43/Server/x86_64/iso/Fedora-Server-43-1.6-x86_64-CHECKSUM"
     gpg_key_url: "https://fedoraproject.org/fedora.gpg"
-    dest_subdir: "iso/fedora/43.1-6"
+    dest_subdir: "fedora/43/iso"
     dest_filename: "Fedora-Server-netinst-x86_64-43-1.6.iso"
 
   # ---------------------------------------------------------
@@ -71,5 +71,5 @@ artifacts_to_fetch:
   - name: "Fedora 43 Server Install Tree"
     type: "fedora_install_tree"
     rsync_url: "rsync://dl.fedoraproject.org/fedora-enchilada/linux/releases/43/Server/x86_64/os/"
-    dest_subdir: "iso/fedora/43.1-6"
+    dest_subdir: "fedora/43/mirror"
 
