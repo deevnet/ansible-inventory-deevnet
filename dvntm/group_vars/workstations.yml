@@ -32,6 +32,8 @@ dev_tool_packages:
   - wget
   - curl
   - tftp
+  - zip
+  - tree
 
 # ISO/image building tools
 iso_packages:
