@@ -1,0 +1,23 @@
+# OPNsense router configuration
+# Use local connection - we make API calls, not SSH
+ansible_connection: local
+
+# API credentials from environment variables
+opnsense_api_key: "{{ lookup('env', 'OPNSENSE_API_KEY') }}"
+opnsense_api_secret: "{{ lookup('env', 'OPNSENSE_API_SECRET') }}"
+
+opnsense_api_url: "https://{{ ansible_host }}/api"
+opnsense_validate_certs: false  # Self-signed cert
+
+dns_domain: "dvntm.deevnet.net"
+
+# Service CNAMEs to create
+dns_service_records:
+  - name: artifacts
+    target: admin04
+  - name: dns
+    target: gw01
+  - name: dhcp
+    target: gw01
+  - name: gateway
+    target: gw01

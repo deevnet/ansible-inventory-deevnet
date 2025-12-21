@@ -2,7 +2,7 @@
 # ------------------------------------------------------------------------------
 
 # Artifact server URL (for inst.repo, inst.ks, etc.)
-bootstrap_artifact_server: "http://192.168.10.97"
+bootstrap_artifact_server: "http://artifacts.dvntm.deevnet.net"
 
 # Network interface for DHCP/TFTP services
 # IMPORTANT: Adjust this to match the actual interface on your bootstrap node
@@ -22,7 +22,7 @@ bootstrap_dhcp_dns_servers:
   - "192.168.10.1"
 
 # Optional DHCP domain
-bootstrap_dhcp_domain: "dvntm.local"
+bootstrap_dhcp_domain: "dvntm.deevnet.net"
 
 # TFTP directories to create
 bootstrap_tftp_dirs:
@@ -37,9 +37,9 @@ bootstrap_netboot_images:
   - name: "Fedora 43 Server"
     dest_subdir: "fedora/43"
     boot_options: >-
-      inst.repo=http://192.168.10.97/iso/fedora/43.1-6
-      inst.stage2=http://192.168.10.97/iso/fedora/43.1-6
-      inst.ks=http://192.168.10.97/kickstart/builder-node.ks
+      inst.repo=http://artifacts.dvntm.deevnet.net/iso/fedora/43.1-6
+      inst.stage2=http://artifacts.dvntm.deevnet.net/iso/fedora/43.1-6
+      inst.ks=http://artifacts.dvntm.deevnet.net/kickstart/builder-node.ks
 
 # PXE Boot Menu Configuration
 # ------------------------------------------------------------------------------
