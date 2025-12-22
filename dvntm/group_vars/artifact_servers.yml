@@ -65,11 +65,15 @@ artifacts_to_fetch:
     dest_subdir: "netboot/fedora/43"
     tftp_dest_subdir: "fedora/43"
 
+
   # ---------------------------------------------------------
   # Fedora 43 Server Install Tree (full mirror for inst.repo)
   # ---------------------------------------------------------
   - name: "Fedora 43 Server Install Tree"
     type: "fedora_install_tree"
-    rsync_url: "rsync://dl.fedoraproject.org/fedora-enchilada/linux/releases/43/Server/x86_64/os/"
+    rsync_mirrors:
+      - "rsync://dl.fedoraproject.org/fedora-enchilada"
+      - "rsync://mirrors.kernel.org/fedora"
+      - "rsync://mirror.math.princeton.edu/pub/fedora"
+    rsync_path: "linux/releases/43/Server/x86_64/os/"
     dest_subdir: "fedora/43/mirror"
-
