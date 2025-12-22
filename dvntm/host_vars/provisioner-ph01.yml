@@ -1,0 +1,28 @@
+infrastructure:
+  form: ph
+  role: provisioner
+  interfaces:
+    eth0:
+      mac: "c8:ff:bf:06:5a:5a"
+    eth1:
+      mac: "c8:ff:bf:06:5a:59"
+    wifi:
+      mac: "1c:79:2d:fc:5f:d6"
+
+env:
+  interfaces:
+    eth0:
+      ip: 192.168.10.95
+      purpose: mgmt
+      dns:
+        host_a_record: true
+        dhcp_reservation: true
+        cnames:
+          - artifacts
+          - pxe
+    eth1:
+      ip: null
+      purpose: transit
+    wifi:
+      ip: null
+      purpose: wan

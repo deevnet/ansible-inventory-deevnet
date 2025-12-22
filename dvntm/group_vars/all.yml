@@ -1,0 +1,31 @@
+deevnet_root_domain: deevnet.net
+deevnet_substrate: dvntm
+
+# Derive ansible_host from env.interfaces.<if>.ip
+ansible_host: >-
+  {{
+    (
+      env.interfaces
+      | dict2items
+      | selectattr('value.ansible', 'defined')
+      | selectattr('value.ansible')
+      | map(attribute='value.ip')
+      | list
+      | first
+    )
+    | default(
+      (
+        env.interfaces
+        | dict2items
+        | map(attribute='value.ip')
+        | reject('equalto', None)
+        | reject('equalto', 'dhcp')
+        | list
+        | first
+      ),
+      true
+    )
+  }}
+
+# Deterministic FQDN helper
+deevnet_fqdn: "{{ inventory_hostname }}.{{ deevnet_substrate }}.{{ deevnet_root_domain }}"
