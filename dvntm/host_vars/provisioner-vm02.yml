@@ -1,0 +1,16 @@
+infrastructure:
+  form: vm
+  role: provisioner
+  interfaces:
+    eth0:
+      mac: "bc:24:11:ce:51:ec"
+
+env:
+  interfaces:
+    eth0:
+      ip: 192.168.10.97
+      purpose: mgmt
+      dns:
+        host_a_record: true
+        dhcp_reservation: true
+        cnames: []

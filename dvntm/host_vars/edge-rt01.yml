@@ -1,0 +1,21 @@
+infrastructure:
+  form: rt
+  role: edge
+  interfaces:
+    eth0:
+      mac: "UNKNOWN"   # LAN port (stable)
+    wifi:
+      mac: "UNKNOWN"   # uplink (client / WAN)
+
+env:
+  interfaces:
+    eth0:
+      ip: 192.168.8.1
+      purpose: lan
+      dns:
+        host_a_record: true
+        dhcp_reservation: false
+        cnames: []
+    wifi:
+      ip: dhcp
+      purpose: wan

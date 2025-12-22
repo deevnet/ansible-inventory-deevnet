@@ -1,0 +1,15 @@
+infrastructure:
+  form: sw
+  interfaces:
+    eth0:
+      mac: "5c:62:8b:0c:40:ec"
+
+env:
+  interfaces:
+    eth0:
+      ip: 192.168.10.10
+      purpose: mgmt
+      dns:
+        host_a_record: true
+        dhcp_reservation: true
+        cnames: []

@@ -1,8 +1,27 @@
 
-coresw  - 5c:62:8b:0c:40:ec - 192.168.10.10
-wap     - 40:ed:00:6f:f9:d4 - 192.168.10.9
+TP Link Omada Switch
+access-sw01  - 5c:62:8b:0c:40:ec - 192.168.10.10
 
-builder - c8:ff:bf:06:5a:5a - 192.168.10.95
+TP Link Access Point
+ap01  - 40:ed:00:6f:f9:d4 - 192.168.10.9
+
+travel router
+edge-rt01
+
+Zima Board - Opnsense
+core-rt02
+WAN re1 - 00:e0:4c:29:1e:4f (DHCP configured from upstream)
+LAN re0 - 00:e0:4c:29:1e:50 - 192.168.10.1
+
+provisioner-ph01 - c8:ff:bf:06:5a:5a - 192.168.10.95
+eth1      c8:ff:bf:06:5a:59
+wifi      1c:79:2d:fc:5f:d6
+
+hv01     
+eth1    - d8:9e:f3:7d:94:c4 - 192.168.10.21 (static assigned in PRXMS, but needed in DNS)
+
+hv02
+eth1    - unknown - 192.168.10.22 (static assigned in PRXMOX, but needed in DNS)
 
 pi01    - dc:a6:32:c3:b4:bc - 192.168.10.11
 pi02    - dc:a6:32:c5:a0:c5 - 192.168.10.12
