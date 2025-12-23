@@ -1,8 +1,10 @@
 # OPNsense router configuration
-# Use local connection - we make API calls, not SSH
-ansible_connection: local
+# SSH connection for file deployment (config files)
+ansible_user: a_autoprov
+ansible_become: true
+ansible_python_interpreter: /usr/local/bin/python3
 
-# API credentials from environment variables
+# API credentials from environment variables (for API calls delegated to localhost)
 opnsense_api_key: "{{ lookup('env', 'OPNSENSE_API_KEY') }}"
 opnsense_api_secret: "{{ lookup('env', 'OPNSENSE_API_SECRET') }}"
 
@@ -11,13 +13,8 @@ opnsense_validate_certs: false  # Self-signed cert
 
 dns_domain: "dvntm.deevnet.net"
 
-# Service CNAMEs to create
-dns_service_records:
-  - name: artifacts
-    target: admin04
-  - name: dns
-    target: gw01
-  - name: dhcp
-    target: gw01
-  - name: gateway
-    target: gw01
+# TODO: annoying -- find another way on this
+dhcp_subnet_uuid: "60339c82-497e-41f7-8bbe-a7d0f490336a"
+
+# Note: Service CNAMEs are now defined in each host's host_vars file
+# under env.interfaces.<name>.dns.cnames - see provisioner-ph01.yml, core-rt02.yml, etc.
