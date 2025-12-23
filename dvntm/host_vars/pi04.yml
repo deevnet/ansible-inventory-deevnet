@@ -1,0 +1,14 @@
+infrastructure:
+  form: pi
+  interfaces:
+    eth0:
+      mac: "dc:a6:32:c5:a1:a6"
+
+env:
+  interfaces:
+    eth0:
+      ip: 192.168.10.14
+      purpose: mgmt
+      dns:
+        host_a_record: true
+        dhcp_reservation: true

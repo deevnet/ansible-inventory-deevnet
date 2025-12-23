@@ -1,0 +1,16 @@
+infrastructure:
+  form: hv
+  interfaces:
+    eth0:
+      mac: "d8:9e:f3:7d:94:c4"
+
+env:
+  interfaces:
+    eth0:
+      ip: 192.168.10.21
+      purpose: mgmt
+      dns:
+        host_a_record: true
+        dhcp_reservation: true
+        cnames:
+          - pve
