@@ -1,0 +1,16 @@
+infrastructure:
+  form: em
+  interfaces:
+    wlan0:
+      mac: "30:c9:22:13:e6:3c"   # ESP32 Wi-Fi STA MAC
+env:
+  interfaces:
+    wlan0:
+      ip: 192.168.10.50
+      purpose: web
+      dns:
+        host_a_record: true
+        dhcp_reservation: true
+        cnames:
+          - bellgw
+          - mabell
