@@ -36,6 +36,19 @@ artifacts_to_fetch:
     dest_filename: "Fedora-Server-netinst-x86_64-43-1.6.iso"
 
   # ---------------------------------------------------------
+  # Proxmox VE 8.4-1 (bare metal installer, Debian 12 Bookworm based)
+  # GPG-verified via SHA256SUMS.bookworm-key.asc (matches bookworm GPG key)
+  # ---------------------------------------------------------
+  - name: "proxmox-ve-8.4-1"
+    type: "proxmox_iso"
+    iso_url: "https://enterprise.proxmox.com/iso/proxmox-ve_8.4-1.iso"
+    checksum_url: "https://enterprise.proxmox.com/iso/SHA256SUMS"
+    signature_url: "https://enterprise.proxmox.com/iso/SHA256SUMS.bookworm-key.asc"
+    gpg_key_url: "https://enterprise.proxmox.com/debian/proxmox-release-bookworm.gpg"
+    dest_subdir: "isos/proxmox"
+    dest_filename: "proxmox-ve_8.4-1.iso"
+
+  # ---------------------------------------------------------
   # Pi OS Lite (Trixie, ARM64, 2025-11-24)
   # ---------------------------------------------------------
   - name: "raspios-trixie-arm64-lite-2025-11-24"
