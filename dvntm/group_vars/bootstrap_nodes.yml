@@ -4,24 +4,26 @@
 # Artifact server URL (for inst.repo, inst.ks, etc.)
 bootstrap_artifact_server: "http://artifacts.dvntm.deevnet.net"
 
-# Network interface for DHCP/TFTP services
-# IMPORTANT: Adjust this to match the actual interface on your bootstrap node
-bootstrap_dhcp_interface: "enp1s0"
+# Bootstrap-authoritative mode
+# Use dnsmasq for TFTP + DHCP + DNS
+bootstrap_tftp_backend: "dnsmasq"
 
-# DHCP Configuration
+# Network interface for DHCP/TFTP/DNS services (downstream)
+bootstrap_dhcp_interface: "eth0"
+
+# DHCP Configuration for substrate network (192.168.10.0/23)
 # ------------------------------------------------------------------------------
-# DHCP range for PXE clients (adjust based on your network)
-bootstrap_dhcp_range_start: "192.168.10.200"
-bootstrap_dhcp_range_end: "192.168.10.250"
-bootstrap_dhcp_lease_time: "1h"
+bootstrap_dhcp_range_start: "192.168.10.100"
+bootstrap_dhcp_range_end: "192.168.11.254"
+bootstrap_dhcp_lease_time: "12h"
 
-# Network options
-bootstrap_dhcp_gateway: "192.168.10.1"
-bootstrap_dhcp_netmask: "255.255.255.0"
+# Network options - provisioner is the gateway
+bootstrap_dhcp_gateway: "192.168.10.95"
+bootstrap_dhcp_netmask: "255.255.254.0"
 bootstrap_dhcp_dns_servers:
-  - "192.168.10.1"
+  - "192.168.10.95"
 
-# Optional DHCP domain
+# DHCP domain
 bootstrap_dhcp_domain: "dvntm.deevnet.net"
 
 # TFTP directories to create
@@ -48,8 +50,9 @@ bootstrap_pxe_timeout: 300
 
 # DNS Configuration
 # ------------------------------------------------------------------------------
-# Set to true if you want dnsmasq to also serve DNS
-bootstrap_enable_dns: false
+# Enable DNS forwarding (upstream servers populated dynamically by playbook)
+bootstrap_enable_dns: true
+bootstrap_dns_upstream_servers: []
 
 # Service Configuration
 # ------------------------------------------------------------------------------

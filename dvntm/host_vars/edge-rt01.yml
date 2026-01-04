@@ -3,9 +3,13 @@ infrastructure:
   role: edge
   interfaces:
     eth0:
-      mac: "UNKNOWN"   # LAN port (stable)
+      mac: "UNKNOWN"   # LAN port 1 (not visible in UI)
+    eth1:
+      mac: "UNKNOWN"   # LAN port 2 (not visible in UI)
+    eth-wan:
+      mac: "94:83:c4:3c:73:b8"   # Ethernet WAN port
     wifi:
-      mac: "UNKNOWN"   # uplink (client / WAN)
+      mac: "5a:b6:4e:f4:d7:4b"   # Wireless WAN (client mode)
 
 env:
   interfaces:
@@ -16,6 +20,12 @@ env:
         host_a_record: true
         dhcp_reservation: false
         cnames: []
+    eth1:
+      ip: 192.168.8.1
+      purpose: lan
+    eth-wan:
+      ip: dhcp
+      purpose: wan
     wifi:
       ip: dhcp
       purpose: wan
