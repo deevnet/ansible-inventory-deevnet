@@ -9,7 +9,8 @@ bootstrap_artifact_server: "http://artifacts.dvntm.deevnet.net"
 bootstrap_tftp_backend: "dnsmasq"
 
 # Network interface for DHCP/TFTP/DNS services (downstream)
-bootstrap_dhcp_interface: "eth0"
+# This is the KEY in infrastructure.interfaces (OS interface discovered from MAC)
+bootstrap_dhcp_interface_key: "eth0"
 
 # DHCP Configuration for substrate network (192.168.10.0/23)
 # ------------------------------------------------------------------------------
@@ -58,6 +59,9 @@ bootstrap_dns_upstream_servers: []
 # ------------------------------------------------------------------------------
 # Enable dnsmasq service to start on boot
 bootstrap_dnsmasq_service_enabled: true
+
+# Enable DHCP functionality (set false for TFTP-only mode)
+bootstrap_dnsmasq_dhcp_enabled: false
 
 # Logging (useful for debugging)
 # ------------------------------------------------------------------------------
