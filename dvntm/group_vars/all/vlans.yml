@@ -1,0 +1,26 @@
+# VLAN segment definitions for dvntm substrate
+# Used for network segmentation and future OPNsense automation
+deevnet_vlans:
+  management:
+    vlan_id: 10
+    subnet: "192.168.10.0/24"
+    gateway: "192.168.10.1"
+    dhcp_range_start: "192.168.10.100"
+    dhcp_range_end: "192.168.10.200"
+  storage:
+    vlan_id: 20
+    subnet: "192.168.20.0/24"
+    gateway: "192.168.20.1"
+    dhcp_enabled: false  # Static mappings only
+  iot:
+    vlan_id: 30
+    subnet: "192.168.30.0/24"
+    gateway: "192.168.30.1"
+    dhcp_range_start: "192.168.30.100"
+    dhcp_range_end: "192.168.30.200"
+  guest:
+    vlan_id: 40
+    subnet: "192.168.40.0/24"
+    gateway: "192.168.40.1"
+    dhcp_range_start: "192.168.40.50"
+    dhcp_range_end: "192.168.40.250"
