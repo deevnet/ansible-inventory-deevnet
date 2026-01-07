@@ -1,11 +1,11 @@
 infrastructure:
   form: vm
-  role: provisioner
   interfaces:
     eth0:
       mac: "bc:24:11:ce:51:ec"
 
 env:
+  role: provisioner
   interfaces:
     eth0:
       ip: 192.168.10.97

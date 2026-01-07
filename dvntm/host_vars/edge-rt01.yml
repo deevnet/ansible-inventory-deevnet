@@ -1,6 +1,5 @@
 infrastructure:
   form: rt
-  role: edge
   interfaces:
     eth0:
       mac: "UNKNOWN"   # LAN port 1 (not visible in UI)
@@ -12,6 +11,7 @@ infrastructure:
       mac: "5a:b6:4e:f4:d7:4b"   # Wireless WAN (client mode)
 
 env:
+  role: edge
   interfaces:
     eth0:
       ip: 192.168.8.1
