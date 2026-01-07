@@ -8,6 +8,7 @@ env:
     wlan0:
       ip: 192.168.10.50
       purpose: web
+      segment: iot
       dns:
         host_a_record: true
         dhcp_reservation: true

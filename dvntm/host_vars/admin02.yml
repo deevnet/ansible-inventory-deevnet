@@ -1,6 +1,0 @@
-# Host-specific overrides for admin02
-# ------------------------------------------------------------------------------
-
-# Network interface override for admin02
-# The actual interface on this host is ens18, not enp1s0
-bootstrap_dhcp_interface: "ens18"

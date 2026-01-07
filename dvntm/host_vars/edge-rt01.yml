@@ -16,6 +16,7 @@ env:
     eth0:
       ip: 192.168.8.1
       purpose: lan
+      segment: management
       dns:
         host_a_record: true
         dhcp_reservation: false

@@ -14,6 +14,7 @@ env:
     eth0:
       ip: 192.168.10.95
       purpose: mgmt
+      segment: management
       dns:
         host_a_record: true
         dhcp_reservation: true
