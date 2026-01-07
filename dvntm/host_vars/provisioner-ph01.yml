@@ -1,6 +1,5 @@
 infrastructure:
   form: ph
-  role: provisioner
   interfaces:
     eth0:
       mac: "c8:ff:bf:06:5a:5a"
@@ -10,6 +9,7 @@ infrastructure:
       mac: "1c:79:2d:fc:5f:d6"
 
 env:
+  role: provisioner
   interfaces:
     eth0:
       ip: 192.168.10.95
