@@ -90,3 +90,17 @@ artifacts_to_fetch:
       - "rsync://mirror.math.princeton.edu/pub/fedora"
     rsync_path: "linux/releases/43/Server/x86_64/os/"
     dest_subdir: "fedora/43/mirror"
+
+  # ---------------------------------------------------------
+  # VyOS Rolling Release (nightly build)
+  # Update URL from: https://vyos.net/get/nightly-builds/
+  # Downloads ISO and extracts kernel/initrd for PXE booting
+  # No sha256 - changes with each nightly build
+  # ---------------------------------------------------------
+  - name: "vyos-rolling"
+    type: "vyos_iso"
+    iso_url: "https://github.com/vyos/vyos-rolling-nightly-builds/releases/download/1.5-rolling-202501060019/vyos-1.5-rolling-202501060019-generic-amd64.iso"
+    dest_subdir: "isos/vyos"
+    dest_filename: "vyos-rolling-latest.iso"
+    netboot_subdir: "netboot/vyos"
+    tftp_dest_subdir: "vyos"
