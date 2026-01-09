@@ -2,13 +2,13 @@ infrastructure:
   form: vm
   interfaces:
     eth0:
-      mac: "bc:24:11:dc:2a:24"
+      mac: "bc:24:11:f0:e4:68"
 
 env:
   role: provisioner
   interfaces:
     eth0:
-      ip: 192.168.10.96
+      ip: 192.168.10.90
       purpose: mgmt
       segment: management
       dns:

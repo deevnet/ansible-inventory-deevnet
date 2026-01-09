@@ -5,6 +5,8 @@ nginx_artifacts_root: /srv/dvntm-http
 # Enable to copy netboot files to TFTP root (for hosts that are also bootstrap nodes)
 artifacts_tftp_staging_enabled: true
 artifacts_tftp_staging_root: /srv/tftp
+artifacts_tftp_staging_owner: dnsmasq
+artifacts_tftp_staging_group: dnsmasq
 
 # Public key for auto-provisioning
 artifacts_ssh_keys:

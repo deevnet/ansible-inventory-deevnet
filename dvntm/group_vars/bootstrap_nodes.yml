@@ -8,6 +8,10 @@ bootstrap_artifact_server: "http://artifacts.dvntm.deevnet.net"
 # Use dnsmasq for TFTP + DHCP + DNS
 bootstrap_tftp_backend: "dnsmasq"
 
+# TFTP file ownership (must be dnsmasq for tftp-secure mode)
+bootstrap_tftp_owner: "dnsmasq"
+bootstrap_tftp_group: "dnsmasq"
+
 # Network interface for DHCP/TFTP/DNS services (downstream)
 # This is the KEY in infrastructure.interfaces (OS interface discovered from MAC)
 bootstrap_dhcp_interface_key: "eth0"
@@ -32,6 +36,7 @@ bootstrap_tftp_dirs:
   - pxelinux.cfg
   - fedora
   - fedora/43
+  - vyos
 
 # Netboot Menu Entries
 # ------------------------------------------------------------------------------
@@ -44,10 +49,42 @@ bootstrap_netboot_images:
       inst.stage2=http://artifacts.dvntm.deevnet.net/fedora/43/mirror
       inst.ks=http://artifacts.dvntm.deevnet.net/kickstart/builder-node.ks
 
+  - name: "VyOS Rolling"
+    dest_subdir: "vyos"
+    boot_options: >-
+      boot=live
+      noautologin
+      fetch=http://artifacts.dvntm.deevnet.net/netboot/vyos/filesystem.squashfs
+      ds=nocloud-net;s=http://artifacts.dvntm.deevnet.net/cloud-init/vyos/
+
 # PXE Boot Menu Configuration
 # ------------------------------------------------------------------------------
 bootstrap_pxe_boot_prompt: "Press <Tab> for boot options, <Enter> to boot default"
 bootstrap_pxe_timeout: 300
+bootstrap_grub_timeout: 30
+
+# MAC-specific GRUB Configs (UEFI auto-boot without menu)
+# ------------------------------------------------------------------------------
+# These create grub.cfg-XX-XX-XX-XX-XX-XX files for automated installs
+bootstrap_grub_mac_configs:
+  - hostname: vyos-rt01
+    mac: "bc:24:11:2e:26:4e"
+    image_name: "VyOS Rolling"
+    dest_subdir: "vyos"
+    boot_options: >-
+      boot=live
+      noautologin
+      fetch=http://artifacts.dvntm.deevnet.net/netboot/vyos/filesystem.squashfs
+      ds=nocloud-net;s=http://artifacts.dvntm.deevnet.net/cloud-init/vyos/
+
+  - hostname: provisioner-vm05
+    mac: "bc:24:11:f0:e4:68"
+    image_name: "Fedora 43 Server"
+    dest_subdir: "fedora/43"
+    boot_options: >-
+      inst.repo=http://artifacts.dvntm.deevnet.net/fedora/43/mirror
+      inst.stage2=http://artifacts.dvntm.deevnet.net/fedora/43/mirror
+      inst.ks=http://artifacts.dvntm.deevnet.net/kickstart/builder-node.ks
 
 # DNS Configuration
 # ------------------------------------------------------------------------------

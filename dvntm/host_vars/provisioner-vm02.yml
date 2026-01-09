@@ -15,3 +15,6 @@ env:
         host_a_record: true
         dhcp_reservation: true
         cnames: []
+        pxe_boot:
+          tftp_server: "192.168.10.95"
+          boot_file: "pxelinux.0"

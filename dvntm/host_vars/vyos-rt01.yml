@@ -1,0 +1,25 @@
+---
+# VyOS Router - Test VM for PXE boot installation
+#
+# MAC: bc:24:11:2e:26:4e
+# IP: 192.168.10.20
+
+infrastructure:
+  form: vm
+  interfaces:
+    eth0:
+      mac: "bc:24:11:2e:26:4e"
+
+env:
+  role: router
+  interfaces:
+    eth0:
+      ip: 192.168.10.20
+      purpose: mgmt
+      segment: management
+      dns:
+        host_a_record: true
+        dhcp_reservation: true
+        pxe_boot:
+          tftp_server: "192.168.10.95"    # Bootstrap node IP (provisioner-ph01)
+          boot_file: "grubx64.efi"         # UEFI bootloader (shows GRUB menu)
