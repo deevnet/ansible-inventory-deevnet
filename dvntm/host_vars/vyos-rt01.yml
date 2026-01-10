@@ -22,4 +22,4 @@ env:
         dhcp_reservation: true
         pxe_boot:
           tftp_server: "192.168.10.95"    # Bootstrap node IP (provisioner-ph01)
-          boot_file: "grubx64.efi"         # UEFI bootloader (shows GRUB menu)
+          boot_file: "ipxe.efi"            # iPXE UEFI bootloader (better network stack)

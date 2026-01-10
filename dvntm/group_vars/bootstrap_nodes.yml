@@ -4,9 +4,13 @@
 # Artifact server URL (for inst.repo, inst.ks, etc.)
 bootstrap_artifact_server: "http://artifacts.dvntm.deevnet.net"
 
-# Bootstrap-authoritative mode
-# Use dnsmasq for TFTP + DHCP + DNS
-bootstrap_tftp_backend: "dnsmasq"
+# OPNSense-authoritative mode - use standalone tftpd for TFTP only
+# OPNSense handles DHCP/DNS, this host provides TFTP for PXE boot files
+bootstrap_tftp_backend: "tftpd"
+
+# Use network-enabled GRUB for UEFI PXE boot
+# Built with grub2-mkimage including efinet, tftp, http, net modules
+bootstrap_uefi_bootloader: "grub"
 
 # TFTP file ownership (must be dnsmasq for tftp-secure mode)
 bootstrap_tftp_owner: "dnsmasq"
@@ -94,10 +98,10 @@ bootstrap_dns_upstream_servers: []
 
 # Service Configuration
 # ------------------------------------------------------------------------------
-# Enable dnsmasq service to start on boot
-bootstrap_dnsmasq_service_enabled: true
+# dnsmasq service disabled (using tftpd backend instead)
+bootstrap_dnsmasq_service_enabled: false
 
-# Enable DHCP functionality (set false for TFTP-only mode)
+# DHCP disabled - OPNSense is authoritative for DHCP
 bootstrap_dnsmasq_dhcp_enabled: false
 
 # Logging (useful for debugging)
