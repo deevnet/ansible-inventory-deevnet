@@ -71,7 +71,7 @@ bootstrap_grub_timeout: 30
 # ------------------------------------------------------------------------------
 # These create grub.cfg-XX-XX-XX-XX-XX-XX files for automated installs
 bootstrap_grub_mac_configs:
-  - hostname: vyos-rt01
+  - hostname: core-rt01
     mac: "bc:24:11:2e:26:4e"
     image_name: "VyOS Rolling"
     dest_subdir: "vyos"
@@ -79,7 +79,7 @@ bootstrap_grub_mac_configs:
       boot=live
       noautologin
       fetch=http://artifacts.dvntm.deevnet.net/netboot/vyos/filesystem.squashfs
-      ds=nocloud-net;s=http://artifacts.dvntm.deevnet.net/cloud-init/vyos/
+      ds=nocloud-net;s=http://artifacts.dvntm.deevnet.net/cloud-init/vyos-core-rt01/
 
   - hostname: provisioner-vm05
     mac: "bc:24:11:f0:e4:68"
