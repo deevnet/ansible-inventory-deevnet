@@ -1,0 +1,73 @@
+---
+# VyOS Router - Core router for isolated network segment
+#
+# eth0 (WAN): BC:24:11:2E:26:4E - DHCP from upstream
+# eth1 (LAN): BC:24:11:D7:85:C2 - 192.168.12.1/24
+
+infrastructure:
+  form: vm
+  interfaces:
+    eth0:
+      mac: "bc:24:11:2e:26:4e"
+    eth1:
+      mac: "bc:24:11:d7:85:c2"
+
+env:
+  role: core
+  interfaces:
+    eth0:
+      ip: dhcp
+      purpose: wan
+    eth1:
+      ip: 192.168.12.1
+      purpose: lan
+      segment: trusted
+      dns:
+        host_a_record: true
+        dhcp_reservation: false
+        cnames:
+          - gateway
+          - dns
+          - dhcp
+
+# Ansible connection - use LAN IP once configured
+ansible_host: 192.168.12.1
+
+# --- DNS Configuration ---
+dns_domain: "core-rt01.deevnet.net"
+dns_listen_address: "192.168.12.1"
+dns_allow_from:
+  - "192.168.12.0/24"
+
+# --- DHCP Configuration ---
+dhcp_domain: "core-rt01.deevnet.net"
+dhcp_subnets:
+  - name: lan
+    subnet: "192.168.12.0/24"
+    gateway: "192.168.12.1"
+    range_start: "192.168.12.100"
+    range_end: "192.168.12.200"
+
+dhcp_dns_servers:
+  - "192.168.12.1"
+
+# --- Firewall Configuration ---
+firewall_zones:
+  - name: WAN
+    description: "Upstream network (DHCP)"
+    default_action: drop
+    interfaces:
+      - eth0
+  - name: LAN
+    description: "Trusted LAN network"
+    default_action: accept
+    interfaces:
+      - eth1
+
+firewall_zone_policies:
+  - from_zone: LAN
+    to_zone: WAN
+    action: accept
+
+firewall_enable_nat: true
+firewall_nat_outbound_interface: "eth0"
