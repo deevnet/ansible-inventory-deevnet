@@ -23,6 +23,7 @@ hashicorp_packages:
 
 # General dev tool packages
 dev_tool_packages:
+  - acl
   - git
   - vim
   - tmux
@@ -33,6 +34,8 @@ dev_tool_packages:
   - curl
   - tftp
   - zip
+  - unzip
+  - tar
   - tree
 
 # ISO/image building tools
