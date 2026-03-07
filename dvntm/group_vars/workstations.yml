@@ -6,6 +6,8 @@ dev_users:
       - wheel
     home: /home/cdeever
     github_keys_url: "https://github.com/cdeever.keys"
+    git_name: "Chris Deever"
+    git_email: "3679434+cdeever@users.noreply.github.com"
 
 # HashiCorp repository configuration
 hashicorp_repo_baseurl: "https://rpm.releases.hashicorp.com/fedora/$releasever/$basearch/stable"
