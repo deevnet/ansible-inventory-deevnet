@@ -1,0 +1,63 @@
+# Developers
+dev_users:
+  - name: cdeever
+    primary_group: cdeever
+    extra_groups:
+      - wheel
+    home: /home/cdeever
+    github_keys_url: "https://github.com/cdeever.keys"
+    git_name: "Chris Deever"
+    git_email: "3679434+cdeever@users.noreply.github.com"
+
+# HashiCorp repository configuration
+hashicorp_repo_baseurl: "https://rpm.releases.hashicorp.com/fedora/$releasever/$basearch/stable"
+hashicorp_repo_gpgkey: "https://rpm.releases.hashicorp.com/gpg"
+hashicorp_repo_enabled: true
+hashicorp_repo_gpgcheck: true
+hashicorp_repo_repo_gpgcheck: true
+
+# HashiCorp packages to install
+hashicorp_packages:
+  - terraform
+  - packer
+#   - vault
+#   - consul
+
+# General dev tool packages
+dev_tool_packages:
+  - acl
+  - git
+  - vim
+  - tmux
+  - golang
+  - nmap-ncat
+  - jq
+  - wget
+  - curl
+  - tftp
+  - zip
+  - unzip
+  - tar
+  - tree
+
+# ISO/image building tools
+iso_packages:
+  - squashfs-tools
+  - genisoimage
+  - xorriso
+  - syslinux
+
+# Virtualization packages for KVM/libvirt
+virtualization_packages:
+  - qemu-kvm
+  - libvirt
+  - libvirt-daemon
+  - libvirt-daemon-config-network
+  - libvirt-daemon-kvm
+  - virt-install
+  - virt-manager
+
+x11_packages:
+  - firefox              # GUI browser for X11 over SSH
+  - xorg-x11-xauth       # needed for SSH X11 forwarding
+  - xeyes                # another X test app (optional)

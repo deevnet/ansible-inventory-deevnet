@@ -1,0 +1,8 @@
+---
+# VyOS router connection settings
+# Used by vyos-site.yml playbook in ansible-collection-deevnet.net
+
+ansible_user: a_autoprov
+ansible_network_os: vyos.vyos.vyos
+ansible_connection: ansible.netcommon.network_cli
+ansible_ssh_private_key_file: ~/.ssh/id_ed25519

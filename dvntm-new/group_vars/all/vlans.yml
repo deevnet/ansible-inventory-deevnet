@@ -1,0 +1,59 @@
+# VLAN segment definitions for dvntm substrate
+# Addressing convention: 10.20.{vlan_id}.0/24
+deevnet_vlans:
+  trusted:
+    vlan_id: 10
+    subnet: "10.20.10.0/24"
+    gateway: "10.20.10.1"
+    dhcp_range_start: "10.20.10.100"
+    dhcp_range_end: "10.20.10.200"
+  storage:
+    vlan_id: 20
+    subnet: "10.20.20.0/24"
+    gateway: "10.20.20.1"
+    dhcp_enabled: false  # Static mappings only
+  platform:
+    vlan_id: 25
+    subnet: "10.20.25.0/24"
+    gateway: "10.20.25.1"
+    dhcp_enabled: false  # Static mappings only
+  iot:
+    vlan_id: 30
+    subnet: "10.20.30.0/24"
+    gateway: "10.20.30.1"
+    dhcp_range_start: "10.20.30.100"
+    dhcp_range_end: "10.20.30.200"
+  iot_vendor:
+    vlan_id: 31
+    subnet: "10.20.31.0/24"
+    gateway: "10.20.31.1"
+    dhcp_range_start: "10.20.31.100"
+    dhcp_range_end: "10.20.31.200"
+  iot_backend:
+    vlan_id: 35
+    subnet: "10.20.35.0/24"
+    gateway: "10.20.35.1"
+    dhcp_enabled: false  # Static mappings only
+  guest:
+    vlan_id: 40
+    subnet: "10.20.40.0/24"
+    gateway: "10.20.40.1"
+    dhcp_range_start: "10.20.40.50"
+    dhcp_range_end: "10.20.40.250"
+  tenant_1:
+    vlan_id: 50
+    subnet: "10.20.50.0/24"
+    gateway: "10.20.50.1"
+  tenant_2:
+    vlan_id: 51
+    subnet: "10.20.51.0/24"
+    gateway: "10.20.51.1"
+  tenant_3:
+    vlan_id: 52
+    subnet: "10.20.52.0/24"
+    gateway: "10.20.52.1"
+  management:
+    vlan_id: 99
+    subnet: "10.20.99.0/24"
+    gateway: "10.20.99.1"
+    dhcp_enabled: false  # Static mappings only for infrastructure
