@@ -1,0 +1,8 @@
+# TP-Link Omada switch connection settings (Cisco-style CLI)
+ansible_user: "{{ vault_switch_user }}"
+ansible_password: "{{ vault_switch_password }}"
+ansible_connection: ansible.netcommon.network_cli
+ansible_network_os: cisco.ios.ios
+ansible_become: true
+ansible_become_method: enable
+ansible_become_password: "{{ vault_switch_enable_password }}"

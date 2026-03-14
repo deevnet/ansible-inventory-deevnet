@@ -1,0 +1,13 @@
+# OPNsense router configuration
+ansible_user: a_autoprov
+ansible_become: true
+ansible_python_interpreter: /usr/local/bin/python3
+
+opnsense_api_key: "{{ vault_opnsense_api_key }}"
+opnsense_api_secret: "{{ vault_opnsense_api_secret }}"
+
+opnsense_api_url: "https://{{ ansible_host }}/api"
+opnsense_validate_certs: false
+
+dns_domain: "dvntm.deevnet.net"
+dhcp_subnet_uuid: "60339c82-497e-41f7-8bbe-a7d0f490336a"
