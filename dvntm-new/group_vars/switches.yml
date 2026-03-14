@@ -1,0 +1,11 @@
+---
+# TP-Link Omada switch connection settings (Cisco-style CLI)
+# Used by switch_vlans role in ansible-collection-deevnet.net
+
+ansible_user: "{{ lookup('env', 'SWITCH_USER') }}"
+ansible_password: "{{ lookup('env', 'SWITCH_PASSWORD') }}"
+ansible_connection: ansible.netcommon.network_cli
+ansible_network_os: cisco.ios.ios
+ansible_become: true
+ansible_become_method: enable
+ansible_become_password: "{{ lookup('env', 'SWITCH_ENABLE_PASSWORD') }}"

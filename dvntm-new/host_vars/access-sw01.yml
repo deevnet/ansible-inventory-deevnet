@@ -14,3 +14,41 @@ env:
         host_a_record: true
         dhcp_reservation: true
         cnames: []
+
+# Switch port definitions for switch_vlans role
+# Port naming follows TP-Link Omada CLI convention (Cisco-style)
+# Update interface names after confirming via: show interfaces status
+switch_ports:
+  trunk:
+    - interface: "gigabitEthernet 1/0/1"
+      description: "uplink to core-rt02"
+      native_vlan: 99
+      # allowed_vlans defaults to all VLANs from deevnet_vlans
+  access:
+    # Management segment
+    - interface: "gigabitEthernet 1/0/2"
+      vlan_id: 99
+      description: "hv01 mgmt"
+    - interface: "gigabitEthernet 1/0/3"
+      vlan_id: 99
+      description: "hv02 mgmt"
+    - interface: "gigabitEthernet 1/0/4"
+      vlan_id: 99
+      description: "provisioner-ph01 mgmt"
+    # Trusted segment
+    - interface: "gigabitEthernet 1/0/5"
+      vlan_id: 10
+      description: "trusted workstation"
+    # IoT segment
+    - interface: "gigabitEthernet 1/0/10"
+      vlan_id: 30
+      description: "pi01 iot"
+    - interface: "gigabitEthernet 1/0/11"
+      vlan_id: 30
+      description: "pi02 iot"
+    - interface: "gigabitEthernet 1/0/12"
+      vlan_id: 30
+      description: "pi03 iot"
+    - interface: "gigabitEthernet 1/0/13"
+      vlan_id: 30
+      description: "pi04 iot"
