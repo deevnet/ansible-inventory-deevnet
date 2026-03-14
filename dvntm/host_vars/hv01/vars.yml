@@ -7,7 +7,7 @@ infrastructure:
 env:
   interfaces:
     eth0:
-      ip: 10.20.99.21
+      ip: 192.168.10.21
       purpose: mgmt
       segment: management
       dns:
@@ -15,3 +15,6 @@ env:
         dhcp_reservation: true
         cnames:
           - pve
+
+proxmox_token_id: "{{ vault_proxmox_token_id }}"
+proxmox_token_secret: "{{ vault_proxmox_token_secret }}"

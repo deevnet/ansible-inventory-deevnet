@@ -15,3 +15,6 @@ env:
         dhcp_reservation: true
         cnames:
           - pve2
+
+proxmox_token_id: "{{ vault_proxmox_token_id }}"
+proxmox_token_secret: "{{ vault_proxmox_token_secret }}"

@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Prevent committing unencrypted vault files
+FAIL=0
+for f in $(git diff --cached --name-only | grep 'vault\.yml$'); do
+    if ! git show ":$f" | head -1 | grep -q '^\$ANSIBLE_VAULT'; then
+        echo "ERROR: $f is not encrypted. Run 'make vault' before committing."
+        FAIL=1
+    fi
+done
+exit $FAIL
