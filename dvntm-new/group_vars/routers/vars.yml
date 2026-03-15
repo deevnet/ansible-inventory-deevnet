@@ -11,3 +11,6 @@ opnsense_validate_certs: false
 
 dns_domain: "dvntm.deevnet.net"
 dhcp_subnet_uuid: "60339c82-497e-41f7-8bbe-a7d0f490336a"
+
+# Physical LAN interface for VLAN sub-interfaces
+opnsense_vlan_parent: "re0"

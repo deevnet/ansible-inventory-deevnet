@@ -1,6 +1,18 @@
 VAULT_FILES := $(shell find . -name 'vault.yml' -not -path './.git/*')
 
-.PHONY: vault unvault install-hooks
+.PHONY: help vault unvault install-hooks
+
+default: help
+
+help:
+	@echo "Deevnet Inventory"
+	@echo ""
+	@echo "Usage: make <target>"
+	@echo ""
+	@echo "Targets:"
+	@echo "  vault           Encrypt all unencrypted vault.yml files"
+	@echo "  unvault         Decrypt all encrypted vault.yml files"
+	@echo "  install-hooks   Set git hooks path to hooks/"
 
 vault:
 	@TO_ENCRYPT=""; \
