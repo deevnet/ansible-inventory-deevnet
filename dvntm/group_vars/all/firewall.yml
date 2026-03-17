@@ -1,0 +1,49 @@
+# Zone-based firewall policy matrix for dvntm substrate
+# Derived from network-segmentation.md architecture.
+# Default policy: deny all inter-VLAN traffic.
+# Rules below define explicit allows.
+
+firewall_zone_policies:
+  # Management -> all zones (full infrastructure access)
+  - { from_zone: management, to_zone: trusted, action: pass }
+  - { from_zone: management, to_zone: storage, action: pass }
+  - { from_zone: management, to_zone: platform, action: pass }
+  - { from_zone: management, to_zone: iot, action: pass }
+  - { from_zone: management, to_zone: iot_vendor, action: pass }
+  - { from_zone: management, to_zone: iot_backend, action: pass }
+  - { from_zone: management, to_zone: guest, action: pass }
+  - { from_zone: management, to_zone: tenant_1, action: pass }
+  - { from_zone: management, to_zone: tenant_2, action: pass }
+  - { from_zone: management, to_zone: tenant_3, action: pass }
+
+  # Trusted -> broad access (not guest, not iot_vendor)
+  - { from_zone: trusted, to_zone: storage, action: pass }
+  - { from_zone: trusted, to_zone: platform, action: pass }
+  - { from_zone: trusted, to_zone: iot, action: pass }
+  - { from_zone: trusted, to_zone: iot_backend, action: pass }
+  - { from_zone: trusted, to_zone: tenant_1, action: pass }
+  - { from_zone: trusted, to_zone: tenant_2, action: pass }
+  - { from_zone: trusted, to_zone: tenant_3, action: pass }
+
+  # Tenants -> platform only (shared services)
+  - { from_zone: tenant_1, to_zone: platform, action: pass }
+  - { from_zone: tenant_2, to_zone: platform, action: pass }
+  - { from_zone: tenant_3, to_zone: platform, action: pass }
+
+  # IoT -> IoT Backend (sensor data)
+  - { from_zone: iot, to_zone: iot_backend, action: pass }
+
+  # IoT Backend -> Platform (shared services)
+  - { from_zone: iot_backend, to_zone: platform, action: pass }
+
+firewall_internet_zones:
+  - management
+  - trusted
+  - platform
+  - iot
+  - iot_vendor
+  - iot_backend
+  - guest
+  - tenant_1
+  - tenant_2
+  - tenant_3
