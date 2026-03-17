@@ -1,0 +1,52 @@
+# Switch port profiles and port role definitions
+# Profiles reference VLAN names (keys from deevnet_vlans), not numeric IDs.
+# Roles resolve names to IDs at runtime.
+
+deevnet_switch_profiles:
+  trunk_all:
+    mode: trunk
+    native_vlan: blackhole
+    allowed_vlans: all
+  trunk_server:
+    mode: trunk
+    native_vlan: blackhole
+    allowed_vlans:
+      - management
+      - trusted
+      - storage
+      - platform
+      - tenant_1
+      - tenant_2
+      - tenant_3
+  trunk_ap:
+    mode: trunk
+    native_vlan: blackhole
+    allowed_vlans:
+      - management
+      - trusted
+      - iot
+      - iot_vendor
+      - guest
+  access_mgmt:
+    mode: access
+    vlan: management
+  access_trusted:
+    mode: access
+    vlan: trusted
+  access_storage:
+    mode: access
+    vlan: storage
+
+deevnet_port_roles:
+  opnsense_uplink:
+    profile: trunk_all
+  proxmox_trunk:
+    profile: trunk_server
+  access_point:
+    profile: trunk_ap
+  workstation:
+    profile: access_trusted
+  hypervisor_mgmt:
+    profile: access_mgmt
+  storage_device:
+    profile: access_storage

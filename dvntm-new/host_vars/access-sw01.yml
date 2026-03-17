@@ -22,7 +22,7 @@ switch_ports:
   trunk:
     - interface: "gigabitEthernet 1/0/1"
       description: "uplink to core-rt02"
-      native_vlan: 99
+      native_vlan: 999
       # allowed_vlans defaults to all VLANs from deevnet_vlans
   access:
     # Management segment
