@@ -13,6 +13,8 @@ env:
   interfaces:
     eth0:
       ip: 192.168.10.95
+      gateway: 192.168.10.1
+      prefix: 23
       purpose: mgmt
       segment: management
       dns:
@@ -25,7 +27,7 @@ env:
           tftp_server: "192.168.10.95"
           boot_file: "pxelinux.0"
     eth1:
-      ip: null
+      ip: dhcp
       purpose: transit
     wifi:
       ip: null
