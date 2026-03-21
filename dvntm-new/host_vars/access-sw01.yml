@@ -24,31 +24,22 @@ switch_ports:
       description: "uplink to core-rt02"
       native_vlan: 999
       # allowed_vlans defaults to all VLANs from deevnet_vlans
+    - interface: "gigabitEthernet 1/0/4"
+      description: "ap01 wifi trunk"
+      native_vlan: 99
+      allowed_vlans: [10, 30, 31, 40, 99]
   access:
     # Management segment
-    - interface: "gigabitEthernet 1/0/2"
+    - interface: "gigabitEthernet 1/0/15"
       vlan_id: 99
       description: "hv01 mgmt"
-    - interface: "gigabitEthernet 1/0/3"
-      vlan_id: 99
-      description: "hv02 mgmt"
-    - interface: "gigabitEthernet 1/0/4"
+    - interface: "gigabitEthernet 1/0/16"
       vlan_id: 99
       description: "provisioner-ph01 mgmt"
-    # Trusted segment
-    - interface: "gigabitEthernet 1/0/5"
-      vlan_id: 10
-      description: "trusted workstation"
     # IoT segment
-    - interface: "gigabitEthernet 1/0/10"
-      vlan_id: 30
-      description: "pi01 iot"
-    - interface: "gigabitEthernet 1/0/11"
+    - interface: "gigabitEthernet 1/0/3"
       vlan_id: 30
       description: "pi02 iot"
-    - interface: "gigabitEthernet 1/0/12"
+    - interface: "gigabitEthernet 1/0/14"
       vlan_id: 30
-      description: "pi03 iot"
-    - interface: "gigabitEthernet 1/0/13"
-      vlan_id: 30
-      description: "pi04 iot"
+      description: "pi01 iot"
