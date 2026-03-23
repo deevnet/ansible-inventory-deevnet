@@ -1,5 +1,7 @@
 # VLAN segment definitions for dvntm substrate
 # Addressing convention: 10.20.{vlan_id}.0/24
+# These define the target VLAN infrastructure for the network migration.
+# Host IPs remain at 192.168.10.x until Phase 7 cutover.
 deevnet_vlans:
   trusted:
     vlan_id: 10

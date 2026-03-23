@@ -7,9 +7,9 @@ infrastructure:
 env:
   interfaces:
     eth0:
-      ip: 192.168.10.14
+      ip: 10.20.30.14
       purpose: mgmt
-      segment: management
+      segment: iot
       dns:
         host_a_record: true
         dhcp_reservation: true

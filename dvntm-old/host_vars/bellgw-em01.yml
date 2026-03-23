@@ -6,7 +6,7 @@ infrastructure:
 env:
   interfaces:
     wlan0:
-      ip: 10.20.30.50
+      ip: 192.168.10.50
       purpose: web
       segment: iot
       dns:

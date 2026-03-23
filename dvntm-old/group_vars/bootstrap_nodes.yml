@@ -20,17 +20,17 @@ bootstrap_tftp_group: "dnsmasq"
 # This is the KEY in infrastructure.interfaces (OS interface discovered from MAC)
 bootstrap_dhcp_interface_key: "eth0"
 
-# DHCP Configuration for management subnet (10.20.99.0/24)
+# DHCP Configuration for substrate network (192.168.10.0/23)
 # ------------------------------------------------------------------------------
-bootstrap_dhcp_range_start: "10.20.99.100"
-bootstrap_dhcp_range_end: "10.20.99.200"
+bootstrap_dhcp_range_start: "192.168.10.100"
+bootstrap_dhcp_range_end: "192.168.11.254"
 bootstrap_dhcp_lease_time: "12h"
 
 # Network options - provisioner is the gateway
-bootstrap_dhcp_gateway: "10.20.99.95"
-bootstrap_dhcp_netmask: "255.255.255.0"
+bootstrap_dhcp_gateway: "192.168.10.95"
+bootstrap_dhcp_netmask: "255.255.254.0"
 bootstrap_dhcp_dns_servers:
-  - "10.20.99.95"
+  - "192.168.10.95"
 
 # DHCP domain
 bootstrap_dhcp_domain: "dvntm.deevnet.net"

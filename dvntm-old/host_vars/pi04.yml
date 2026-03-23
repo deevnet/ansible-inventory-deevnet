@@ -2,14 +2,14 @@ infrastructure:
   form: pi
   interfaces:
     eth0:
-      mac: "dc:a6:32:c5:a0:c5"
+      mac: "dc:a6:32:c5:a1:a6"
 
 env:
   interfaces:
     eth0:
-      ip: 10.20.30.12
+      ip: 192.168.10.14
       purpose: mgmt
-      segment: iot
+      segment: management
       dns:
         host_a_record: true
         dhcp_reservation: true
