@@ -18,10 +18,14 @@ artifacts_ssh_keys:
 
 # Podman artifacts
 artifacts_podman_images:
-  - name: "omada-controller"
-    upstream_image: "docker.io/mbentley/omada-controller:5.12"   # image:tag from the registry
+  - name: "omada-controller-5.12"
+    upstream_image: "docker.io/mbentley/omada-controller:5.12"
     dest_subdir: "container-images/omada-controller"
     tar_filename: "omada-controller-5.12.tar"
+  - name: "omada-controller"
+    upstream_image: "docker.io/mbentley/omada-controller:6.1"
+    dest_subdir: "container-images/omada-controller"
+    tar_filename: "omada-controller-6.1.tar"
     latest_symlink: "omada-controller-latest.tar"
 
 # Artifacts that admin hosts (artifact servers) should host under nginx_artifacts_root
