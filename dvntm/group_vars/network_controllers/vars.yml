@@ -8,3 +8,7 @@
     - "PORTAL_HTTPS_PORT=8843"
     - "SHOW_SERVER_LOGS=true"
     - "SHOW_MONGODB_LOGS=false"
+
+  # Omada controller API credentials (references vault)
+  omada_admin_user: "{{ vault_omada_admin_user }}"
+  omada_admin_password: "{{ vault_omada_admin_password }}"
