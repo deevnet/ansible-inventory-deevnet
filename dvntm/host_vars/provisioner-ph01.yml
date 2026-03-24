@@ -15,6 +15,8 @@ env:
       ip: 10.20.99.95
       gateway: 10.20.99.1
       prefix: 24
+      dns_servers: "10.20.99.1"
+      dns_search: "dvntm.deevnet.net deevnet.net"
       purpose: mgmt
       segment: management
       dns:
