@@ -19,6 +19,9 @@ env:
       dns_search: "dvntm.deevnet.net deevnet.net"
       purpose: mgmt
       segment: management
+      routes:
+        - "10.20.0.0/16 10.20.99.1"
+        - "10.10.0.0/16 10.20.99.1"
       dns:
         host_a_record: true
         dhcp_reservation: true
