@@ -4,6 +4,10 @@
 # Artifact server URL (for inst.repo, inst.ks, etc.)
 bootstrap_artifact_server: "http://artifacts.dvntm.deevnet.net"
 
+# WAN interface for bootstrap-authoritative mode (upstream connectivity)
+# This is the KEY in infrastructure.interfaces (OS interface discovered from MAC)
+bootstrap_wan_interface_key: "eth1"
+
 # OPNSense-authoritative mode - use standalone tftpd for TFTP only
 # OPNSense handles DHCP/DNS, this host provides TFTP for PXE boot files
 bootstrap_tftp_backend: "tftpd"
@@ -26,11 +30,12 @@ bootstrap_dhcp_range_start: "10.20.99.100"
 bootstrap_dhcp_range_end: "10.20.99.200"
 bootstrap_dhcp_lease_time: "12h"
 
-# Network options - provisioner is the gateway
-bootstrap_dhcp_gateway: "10.20.99.95"
+# Network options - in bootstrap-authoritative mode, provisioner is the gateway
+# These use the gateway IP (.1), not the provisioner's reserved IP (.95)
+bootstrap_dhcp_gateway: "10.20.99.1"
 bootstrap_dhcp_netmask: "255.255.255.0"
 bootstrap_dhcp_dns_servers:
-  - "10.20.99.95"
+  - "10.20.99.1"
 
 # DHCP domain
 bootstrap_dhcp_domain: "dvntm.deevnet.net"

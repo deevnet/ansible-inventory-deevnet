@@ -17,6 +17,7 @@ firewall_zone_policies:
   - { from_zone: management, to_zone: tenant_3, action: pass }
 
   # Trusted -> broad access (not guest, not iot_vendor)
+  - { from_zone: trusted, to_zone: management, action: pass }  # lab exception: convenience access to mgmt plane
   - { from_zone: trusted, to_zone: storage, action: pass }
   - { from_zone: trusted, to_zone: platform, action: pass }
   - { from_zone: trusted, to_zone: iot, action: pass }
