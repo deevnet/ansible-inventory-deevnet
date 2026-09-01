@@ -1,8 +1,8 @@
 # PXE Boot Server Configuration for bootstrap_nodes
 # ------------------------------------------------------------------------------
 
-# Artifact server URL (for inst.repo, inst.ks, etc.)
-bootstrap_artifact_server: "http://artifacts.dvntm.deevnet.net"
+# Artifact server URL (for inst.repo, inst.ks, etc.) is defined in
+# group_vars/all/main.yml, derived from deevnet_substrate + deevnet_root_domain.
 
 # WAN interface for bootstrap-authoritative mode (upstream connectivity)
 # This is the KEY in infrastructure.interfaces (OS interface discovered from MAC)
@@ -44,27 +44,35 @@ bootstrap_dhcp_domain: "dvntm.deevnet.net"
 bootstrap_tftp_dirs:
   - pxelinux.cfg
   - fedora
-  - fedora/43
+  - "fedora/{{ deevnet_fedora_current.release }}"
+  - "fedora/{{ deevnet_fedora_previous.release }}"
   - vyos
 
 # Netboot Menu Entries
 # ------------------------------------------------------------------------------
 # Boot menu entries for PXE. Files must be pre-staged by artifacts role.
 bootstrap_netboot_images:
-  - name: "Fedora 43 Server"
-    dest_subdir: "fedora/43"
+  - name: "Fedora {{ deevnet_fedora_current.release }} Server"
+    dest_subdir: "fedora/{{ deevnet_fedora_current.release }}"
     boot_options: >-
-      inst.repo=http://artifacts.dvntm.deevnet.net/fedora/43/mirror
-      inst.stage2=http://artifacts.dvntm.deevnet.net/fedora/43/mirror
-      inst.ks=http://artifacts.dvntm.deevnet.net/kickstart/builder-node.ks
+      inst.repo={{ bootstrap_artifact_server }}/fedora/{{ deevnet_fedora_current.release }}/mirror
+      inst.stage2={{ bootstrap_artifact_server }}/fedora/{{ deevnet_fedora_current.release }}/mirror
+      inst.ks={{ bootstrap_artifact_server }}/kickstart/builder-node-{{ deevnet_fedora_current.release }}.ks
+
+  - name: "Fedora {{ deevnet_fedora_previous.release }} Server"
+    dest_subdir: "fedora/{{ deevnet_fedora_previous.release }}"
+    boot_options: >-
+      inst.repo={{ bootstrap_artifact_server }}/fedora/{{ deevnet_fedora_previous.release }}/mirror
+      inst.stage2={{ bootstrap_artifact_server }}/fedora/{{ deevnet_fedora_previous.release }}/mirror
+      inst.ks={{ bootstrap_artifact_server }}/kickstart/builder-node-{{ deevnet_fedora_previous.release }}.ks
 
   - name: "VyOS Rolling"
     dest_subdir: "vyos"
     boot_options: >-
       boot=live
       noautologin
-      fetch=http://artifacts.dvntm.deevnet.net/netboot/vyos/filesystem.squashfs
-      ds=nocloud-net;s=http://artifacts.dvntm.deevnet.net/cloud-init/vyos/
+      fetch={{ bootstrap_artifact_server }}/netboot/vyos/filesystem.squashfs
+      ds=nocloud-net;s={{ bootstrap_artifact_server }}/cloud-init/vyos/
 
 # PXE Boot Menu Configuration
 # ------------------------------------------------------------------------------
@@ -83,17 +91,21 @@ bootstrap_grub_mac_configs:
     boot_options: >-
       boot=live
       noautologin
-      fetch=http://artifacts.dvntm.deevnet.net/netboot/vyos/filesystem.squashfs
-      ds=nocloud-net;s=http://artifacts.dvntm.deevnet.net/cloud-init/vyos-core-rt01/
+      fetch={{ bootstrap_artifact_server }}/netboot/vyos/filesystem.squashfs
+      ds=nocloud-net;s={{ bootstrap_artifact_server }}/cloud-init/vyos-core-rt01/
 
+  # NOTE: pinned to the PREVIOUS release on purpose. This host auto-installs with
+  # no menu, so it stays on a known-good release until a manual Fedora
+  # {{ deevnet_fedora_current.release }} PXE install has been validated. To cut it
+  # over, swap deevnet_fedora_previous -> deevnet_fedora_current on the four lines below.
   - hostname: provisioner-vm05
     mac: "bc:24:11:f0:e4:68"
-    image_name: "Fedora 43 Server"
-    dest_subdir: "fedora/43"
+    image_name: "Fedora {{ deevnet_fedora_previous.release }} Server"
+    dest_subdir: "fedora/{{ deevnet_fedora_previous.release }}"
     boot_options: >-
-      inst.repo=http://artifacts.dvntm.deevnet.net/fedora/43/mirror
-      inst.stage2=http://artifacts.dvntm.deevnet.net/fedora/43/mirror
-      inst.ks=http://artifacts.dvntm.deevnet.net/kickstart/builder-node.ks
+      inst.repo={{ bootstrap_artifact_server }}/fedora/{{ deevnet_fedora_previous.release }}/mirror
+      inst.stage2={{ bootstrap_artifact_server }}/fedora/{{ deevnet_fedora_previous.release }}/mirror
+      inst.ks={{ bootstrap_artifact_server }}/kickstart/builder-node-{{ deevnet_fedora_previous.release }}.ks
 
 # DNS Configuration
 # ------------------------------------------------------------------------------

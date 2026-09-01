@@ -29,3 +29,30 @@ ansible_host: >-
 
 # Deterministic FQDN helper
 deevnet_fqdn: "{{ inventory_hostname }}.{{ deevnet_substrate }}.{{ deevnet_root_domain }}"
+
+# Fedora Server releases tracked by this substrate
+# ------------------------------------------------------------------------------
+# Bumping a release: move `current` -> `previous`, then set the new `current`.
+# Every Fedora URL, dest_subdir and PXE menu entry derives from these.
+deevnet_fedora_mirror: "https://download.fedoraproject.org/pub/fedora/linux/releases"
+
+# Mirror roots, each already including that mirror's own layout prefix, so a
+# single rsync_path works across all of them. kernel.org's `fedora` module is
+# rooted where the others expose `.../linux`, which is why the prefix differs.
+deevnet_fedora_rsync_mirrors:
+  - "rsync://dl.fedoraproject.org/fedora-enchilada/linux"
+  - "rsync://mirrors.kernel.org/fedora"
+  - "rsync://mirror.math.princeton.edu/pub/fedora/linux"
+
+deevnet_fedora_current:
+  release: "44"
+  build: "1.7"
+
+deevnet_fedora_previous:
+  release: "43"
+  build: "1.6"
+
+# Base URL of the artifact server, used by kickstarts and PXE boot options.
+# Defined here (not just bootstrap_nodes.yml) so the artifacts role can render
+# kickstart templates without depending on group membership overlap.
+bootstrap_artifact_server: "http://artifacts.{{ deevnet_substrate }}.{{ deevnet_root_domain }}"
