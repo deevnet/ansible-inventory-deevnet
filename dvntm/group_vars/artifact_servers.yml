@@ -30,16 +30,71 @@ artifacts_podman_images:
 
 # Artifacts that admin hosts (artifact servers) should host under nginx_artifacts_root
 artifacts_to_fetch:
-  # ---------------------------------------------------------
-  # Fedora Server 43 (netinst, x86_64)
-  # ---------------------------------------------------------
-  - name: "fedora-server-43-netinst-x86_64"
+  # =========================================================================
+  # Fedora Server {{ deevnet_fedora_current.release }} (current)
+  # All four entries derive from deevnet_fedora_current in group_vars/all.
+  # =========================================================================
+
+  # Installer ISO - netinst (small, pulls packages from the install tree)
+  - name: "fedora-server-{{ deevnet_fedora_current.release }}-netinst-x86_64"
     type: "fedora_iso"
-    iso_url: "https://download.fedoraproject.org/pub/fedora/linux/releases/43/Server/x86_64/iso/Fedora-Server-netinst-x86_64-43-1.6.iso"
-    checksum_url: "https://download.fedoraproject.org/pub/fedora/linux/releases/43/Server/x86_64/iso/Fedora-Server-43-1.6-x86_64-CHECKSUM"
+    iso_url: "{{ deevnet_fedora_mirror }}/{{ deevnet_fedora_current.release }}/Server/x86_64/iso/Fedora-Server-netinst-x86_64-{{ deevnet_fedora_current.release }}-{{ deevnet_fedora_current.build }}.iso"
+    checksum_url: "{{ deevnet_fedora_mirror }}/{{ deevnet_fedora_current.release }}/Server/x86_64/iso/Fedora-Server-{{ deevnet_fedora_current.release }}-{{ deevnet_fedora_current.build }}-x86_64-CHECKSUM"
     gpg_key_url: "https://fedoraproject.org/fedora.gpg"
-    dest_subdir: "fedora/43/iso"
-    dest_filename: "Fedora-Server-netinst-x86_64-43-1.6.iso"
+    dest_subdir: "fedora/{{ deevnet_fedora_current.release }}/iso"
+    dest_filename: "Fedora-Server-netinst-x86_64-{{ deevnet_fedora_current.release }}-{{ deevnet_fedora_current.build }}.iso"
+
+  # Installer ISO - full DVD (self-contained; consumed by the Packer Proxmox build)
+  # Same CHECKSUM file as netinst; sha256sum --ignore-missing tolerates the other name.
+  - name: "fedora-server-{{ deevnet_fedora_current.release }}-dvd-x86_64"
+    type: "fedora_iso"
+    iso_url: "{{ deevnet_fedora_mirror }}/{{ deevnet_fedora_current.release }}/Server/x86_64/iso/Fedora-Server-dvd-x86_64-{{ deevnet_fedora_current.release }}-{{ deevnet_fedora_current.build }}.iso"
+    checksum_url: "{{ deevnet_fedora_mirror }}/{{ deevnet_fedora_current.release }}/Server/x86_64/iso/Fedora-Server-{{ deevnet_fedora_current.release }}-{{ deevnet_fedora_current.build }}-x86_64-CHECKSUM"
+    gpg_key_url: "https://fedoraproject.org/fedora.gpg"
+    dest_subdir: "fedora/{{ deevnet_fedora_current.release }}/iso"
+    dest_filename: "Fedora-Server-dvd-x86_64-{{ deevnet_fedora_current.release }}-{{ deevnet_fedora_current.build }}.iso"
+
+  # Netboot kernel + initrd (staged to TFTP root; this is what PXE actually boots)
+  - name: "fedora-server-{{ deevnet_fedora_current.release }}-netboot-x86_64"
+    type: "netboot_tftp"
+    base_url: "{{ deevnet_fedora_mirror }}/{{ deevnet_fedora_current.release }}/Server/x86_64/os/images/pxeboot"
+    dest_subdir: "netboot/fedora/{{ deevnet_fedora_current.release }}"
+    tftp_dest_subdir: "fedora/{{ deevnet_fedora_current.release }}"
+
+  # Install tree (what Anaconda pulls packages from via inst.repo)
+  - name: "fedora-server-{{ deevnet_fedora_current.release }}-install-tree"
+    type: "fedora_install_tree"
+    rsync_mirrors: "{{ deevnet_fedora_rsync_mirrors }}"
+    rsync_path: "releases/{{ deevnet_fedora_current.release }}/Server/x86_64/os/"
+    dest_subdir: "fedora/{{ deevnet_fedora_current.release }}/mirror"
+
+  # =========================================================================
+  # Fedora Server {{ deevnet_fedora_previous.release }} (previous - kept as fallback)
+  # =========================================================================
+
+  - name: "fedora-server-{{ deevnet_fedora_previous.release }}-netinst-x86_64"
+    type: "fedora_iso"
+    iso_url: "{{ deevnet_fedora_mirror }}/{{ deevnet_fedora_previous.release }}/Server/x86_64/iso/Fedora-Server-netinst-x86_64-{{ deevnet_fedora_previous.release }}-{{ deevnet_fedora_previous.build }}.iso"
+    checksum_url: "{{ deevnet_fedora_mirror }}/{{ deevnet_fedora_previous.release }}/Server/x86_64/iso/Fedora-Server-{{ deevnet_fedora_previous.release }}-{{ deevnet_fedora_previous.build }}-x86_64-CHECKSUM"
+    gpg_key_url: "https://fedoraproject.org/fedora.gpg"
+    dest_subdir: "fedora/{{ deevnet_fedora_previous.release }}/iso"
+    dest_filename: "Fedora-Server-netinst-x86_64-{{ deevnet_fedora_previous.release }}-{{ deevnet_fedora_previous.build }}.iso"
+
+  - name: "fedora-server-{{ deevnet_fedora_previous.release }}-netboot-x86_64"
+    type: "netboot_tftp"
+    base_url: "{{ deevnet_fedora_mirror }}/{{ deevnet_fedora_previous.release }}/Server/x86_64/os/images/pxeboot"
+    dest_subdir: "netboot/fedora/{{ deevnet_fedora_previous.release }}"
+    tftp_dest_subdir: "fedora/{{ deevnet_fedora_previous.release }}"
+
+  - name: "fedora-server-{{ deevnet_fedora_previous.release }}-install-tree"
+    type: "fedora_install_tree"
+    rsync_mirrors: "{{ deevnet_fedora_rsync_mirrors }}"
+    rsync_path: "releases/{{ deevnet_fedora_previous.release }}/Server/x86_64/os/"
+    dest_subdir: "fedora/{{ deevnet_fedora_previous.release }}/mirror"
+
+  # =========================================================================
+  # Other platforms
+  # =========================================================================
 
   # ---------------------------------------------------------
   # Proxmox VE 8.4-1 (bare metal installer, Debian 12 Bookworm based)
@@ -73,29 +128,6 @@ artifacts_to_fetch:
     sha256: "e6a69b5a5a8cd4afc0e9dbdc8404f6fed7c93e0d1796f438e7c780e0eac2d482"
     dest_subdir: "pi-images/2025-11-24"
     dest_filename: "2025-11-24-raspios-bookworm-arm64-lite.img.xz"
-
-  # ---------------------------------------------------------
-  # Fedora 43 Server Netboot (vmlinuz + initrd.img for PXE)
-  # Downloads to HTTP root and stages to TFTP root
-  # ---------------------------------------------------------
-  - name: "fedora-server-43-netboot-x86_64"
-    type: "netboot_tftp"
-    base_url: "https://download.fedoraproject.org/pub/fedora/linux/releases/43/Server/x86_64/os/images/pxeboot"
-    dest_subdir: "netboot/fedora/43"
-    tftp_dest_subdir: "fedora/43"
-
-
-  # ---------------------------------------------------------
-  # Fedora 43 Server Install Tree (full mirror for inst.repo)
-  # ---------------------------------------------------------
-  - name: "Fedora 43 Server Install Tree"
-    type: "fedora_install_tree"
-    rsync_mirrors:
-      - "rsync://dl.fedoraproject.org/fedora-enchilada"
-      - "rsync://mirrors.kernel.org/fedora"
-      - "rsync://mirror.math.princeton.edu/pub/fedora"
-    rsync_path: "linux/releases/43/Server/x86_64/os/"
-    dest_subdir: "fedora/43/mirror"
 
   # ---------------------------------------------------------
   # VyOS Rolling Release (nightly build)

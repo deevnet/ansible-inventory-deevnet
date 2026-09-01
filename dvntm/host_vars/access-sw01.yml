@@ -29,6 +29,23 @@ switch_ports:
       description: "ap01 wifi trunk"
       native_vlan: 99
       allowed_vlans: [10, 30, 31, 40, 99]
+    # hv02 tenant hypervisor. Carries the tenant fabric's transit (50) and
+    # underlay (51) segments plus management. Per ADR-0001 a tenant is an
+    # overlay inside the fabric, so creating one never changes this line.
+    #
+    # native_vlan 99 (not the blackhole 999 the standard calls for) is a
+    # deliberate interim: it keeps hv02's mgmt untagged so vmbr0 needs no
+    # change and the node cannot be lost while the fabric is being built.
+    # Same shape as the ap01 trunk above. Moves to 999 with mgmt tagged once
+    # the fabric is proven - see the tenant fabric roadmap.
+    #
+    # 99 appears in allowed_vlans and as the native VLAN: the role emits the
+    # tagged members first, then the untagged native, so the untagged
+    # membership wins. This mirrors ap01, which works today.
+    - interface: "gigabitEthernet 1/0/13"
+      description: "hv02 tenant hypervisor"
+      native_vlan: 99
+      allowed_vlans: [50, 51, 99]
   access:
     # Management segment
     - interface: "gigabitEthernet 1/0/15"

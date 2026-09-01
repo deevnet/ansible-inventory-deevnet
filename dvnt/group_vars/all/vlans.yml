@@ -44,18 +44,25 @@ deevnet_vlans:
     dhcp_range_start: "10.10.40.50"
     dhcp_range_end: "10.10.40.250"
     wifi_ssid: "DVNT-GUEST"
-  tenant_1:
+  # --- Tenant fabric transport (ADR-0001 / ADR-0002) ---------------------------
+  # Tenants are NOT VLANs. A tenant is an EVPN/VXLAN overlay owned by the tenant
+  # hypervisor's own SDN fabric, with its own anycast gateway and IPAM. The
+  # substrate therefore carries exactly two tenant-related segments, and adding a
+  # tenant requires no change here and no switch change.
+  #
+  # Replaced tenant_1/2/3 (VLAN 50/51/52), the superseded Option A model in which
+  # each tenant was a core-router-owned VLAN.
+  tenant_transit:
     vlan_id: 50
     subnet: "10.10.50.0/24"
     gateway: "10.10.50.1"
-  tenant_2:
+    dhcp_enabled: false  # Static: fabric exit nodes only
+  tenant_underlay:
     vlan_id: 51
-    subnet: "10.10.51.0/24"
-    gateway: "10.10.51.1"
-  tenant_3:
-    vlan_id: 52
-    subnet: "10.10.52.0/24"
-    gateway: "10.10.52.1"
+    # Deliberately no subnet/gateway, like blackhole below. VTEP-to-VTEP
+    # transport between fabric members; fabric-side addressing (10.10.51.0/24)
+    # lives with the fabric, not in the substrate VLAN table.
+    dhcp_enabled: false
   management:
     vlan_id: 99
     subnet: "10.10.99.0/24"

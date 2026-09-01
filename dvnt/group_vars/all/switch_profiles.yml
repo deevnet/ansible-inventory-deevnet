@@ -7,6 +7,9 @@ deevnet_switch_profiles:
     mode: trunk
     native_vlan: blackhole
     allowed_vlans: all
+  # Hypervisor uplink. Under ADR-0001 a tenant hypervisor needs the tenant
+  # transit + underlay segments, NOT a VLAN per tenant - creating a tenant
+  # never changes this list.
   trunk_server:
     mode: trunk
     native_vlan: blackhole
@@ -15,9 +18,8 @@ deevnet_switch_profiles:
       - trusted
       - storage
       - platform
-      - tenant_1
-      - tenant_2
-      - tenant_3
+      - tenant_transit
+      - tenant_underlay
   trunk_ap:
     mode: trunk
     native_vlan: blackhole
