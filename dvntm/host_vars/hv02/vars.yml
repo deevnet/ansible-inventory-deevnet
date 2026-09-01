@@ -75,3 +75,17 @@ tenant_fabric:
   loopback: "10.20.255.2"
   asn: 65020
   underlay_interface: "vmbr0.{{ deevnet_vlans.tenant_underlay.vlan_id }}"
+
+# Tenant egress (ADR-0003). Two things Proxmox will not do for an exit node:
+# forward on the transit interface, and put a default route inside each tenant
+# VRF. Without the first, tenant return traffic is dropped on arrival; without
+# the second, tenant traffic falls through to the node's main routing table and
+# reaches the management VLAN on-link, unSNATed, without passing the perimeter.
+#
+# tenants lists the SDN zone IDs the fabric carries - the same names allocated
+# in the tenant factory's TENANTS.md. The role fails if one of them has no VRF
+# on the node, so the two cannot drift silently.
+proxmox_tenant_egress:
+  enabled: true
+  tenants:
+    - tdemo
