@@ -1,0 +1,32 @@
+---
+# Tenant registry for this site.
+#
+# One row per tenant, allocated in the tenant factory's TENANTS.md. `index` is
+# the single number of ADR-0002 from which every other identifier derives - VRF
+# VNI, VNet VNI, overlay subnet, and (ADR-0004) the reverse DNS zone.
+#
+# This list is the substrate's side of tenant onboarding. Two things consume it:
+#
+#   - proxmox_tenant_egress on the fabric exit node, giving each tenant VRF a
+#     way out (ADR-0003)
+#   - tenant DNS: zone creation and TSIG issue on the tenant_dns host, and the
+#     matching Unbound delegation on the core router (ADR-0004)
+#
+# Adding a tenant here is an onboarding act, done once. Everything that recurs -
+# records, rebuilds, destroys - is the tenant's own Terraform and never touches
+# this file.
+deevnet_tenants:
+  - name: tdemo
+    index: 1
+
+# Second octet of the site block: 20 = dvntm, 10 = dvnt (ADR-0002). Read from
+# the addressing plan rather than restated, so the two cannot disagree.
+deevnet_site_octet: "{{ deevnet_vlans.management.subnet.split('.')[1] }}"
+
+# Zone names are derived from the row, never listed. For tenant `t` index `n`:
+#
+#   forward   {{ t }}.{{ deevnet_substrate }}.{{ deevnet_root_domain }}
+#   reverse   {{ 128 + n }}.{{ deevnet_site_octet }}.10.in-addr.arpa
+#   subnet    10.{{ deevnet_site_octet }}.{{ 128 + n }}.0/24
+#
+# tdemo (n=1) -> tdemo.dvntm.deevnet.net / 129.20.10.in-addr.arpa / 10.20.129.0/24
