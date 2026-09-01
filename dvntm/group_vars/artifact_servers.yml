@@ -116,6 +116,30 @@ artifacts_to_fetch:
     dest_filename: "proxmox-ve_8.4-1.iso"
 
   # ---------------------------------------------------------
+  # Proxmox VE 9.2-1 (Debian 13 "trixie")
+  #
+  # Held for the hv01 uplift - hv01 is still on 8.4.1 while hv02 runs 9.2.11 -
+  # and so a hypervisor can be reinstalled with no internet.
+  #
+  # Two keys, deliberately. SHA256SUMS.asc is signed by BOTH the Trixie and the
+  # Bookworm release keys, and `gpg --verify` exits non-zero if it cannot check
+  # any signature present in the file. Importing only one key fails the artifact
+  # on a good signature. Verified: sha256 of proxmox-ve_9.2-1.iso in the signed
+  # SHA256SUMS is
+  # 4e88fe416df9b527624a175f24c9aa07c714d3332afb1ee3dbf3879573ef2c6c
+  # ---------------------------------------------------------
+  - name: "proxmox-ve-9.2-1"
+    type: "proxmox_iso"
+    iso_url: "https://enterprise.proxmox.com/iso/proxmox-ve_9.2-1.iso"
+    checksum_url: "https://enterprise.proxmox.com/iso/SHA256SUMS"
+    signature_url: "https://enterprise.proxmox.com/iso/SHA256SUMS.asc"
+    gpg_key_urls:
+      - "https://enterprise.proxmox.com/debian/proxmox-release-trixie.gpg"
+      - "https://enterprise.proxmox.com/debian/proxmox-release-bookworm.gpg"
+    dest_subdir: "isos/proxmox"
+    dest_filename: "proxmox-ve_9.2-1.iso"
+
+  # ---------------------------------------------------------
   # Pi OS Lite (Trixie, ARM64, 2025-11-24)
   # ---------------------------------------------------------
   - name: "raspios-trixie-arm64-lite-2025-11-24"
