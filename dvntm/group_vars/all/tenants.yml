@@ -19,9 +19,8 @@ deevnet_tenants:
   - name: tdemo
     index: 1
 
-# Second octet of the site block: 20 = dvntm, 10 = dvnt (ADR-0002). Read from
-# the addressing plan rather than restated, so the two cannot disagree.
-deevnet_site_octet: "{{ deevnet_vlans.management.subnet.split('.')[1] }}"
+# deevnet_site_octet moved to group_vars/all/main.yml. It is site identity, not
+# tenant data, and the MAC namespace derives from it too - see there.
 
 # Zone names are derived from the row, never listed. For tenant `t` index `n`:
 #

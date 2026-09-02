@@ -85,7 +85,9 @@ bootstrap_grub_timeout: 30
 # These create grub.cfg-XX-XX-XX-XX-XX-XX files for automated installs
 bootstrap_grub_mac_configs:
   - hostname: core-rt01
-    mac: "bc:24:11:2e:26:4e"
+    # Referenced, never restated: a second copy of a MAC is a second place
+    # for it to go stale, and the vm-identity audit fails if these disagree.
+    mac: "{{ hostvars['core-rt01'].infrastructure.interfaces.eth0.mac }}"
     image_name: "VyOS Rolling"
     dest_subdir: "vyos"
     boot_options: >-
@@ -99,7 +101,7 @@ bootstrap_grub_mac_configs:
   # {{ deevnet_fedora_current.release }} PXE install has been validated. To cut it
   # over, swap deevnet_fedora_previous -> deevnet_fedora_current on the four lines below.
   - hostname: provisioner-vm05
-    mac: "bc:24:11:f0:e4:68"
+    mac: "{{ hostvars['provisioner-vm05'].infrastructure.interfaces.eth0.mac }}"
     image_name: "Fedora {{ deevnet_fedora_previous.release }} Server"
     dest_subdir: "fedora/{{ deevnet_fedora_previous.release }}"
     boot_options: >-

@@ -17,10 +17,18 @@ infrastructure:
   form: vm
   interfaces:
     eth0:
-      # Deterministic MAC, generated outside Proxmox and stored here, per the
-      # management-hypervisor MAC policy. The DHCP reservation and the A record
+      # Derived from the VMID, not invented - see identity.yml beside this file
+      # and docs/standards/mac-naming. The DHCP reservation and the A record
       # both key off this value, so a rebuilt VM keeps its identity.
-      mac: "bc:24:11:a3:5c:1d"
+      #
+      # Held here rather than inherited from a group because Ansible does not
+      # hash-merge: a group-level `infrastructure` dict would be replaced whole
+      # by this one, and opnsense_dhcp would silently stop writing a
+      # reservation - gather_hosts.yml skips a host whose interface is missing
+      # from `infrastructure`, without raising anything.
+      #
+      # Defaulted so this file still parses before the identity is allocated.
+      mac: "{{ deevnet_assigned_mac | default('') }}"
 
 env:
   role: tenant-mgmt
@@ -44,10 +52,15 @@ env:
 mgmt_vm:
   hypervisor: hv01
   node: pve
-  # Declared, not discovered - the VM keeps this ID across rebuilds so the
+  # Allocated once by deevnet.mgmt playbooks/vm-identity.yml and held in
+  # identity.yml beside this file. The VM keeps this ID across rebuilds so the
   # hypervisor's own view of it is stable. Unrelated to the template's ID,
   # which Proxmox reassigns on every image-factory rebuild.
-  vmid: 200
+  #
+  # This is also the source of the MAC, and so of the DHCP reservation and the
+  # address. Changing it is a renumbering, not a resize. 0 means "not yet
+  # allocated" and is what the allocator looks for.
+  vmid: "{{ deevnet_assigned_vmid | default(0) }}"
   template_prefix: "fedora-server-"
   storage: local-lvm-big-thin
   cores: 2
