@@ -36,6 +36,29 @@ deevnet_autoprov_ssh_key: >-
 # Deterministic FQDN helper
 deevnet_fqdn: "{{ inventory_hostname }}.{{ deevnet_substrate }}.{{ deevnet_root_domain }}"
 
+# --- Site identity ------------------------------------------------------------
+# Second octet of the site block: 20 = dvntm, 10 = dvnt (ADR-0002). Read from
+# the addressing plan rather than restated, so the two cannot disagree.
+deevnet_site_octet: "{{ deevnet_vlans.management.subnet.split('.')[1] }}"
+
+# MAC namespace for addresses we ASSIGN, per docs/standards/mac-naming.
+# 02 = locally administered, de = Deevnet, third octet = the site octet above,
+# so the namespace follows the environment with no second place to edit.
+#
+# This governs MACs we assign to NICs we create. MACs we OBSERVE - bare-metal
+# NICs, and the pre-existing Proxmox guests still carrying bc:24:11: addresses -
+# are recorded as found and are never rewritten. Both live at
+# infrastructure.interfaces.<iface>.mac and are authoritative in git.
+deevnet_mac_namespace: "02:de:{{ deevnet_site_octet }}"
+
+# VMID range the allocator draws management-plane identities from. The VMID is
+# the sole source of the MAC, so this is also the MAC range. The hypervisors are
+# not clustered, so uniqueness across the substrate is enforced by the allocator
+# (deevnet.mgmt playbooks/vm-identity.yml), not by Proxmox.
+deevnet_mgmt_vmid_range:
+  start: 200
+  end: 299
+
 # Fedora Server releases tracked by this substrate
 # ------------------------------------------------------------------------------
 # Bumping a release: move `current` -> `previous`, then set the new `current`.
