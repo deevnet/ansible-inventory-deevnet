@@ -96,18 +96,25 @@ bootstrap_grub_mac_configs:
       fetch={{ bootstrap_artifact_server }}/netboot/vyos/filesystem.squashfs
       ds=nocloud-net;s={{ bootstrap_artifact_server }}/cloud-init/vyos-core-rt01/
 
-  # NOTE: pinned to the PREVIOUS release on purpose. This host auto-installs with
-  # no menu, so it stays on a known-good release until a manual Fedora
-  # {{ deevnet_fedora_current.release }} PXE install has been validated. To cut it
-  # over, swap deevnet_fedora_previous -> deevnet_fedora_current on the four lines below.
-  - hostname: provisioner-vm05
-    mac: "{{ hostvars['provisioner-vm05'].infrastructure.interfaces.eth0.mac }}"
-    image_name: "Fedora {{ deevnet_fedora_previous.release }} Server"
-    dest_subdir: "fedora/{{ deevnet_fedora_previous.release }}"
+  # Cut over to deevnet_fedora_current. The entry this replaces was
+  # provisioner-vm05 pinned to the PREVIOUS release, held there deliberately
+  # because it auto-installs with no menu and nothing had yet proved a Fedora
+  # {{ deevnet_fedora_current.release }} PXE install end to end. That validation is
+  # this host's job: it is a lean builder whose only purpose is to keep the netboot
+  # path honest, so it is the right place to carry the current release rather than
+  # the safe one. If it fails to install, the menu entries still offer
+  # {{ deevnet_fedora_previous.release }} interactively and nothing else is affected.
+  #
+  # Referenced, never restated: a second copy of the MAC is a second place for it to
+  # go stale, and the vm-identity audit fails if these disagree.
+  - hostname: provisioner-vm03
+    mac: "{{ hostvars['provisioner-vm03'].infrastructure.interfaces.eth0.mac }}"
+    image_name: "Fedora {{ deevnet_fedora_current.release }} Server"
+    dest_subdir: "fedora/{{ deevnet_fedora_current.release }}"
     boot_options: >-
-      inst.repo={{ bootstrap_artifact_server }}/fedora/{{ deevnet_fedora_previous.release }}/mirror
-      inst.stage2={{ bootstrap_artifact_server }}/fedora/{{ deevnet_fedora_previous.release }}/mirror
-      inst.ks={{ bootstrap_artifact_server }}/kickstart/builder-node-{{ deevnet_fedora_previous.release }}.ks
+      inst.repo={{ bootstrap_artifact_server }}/fedora/{{ deevnet_fedora_current.release }}/mirror
+      inst.stage2={{ bootstrap_artifact_server }}/fedora/{{ deevnet_fedora_current.release }}/mirror
+      inst.ks={{ bootstrap_artifact_server }}/kickstart/builder-node-{{ deevnet_fedora_current.release }}.ks
 
 # DNS Configuration
 # ------------------------------------------------------------------------------
