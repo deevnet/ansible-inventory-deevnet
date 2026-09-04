@@ -1,0 +1,56 @@
+---
+# Third provisioner: a lean builder node, installed by PXE rather than cloned.
+#
+# It exists to keep the netboot path exercised and to prove the Fedora
+# `deevnet_fedora_current` install tree end to end - the cutover that
+# group_vars/bootstrap_nodes.yml deliberately held back until a manual F44 PXE
+# install had been validated. Its counterpart provisioner-vm02 is the same tier
+# built by template clone.
+
+infrastructure:
+  form: vm
+  interfaces:
+    eth0:
+      # Same rule as every other VM NIC we create: derived from the VMID, never
+      # invented (docs/standards/mac-naming). The install method has nothing to
+      # do with it - identity is allocated the same way whether anaconda or a
+      # template clone puts the OS on the disk.
+      #
+      # The MAC-pinned GRUB config in group_vars/bootstrap_nodes.yml references
+      # this value through hostvars rather than restating it, so the boot file
+      # and the reservation cannot drift apart.
+      mac: "{{ deevnet_assigned_mac | default('') }}"
+
+env:
+  role: provisioner
+  interfaces:
+    eth0:
+      ip: 10.20.99.96
+      gateway: 10.20.99.1
+      prefix: 24
+      dns_servers: "10.20.99.1"
+      dns_search: "dvntm.deevnet.net deevnet.net"
+      purpose: mgmt
+      segment: management
+      dns:
+        host_a_record: true
+        dhcp_reservation: true
+        cnames: []
+        pxe_boot:
+          tftp_server: "10.20.99.95"
+          # grubx64.efi, not pxelinux.0: bootstrap_uefi_bootloader is "grub" and
+          # this guest boots OVMF, so the firmware fetches a UEFI binary. The
+          # kickstart declares `part /boot/efi --fstype=efi` and carries no
+          # biosboot partition, so a legacy install cannot complete at all.
+          #
+          # PXE-TROUBLESHOOTING.md records that per-host Kea reservations
+          # OVERRIDE the subnet-level boot file - so this value, not the subnet
+          # default, is what this host will actually be told to fetch.
+          boot_file: "grubx64.efi"
+
+# Identity only. This host is PXE-installed, never cloned, so it has no
+# hypervisor/node/template and site.yml skips proxmox_vm for it. It is in
+# `management_plane` because that is the group the VMID allocator scans, and a
+# PXE-built VM needs a deterministic MAC exactly as much as a cloned one does.
+mgmt_vm:
+  vmid: "{{ deevnet_assigned_vmid | default(0) }}"
