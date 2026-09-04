@@ -33,6 +33,15 @@ artifacts_podman_images:
     dest_subdir: "container-images/pdns-auth"
     tar_filename: "pdns-auth-4.9.17.tar"
     latest_symlink: "pdns-auth-latest.tar"
+  # Tenant Terraform state store (ADR-0007). Offered, not mandated: a tenant may
+  # decline it and keep local state. Pinned for the same reason as the resolver
+  # above - the thing that holds every tenant's state should not change under a
+  # rebuild.
+  - name: "minio"
+    upstream_image: "quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z"
+    dest_subdir: "container-images/minio"
+    tar_filename: "minio-RELEASE.2025-09-07T16-13-09Z.tar"
+    latest_symlink: "minio-latest.tar"
 
 # Artifacts that admin hosts (artifact servers) should host under nginx_artifacts_root
 artifacts_to_fetch:
