@@ -1,0 +1,44 @@
+---
+# Tenant Terraform state store (ADR-0007).
+#
+# Offered, not mandated. The substrate guarantees a state store exists; a tenant
+# may decline it and keep local state. That opt-out is what makes the hard
+# dependency acceptable - it is a dependency the tenant chooses.
+#
+# Deliberately NOT co-located with tenant-mgmt-vm01, which runs PowerDNS. The
+# two have different failure consequences: DNS down means tenant names stop
+# resolving, state store down means tenants cannot change anything at all.
+# ADR-0004 already named that host's blast radius as its weakest point; this
+# does not add to it.
+
+infrastructure:
+  form: vm
+  interfaces:
+    eth0:
+      # Derived from the VMID by the allocator - see standards/mac-naming.
+      mac: "{{ deevnet_assigned_mac | default('') }}"
+
+env:
+  role: tenant-state
+  interfaces:
+    eth0:
+      ip: 10.20.99.31
+      purpose: mgmt
+      segment: management
+      dns:
+        host_a_record: true
+        dhcp_reservation: true
+        cnames:
+          # What tenants put in their backend block, so the service can move
+          # hosts without every tenant repo being edited.
+          - tfstate
+
+mgmt_vm:
+  hypervisor: hv01
+  node: pve
+  vmid: "{{ deevnet_assigned_vmid | default(0) }}"
+  template_prefix: "fedora-server-"
+  storage: local-lvm-big-thin
+  cores: 2
+  memory: 2048
+  disk_size: 32
