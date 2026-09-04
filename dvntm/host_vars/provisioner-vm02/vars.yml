@@ -1,0 +1,75 @@
+---
+# Second provisioner: a full peer of provisioner-ph01 - builder, artifact server
+# and PXE/TFTP host - built by cloning the image-factory template
+# (deevnet.mgmt roles/proxmox_vm). Its counterpart provisioner-vm03 is the same
+# tier built the other way, by PXE, so both paths stay exercised.
+
+infrastructure:
+  form: vm
+  interfaces:
+    eth0:
+      # Derived from the VMID, not invented - see identity.yml beside this file
+      # and docs/standards/mac-naming. This NIC is one we create, so it is an
+      # "Assigned" MAC and must come out of the 02:de:20 namespace; the
+      # bc:24:11: address this host used to declare was a Proxmox-generated one
+      # that only ever applied to a guest that no longer exists.
+      #
+      # Held here rather than in a group because Ansible does not hash-merge: a
+      # group-level `infrastructure` dict would be replaced whole by this one and
+      # opnsense_dhcp would silently stop writing a reservation.
+      mac: "{{ deevnet_assigned_mac | default('') }}"
+
+env:
+  role: provisioner
+  interfaces:
+    eth0:
+      ip: 10.20.99.97
+      # gateway/prefix/dns are required because this host is in `builder`, so the
+      # base role configures the interface statically. The Kea reservation below
+      # pins the same address for the DHCP lease the guest takes on first boot,
+      # before base has ever run - the two agree by construction, both deriving
+      # from this one declaration.
+      gateway: 10.20.99.1
+      prefix: 24
+      dns_servers: "10.20.99.1"
+      dns_search: "dvntm.deevnet.net deevnet.net"
+      purpose: mgmt
+      segment: management
+      dns:
+        host_a_record: true
+        dhcp_reservation: true
+        # Deliberately empty. `artifacts` and `pxe` stay pointed at
+        # provisioner-ph01 until this host's mirror is populated and verified -
+        # moving a service CNAME is how you cut over, and it is a separate,
+        # reversible decision from building the host.
+        cnames: []
+
+# Cloned by deevnet.mgmt roles/proxmox_vm on hv01. The template is matched by
+# name prefix, never by VMID: Proxmox assigns the next free ID on every
+# image-factory rebuild, so a pinned ID goes stale silently.
+mgmt_vm:
+  hypervisor: hv01
+  node: pve
+  # Allocated once by deevnet.mgmt playbooks/vm-identity.yml and held in
+  # identity.yml beside this file. 0 means "not yet allocated" and is what the
+  # allocator looks for. Changing it is a renumbering, not a resize.
+  vmid: "{{ deevnet_assigned_vmid | default(0) }}"
+  template_prefix: "fedora-server-"
+  storage: local-lvm-big-thin
+  cores: 2
+  memory: 4096
+  # Grown from the template's 32G before first boot; cloud-init's growpart extends
+  # the root filesystem to match. This host runs `workstation` (terraform, packer,
+  # libvirt) on top of `base`, and packer's own cache holds multi-GB ISOs - 32G of
+  # root is tight for that. Bulk storage is NOT this: the artifact mirror lives on
+  # the data disk below.
+  os_disk_size: 64
+  # The artifact mirror does not belong on the OS disk: that disk is replaced
+  # whenever the image is rebuilt (architecture/substrate/storage.md), and 21 GB
+  # of mirrors today - the docs budget 100-200 GB per Fedora release for a full
+  # dnf mirror - would not fit on the template's 32 G anyway.
+  data_disk:
+    device: scsi1
+    size: 250
+    storage: local-lvm-big-thin
+    mount: /srv
