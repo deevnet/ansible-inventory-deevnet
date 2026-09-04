@@ -1,7 +1,12 @@
 #!/usr/bin/env bash
 # Prevent committing unencrypted vault files
+#
+# --diff-filter=ACM restricts this to paths that still exist in the index:
+# added, copied, modified. Without it a deletion is listed too, `git show ":$f"`
+# fails on the missing path, and the hook rejects a commit that removes a vault
+# file - which is exactly what retiring an inventory directory has to do.
 FAIL=0
-for f in $(git diff --cached --name-only | grep 'vault\.yml$'); do
+for f in $(git diff --cached --name-only --diff-filter=ACM | grep 'vault\.yml$'); do
     if ! git show ":$f" | head -1 | grep -q '^\$ANSIBLE_VAULT'; then
         echo "ERROR: $f is not encrypted. Run 'make vault' before committing."
         FAIL=1
