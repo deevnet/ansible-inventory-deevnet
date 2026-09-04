@@ -1,7 +1,0 @@
-# TP-Link Omada switch connection settings
-ansible_user: "{{ vault_switch_user }}"
-ansible_password: "{{ vault_switch_password }}"
-ansible_connection: ansible.netcommon.network_cli
-ansible_network_os: deevnet.net.tplink_os
-ansible_become: true
-ansible_become_method: enable
