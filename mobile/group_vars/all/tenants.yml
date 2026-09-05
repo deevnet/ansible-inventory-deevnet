@@ -15,9 +15,7 @@
 # Adding a tenant here is an onboarding act, done once. Everything that recurs -
 # records, rebuilds, destroys - is the tenant's own Terraform and never touches
 # this file.
-deevnet_tenants:
-  - name: tdemo
-    index: 1
+deevnet_tenants: []
 
 # The fabric attachment the substrate ISSUES to a tenant at onboarding, beside
 # its TSIG key (ADR-0004) and its egress (ADR-0003). A tenant needs these two
