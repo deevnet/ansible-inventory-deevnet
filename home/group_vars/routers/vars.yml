@@ -1,0 +1,13 @@
+# OPNsense connection and zone settings for the home site.
+#
+# dns_domain has no role default any more: a site literal there meant a site
+# without an override published silently into the other site's zone. It is
+# asserted, so this file is required before the home site can serve DNS.
+opnsense_api_url: "https://{{ ansible_host }}/api"
+opnsense_validate_certs: false
+
+dns_domain: "home.deevnet.net"
+
+# The physical LAN interface VLAN sub-interfaces are built on. Set when the
+# home router exists; the mobile site uses re0.
+# opnsense_vlan_parent: "re0"
