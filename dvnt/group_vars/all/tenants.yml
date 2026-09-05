@@ -1,0 +1,53 @@
+---
+# Tenant registry for this site.
+#
+# One row per tenant, allocated in the tenant factory's TENANTS.md. `index` is
+# the single number of ADR-0002 from which every other identifier derives - VRF
+# VNI, VNet VNI, overlay subnet, and (ADR-0004) the reverse DNS zone.
+#
+# This list is the substrate's side of tenant onboarding. Two things consume it:
+#
+#   - proxmox_tenant_egress on the fabric exit node, giving each tenant VRF a
+#     way out (ADR-0003)
+#   - tenant DNS: zone creation and TSIG issue on the tenant_dns host, and the
+#     matching Unbound delegation on the core router (ADR-0004)
+#
+# Adding a tenant here is an onboarding act, done once. Everything that recurs -
+# records, rebuilds, destroys - is the tenant's own Terraform and never touches
+# this file.
+#
+# Empty, and declared rather than omitted: consumers iterate this list without
+# guarding for it, so an absent variable is an error where an empty one is a
+# site with no tenants yet.
+deevnet_tenants: []
+
+# deevnet_tenant_fabric is deliberately absent. On a site with a fabric it names
+# the real SDN controller and Proxmox node the substrate hands to a tenant at
+# onboarding. dvnt has no hypervisor trunked to tenant_transit/tenant_underlay
+# yet, so there is nothing to name; placeholder values here would be indexed as
+# fact by anything that reads this file. It appears in the same change that
+# brings up the first fabric member.
+
+# deevnet_site_octet lives in group_vars/all/main.yml. It is site identity, not
+# tenant data, and the MAC namespace derives from it too - see there.
+
+# Zone names are derived from the row, never listed. For tenant `t` index `n`:
+#
+#   forward   {{ t }}.{{ deevnet_substrate }}.{{ deevnet_root_domain }}
+#   reverse   {{ 128 + n }}.{{ deevnet_site_octet }}.10.in-addr.arpa
+#   subnet    10.{{ deevnet_site_octet }}.{{ 128 + n }}.0/24
+#
+# The formulas are octet-agnostic and resolve for dvnt through
+# deevnet_site_octet. The per-site constants are not, and dvnt's differ from
+# dvntm's so identifiers stay distinct across sites as well as across fabric
+# members (ADR-0002). Recorded here because they are otherwise only findable by
+# reading the ADR:
+#
+#   VRF VXLAN     11000 + n            (dvntm uses 10000 + n)
+#   VNet VNI      21000 + n*10 + i     (dvntm uses 20000 + n*10 + i)
+#   BGP ASN       65010                (dvntm uses 65020)
+#   Overlay       10.10.{128+n}.0/24   n = 1-63, from 10.10.128.0/18
+#   Loopbacks     10.10.255.0/24       VTEP identity
+#
+# A tenant at index n=1 here would be 10.10.129.0/24 / 129.10.10.in-addr.arpa,
+# independent of dvntm's tdemo at the same index.
