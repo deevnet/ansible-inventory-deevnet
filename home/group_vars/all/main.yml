@@ -1,5 +1,5 @@
 deevnet_root_domain: deevnet.net
-deevnet_substrate: dvnt
+deevnet_substrate: home
 
 # Derive ansible_host from env.interfaces.<if>.ip
 ansible_host: >-
@@ -31,7 +31,12 @@ ansible_host: >-
 deevnet_fqdn: "{{ inventory_hostname }}.{{ deevnet_substrate }}.{{ deevnet_root_domain }}"
 
 # --- Site identity ------------------------------------------------------------
-# Second octet of the site block: 20 = dvntm, 10 = dvnt (ADR-0002). Read from
+# Two-digit site code, the second field of every hostname (ADR-0008 s3.2):
+# dv{01}{rrr}{sss}{f}{gg}. Declared, not derived - deliberately independent of
+# the addressing plan below, so renumbering a site does not rename its hosts.
+deevnet_site_code: "01"
+
+# Second octet of the site block: 20 = mobile, 10 = home (ADR-0002). Read from
 # the addressing plan rather than restated, so the two cannot disagree.
 deevnet_site_octet: "{{ deevnet_vlans.management.subnet.split('.')[1] }}"
 
