@@ -55,6 +55,11 @@ deevnet_mac_namespace: "02:de:{{ deevnet_site_octet }}"
 # the sole source of the MAC, so this is also the MAC range. The hypervisors are
 # not clustered, so uniqueness across the substrate is enforced by the allocator
 # (deevnet.mgmt playbooks/vm-identity.yml), not by Proxmox.
+#
+# Ranges do not overlap between sites: home 100-199, mobile 200-299. The MAC
+# namespace already differs by site octet, so this is not what keeps MACs apart
+# - it makes the VMID itself unique estate-wide, so a VM restored onto the wrong
+# site cannot land on an occupied identity.
 deevnet_mgmt_vmid_range:
   start: 200
   end: 299
