@@ -4,7 +4,7 @@
 # It exists to keep the netboot path exercised and to prove the Fedora
 # `deevnet_fedora_current` install tree end to end - the cutover that
 # group_vars/bootstrap_nodes.yml deliberately held back until a manual F44 PXE
-# install had been validated. Its counterpart provisioner-vm02 is the same tier
+# install had been validated. Its counterpart dv02bld001v01 is the same tier
 # built by template clone.
 
 infrastructure:

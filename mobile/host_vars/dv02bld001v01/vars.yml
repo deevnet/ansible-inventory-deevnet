@@ -1,7 +1,7 @@
 ---
-# Second provisioner: a full peer of provisioner-ph01 - builder, artifact server
+# Second provisioner: a full peer of dv00bld001p01 - builder, artifact server
 # and PXE/TFTP host - built by cloning the image-factory template
-# (deevnet.mgmt roles/proxmox_vm). Its counterpart provisioner-vm03 is the same
+# (deevnet.mgmt roles/proxmox_vm). Its counterpart dv02bld002v01 is the same
 # tier built the other way, by PXE, so both paths stay exercised.
 
 infrastructure:
@@ -39,16 +39,16 @@ env:
         host_a_record: true
         dhcp_reservation: true
         # Deliberately empty. `artifacts` and `pxe` stay pointed at
-        # provisioner-ph01 until this host's mirror is populated and verified -
+        # dv00bld001p01 until this host's mirror is populated and verified -
         # moving a service CNAME is how you cut over, and it is a separate,
         # reversible decision from building the host.
         cnames: []
 
-# Cloned by deevnet.mgmt roles/proxmox_vm on hv01. The template is matched by
+# Cloned by deevnet.mgmt roles/proxmox_vm on dv02hyp001p01. The template is matched by
 # name prefix, never by VMID: Proxmox assigns the next free ID on every
 # image-factory rebuild, so a pinned ID goes stale silently.
 mgmt_vm:
-  hypervisor: hv01
+  hypervisor: dv02hyp001p01
   node: pve
   # Allocated once by deevnet.mgmt playbooks/vm-identity.yml and held in
   # identity.yml beside this file. 0 means "not yet allocated" and is what the

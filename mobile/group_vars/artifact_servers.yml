@@ -127,7 +127,7 @@ artifacts_to_fetch:
   # ---------------------------------------------------------
   # Proxmox VE 9.2-1 (Debian 13 "trixie")
   #
-  # Held for the hv01 uplift - hv01 is still on 8.4.1 while hv02 runs 9.2.11 -
+  # Held for the dv02hyp001p01 uplift - dv02hyp001p01 is still on 8.4.1 while dv02hyp002p02 runs 9.2.11 -
   # and so a hypervisor can be reinstalled with no internet.
   #
   # Two keys, deliberately. SHA256SUMS.asc is signed by BOTH the Trixie and the
