@@ -26,7 +26,7 @@ deevnet_tenants: []
 # This is not a tenant hardcoding substrate internals: the substrate hands them
 # over, in the same one-time act that hands over the key and the route. A tenant
 # never invents them. `make fabric-contract` in the tenant factory diffs these
-# against `terraform -chdir=fabric/dvntm-hv02 output -json`, which stays the
+# against `terraform -chdir=fabric/dvntm-dv02hyp002p02 output -json`, which stays the
 # source of truth.
 #
 # Single-member fabric today (ADR-0001 Phase 1), so `node` is a site constant.

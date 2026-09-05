@@ -22,42 +22,42 @@ env:
 switch_ports:
   trunk:
     - interface: "gigabitEthernet 1/0/1"
-      description: "uplink to core-rt02"
+      description: "uplink to dv02cor002p01"
       native_vlan: 999
       # allowed_vlans defaults to all VLANs from deevnet_vlans
     - interface: "gigabitEthernet 1/0/4"
-      description: "ap01 wifi trunk"
+      description: "dv02wap001p01 wifi trunk"
       native_vlan: 99
       allowed_vlans: [10, 30, 31, 40, 99]
-    # hv02 tenant hypervisor. Carries the tenant fabric's transit (50) and
+    # dv02hyp002p02 tenant hypervisor. Carries the tenant fabric's transit (50) and
     # underlay (51) segments plus management. Per ADR-0001 a tenant is an
     # overlay inside the fabric, so creating one never changes this line.
     #
     # native_vlan 99 (not the blackhole 999 the standard calls for) is a
-    # deliberate interim: it keeps hv02's mgmt untagged so vmbr0 needs no
+    # deliberate interim: it keeps dv02hyp002p02's mgmt untagged so vmbr0 needs no
     # change and the node cannot be lost while the fabric is being built.
-    # Same shape as the ap01 trunk above. Moves to 999 with mgmt tagged once
+    # Same shape as the dv02wap001p01 trunk above. Moves to 999 with mgmt tagged once
     # the fabric is proven - see the tenant fabric roadmap.
     #
     # 99 appears in allowed_vlans and as the native VLAN: the role emits the
     # tagged members first, then the untagged native, so the untagged
-    # membership wins. This mirrors ap01, which works today.
+    # membership wins. This mirrors dv02wap001p01, which works today.
     - interface: "gigabitEthernet 1/0/13"
-      description: "hv02 tenant hypervisor"
+      description: "dv02hyp002p02 tenant hypervisor"
       native_vlan: 99
       allowed_vlans: [50, 51, 99]
   access:
     # Management segment
     - interface: "gigabitEthernet 1/0/15"
       vlan_id: 99
-      description: "hv01 mgmt"
+      description: "dv02hyp001p01 mgmt"
     - interface: "gigabitEthernet 1/0/16"
       vlan_id: 99
-      description: "provisioner-ph01 mgmt"
+      description: "dv00bld001p01 mgmt"
     # IoT segment
     - interface: "gigabitEthernet 1/0/3"
       vlan_id: 30
-      description: "pi02 iot"
+      description: "dv02rpi002p01 iot"
     - interface: "gigabitEthernet 1/0/14"
       vlan_id: 30
-      description: "pi01 iot"
+      description: "dv02rpi001p01 iot"

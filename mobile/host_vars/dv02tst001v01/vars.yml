@@ -5,7 +5,7 @@
 # may decline it and keep local state. That opt-out is what makes the hard
 # dependency acceptable - it is a dependency the tenant chooses.
 #
-# Deliberately NOT co-located with tenant-mgmt-vm01, which runs PowerDNS. The
+# Deliberately NOT co-located with dv02tdn001v01, which runs PowerDNS. The
 # two have different failure consequences: DNS down means tenant names stop
 # resolving, state store down means tenants cannot change anything at all.
 # ADR-0004 already named that host's blast radius as its weakest point; this
@@ -34,7 +34,7 @@ env:
           - tfstate
 
 mgmt_vm:
-  hypervisor: hv01
+  hypervisor: dv02hyp001p01
   node: pve
   vmid: "{{ deevnet_assigned_vmid | default(0) }}"
   template_prefix: "fedora-server-"

@@ -26,7 +26,7 @@ proxmox_token_secret: "{{ vault_proxmox_token_secret }}"
 # purpose: ansible_host, the DNS A record and the DHCP reservation are all
 # derived from that structure, and none of them should follow these.
 #
-# hv02 has a single NIC, so management, the tenant transit segment and the
+# dv02hyp002p02 has a single NIC, so management, the tenant transit segment and the
 # fabric underlay all ride eno2 as VLAN sub-interfaces of a VLAN-aware vmbr0.
 proxmox_node_network:
   bridge:
@@ -45,7 +45,7 @@ proxmox_node_network:
   vlans:
     - interface: "vmbr0.{{ deevnet_vlans.tenant_transit.vlan_id }}"
       cidr: "10.20.50.22/24"
-      # hv02's default route. Tenant egress leaves here, SNATed by the fabric
+      # dv02hyp002p02's default route. Tenant egress leaves here, SNATed by the fabric
       # exit node, so the core router only ever sees this address.
       gateway: "{{ deevnet_vlans.tenant_transit.gateway }}"
       comment: "tenant fabric transit to perimeter"
