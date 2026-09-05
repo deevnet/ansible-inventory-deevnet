@@ -35,7 +35,7 @@ env:
 
 mgmt_vm:
   hypervisor: dv02hyp001p01
-  node: pve
+  node: dv02hyp001p01
   vmid: "{{ deevnet_assigned_vmid | default(0) }}"
   template_prefix: "fedora-server-"
   storage: local-lvm-big-thin

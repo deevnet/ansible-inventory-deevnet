@@ -20,6 +20,6 @@ env:
 # The PVE node name on this hypervisor. Declared rather than assumed: the
 # vm-identity allocator surveys every host in `hypervisors` for VMIDs in use,
 # and cannot infer a node name from another host's mgmt_vm block.
-proxmox_node: pve
+proxmox_node: dv02hyp001p01
 proxmox_token_id: "{{ vault_proxmox_token_id }}"
 proxmox_token_secret: "{{ vault_proxmox_token_secret }}"

@@ -17,7 +17,7 @@ env:
         cnames:
           - pve2
 
-proxmox_node: pve2
+proxmox_node: dv02hyp002p02
 proxmox_token_id: "{{ vault_proxmox_token_id }}"
 proxmox_token_secret: "{{ vault_proxmox_token_secret }}"
 

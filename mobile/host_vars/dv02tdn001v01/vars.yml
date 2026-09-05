@@ -51,7 +51,7 @@ env:
 # the next free ID on every image-factory rebuild, so a pinned ID goes stale.
 mgmt_vm:
   hypervisor: dv02hyp001p01
-  node: pve
+  node: dv02hyp001p01
   # Allocated once by deevnet.mgmt playbooks/vm-identity.yml and held in
   # identity.yml beside this file. The VM keeps this ID across rebuilds so the
   # hypervisor's own view of it is stable. Unrelated to the template's ID,
