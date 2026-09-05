@@ -1,4 +1,4 @@
-# Zone-based firewall policy matrix for dvnt substrate
+# Zone-based firewall policy matrix for home substrate
 # Derived from network-segmentation.md architecture.
 # Default policy: deny all inter-VLAN traffic.
 # Rules below define explicit allows.
@@ -6,8 +6,8 @@
 # Zones map 1:1 to deevnet_vlans keys. tenant_underlay has no zone on purpose -
 # it carries no routed traffic and the core router holds no address on it.
 #
-# Deliberately narrower than dvntm: there is no trusted -> management pass here.
-# That rule is a lab convenience on dvntm, carried for hands-on access to the
+# Deliberately narrower than mobile: there is no trusted -> management pass here.
+# That rule is a lab convenience on mobile, carried for hands-on access to the
 # management plane, and it is not a policy this site inherits.
 
 firewall_zone_policies:

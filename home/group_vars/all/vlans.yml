@@ -1,4 +1,4 @@
-# VLAN segment definitions for dvnt substrate
+# VLAN segment definitions for home substrate
 # Addressing convention: 10.10.{vlan_id}.0/24
 deevnet_vlans:
   trusted:

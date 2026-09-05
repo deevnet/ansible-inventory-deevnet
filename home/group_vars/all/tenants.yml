@@ -23,7 +23,7 @@ deevnet_tenants: []
 
 # deevnet_tenant_fabric is deliberately absent. On a site with a fabric it names
 # the real SDN controller and Proxmox node the substrate hands to a tenant at
-# onboarding. dvnt has no hypervisor trunked to tenant_transit/tenant_underlay
+# onboarding. home has no hypervisor trunked to tenant_transit/tenant_underlay
 # yet, so there is nothing to name; placeholder values here would be indexed as
 # fact by anything that reads this file. It appears in the same change that
 # brings up the first fabric member.
@@ -37,17 +37,17 @@ deevnet_tenants: []
 #   reverse   {{ 128 + n }}.{{ deevnet_site_octet }}.10.in-addr.arpa
 #   subnet    10.{{ deevnet_site_octet }}.{{ 128 + n }}.0/24
 #
-# The formulas are octet-agnostic and resolve for dvnt through
-# deevnet_site_octet. The per-site constants are not, and dvnt's differ from
-# dvntm's so identifiers stay distinct across sites as well as across fabric
+# The formulas are octet-agnostic and resolve for home through
+# deevnet_site_octet. The per-site constants are not, and home's differ from
+# mobile's so identifiers stay distinct across sites as well as across fabric
 # members (ADR-0002). Recorded here because they are otherwise only findable by
 # reading the ADR:
 #
-#   VRF VXLAN     11000 + n            (dvntm uses 10000 + n)
-#   VNet VNI      21000 + n*10 + i     (dvntm uses 20000 + n*10 + i)
-#   BGP ASN       65010                (dvntm uses 65020)
+#   VRF VXLAN     11000 + n            (mobile uses 10000 + n)
+#   VNet VNI      21000 + n*10 + i     (mobile uses 20000 + n*10 + i)
+#   BGP ASN       65010                (mobile uses 65020)
 #   Overlay       10.10.{128+n}.0/24   n = 1-63, from 10.10.128.0/18
 #   Loopbacks     10.10.255.0/24       VTEP identity
 #
 # A tenant at index n=1 here would be 10.10.129.0/24 / 129.10.10.in-addr.arpa,
-# independent of dvntm's tdemo at the same index.
+# independent of mobile's tdemo at the same index.
