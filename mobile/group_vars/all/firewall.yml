@@ -1,4 +1,4 @@
-# Zone-based firewall policy matrix for dvntm substrate
+# Zone-based firewall policy matrix for mobile substrate
 # Derived from network-segmentation.md architecture.
 # Default policy: deny all inter-VLAN traffic.
 # Rules below define explicit allows.

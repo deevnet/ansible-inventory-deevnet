@@ -1,4 +1,4 @@
-# VLAN segment definitions for dvntm substrate
+# VLAN segment definitions for mobile substrate
 # Addressing convention: 10.20.{vlan_id}.0/24
 deevnet_vlans:
   trusted:
