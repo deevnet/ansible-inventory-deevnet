@@ -171,16 +171,3 @@ artifacts_to_fetch:
     dest_subdir: "pi-images/2025-11-24"
     dest_filename: "2025-11-24-raspios-bookworm-arm64-lite.img.xz"
 
-  # ---------------------------------------------------------
-  # VyOS Rolling Release (nightly build)
-  # Update URL from: https://github.com/vyos/vyos-nightly-build/releases
-  # Downloads ISO and extracts kernel/initrd for PXE booting
-  # No sha256 - changes with each nightly build
-  # ---------------------------------------------------------
-  - name: "vyos-rolling"
-    type: "vyos_iso"
-    iso_url: "https://github.com/vyos/vyos-nightly-build/releases/download/2026.01.07-0020-rolling/vyos-2026.01.07-0020-rolling-generic-amd64.iso"
-    dest_subdir: "isos/vyos"
-    dest_filename: "vyos-rolling-latest.iso"
-    netboot_subdir: "netboot/vyos"
-    tftp_dest_subdir: "vyos"
