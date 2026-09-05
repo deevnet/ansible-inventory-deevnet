@@ -34,7 +34,7 @@ deevnet_tenants: []
 # into the per-tenant row above.
 deevnet_tenant_fabric:
   controller_id: evpn1
-  node: pve2
+  node: dv02hyp002p02
 
 # deevnet_site_octet moved to group_vars/all/main.yml. It is site identity, not
 # tenant data, and the MAC namespace derives from it too - see there.
