@@ -1,5 +1,8 @@
 # Artifacts root directory
-nginx_artifacts_root: /srv/dvntm-http
+# Site-agnostic on purpose. The artifact server runs on the roaming builder
+# (dv00 - no site), so naming its root after a site would be the same mistake
+# ADR-0008 exists to correct.
+nginx_artifacts_root: /srv/deevnet-http
 
 # TFTP Staging Configuration
 # Enable to copy netboot files to TFTP root (for hosts that are also bootstrap nodes)
