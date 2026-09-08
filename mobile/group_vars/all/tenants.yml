@@ -15,7 +15,19 @@
 # Adding a tenant here is an onboarding act, done once. Everything that recurs -
 # records, rebuilds, destroys - is the tenant's own Terraform and never touches
 # this file.
-deevnet_tenants: []
+deevnet_tenants:
+  # EdS - the intelligent music experience platform. Runs the palette extractor
+  # and lightd, which drive the LP jacket stand's RGB strip from cover art.
+  #
+  # The stand's MQTT broker is deliberately NOT in this tenant: MQTT clients
+  # always dial the broker, so its segment must accept inbound, and the tenant
+  # fabric has no inbound path by design. The broker is dv02mqt001v01 on IoT
+  # Backend, and lightd reaches out to it - see the tenant_transit ->
+  # iot_backend rule in firewall.yml.
+  #
+  # Index 1 was released when tdemo was destroyed on 2026-09-05.
+  - name: eds
+    index: 1
 
 # The fabric attachment the substrate ISSUES to a tenant at onboarding, beside
 # its TSIG key (ADR-0004) and its egress (ADR-0003). A tenant needs these two

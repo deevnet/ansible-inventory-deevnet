@@ -32,6 +32,23 @@ firewall_zone_policies:
   # VRF per tenant), not by a rule here.
   - { from_zone: tenant_transit, to_zone: platform, action: pass }
 
+  # Tenant fabric -> IoT Backend, so a tenant workload can publish to the MQTT
+  # broker. Added for EdS: lightd runs in the eds tenant and drives the LP
+  # jacket stand, which subscribes from the IoT segment.
+  #
+  # The direction matters and is the reason the broker is NOT a tenant VM. MQTT
+  # clients always dial the broker, so whichever segment holds it must accept
+  # inbound - and the tenant fabric has no inbound path by design (ADR-0001's
+  # perimeter never learns tenant address space; ADR-0003 built egress only).
+  # IoT Backend is already the segment defined to accept inbound MQTT from IoT,
+  # so the broker lives there and the tenant reaches OUT to it, over the transit
+  # path that already works.
+  #
+  # Like the rule above, this is zone-level rather than per-tenant: the core
+  # router sees only SNATed transit traffic, so it could not distinguish one
+  # tenant from another even if it wanted to.
+  - { from_zone: tenant_transit, to_zone: iot_backend, action: pass }
+
   # IoT -> IoT Backend (sensor data)
   - { from_zone: iot, to_zone: iot_backend, action: pass }
 

@@ -1,0 +1,69 @@
+---
+# MQTT broker for the IoT Backend segment.
+#
+# network-segmentation.md defines IoT Backend as the segment that "accepts
+# inbound connections from IoT segment (sensor data, MQTT publish)" and names
+# an MQTT broker as its typical inhabitant. This is that host.
+#
+# Why it is here and not in a tenant: MQTT clients always dial the broker, so
+# whichever segment holds it must accept inbound. The tenant fabric has no
+# inbound path by design - ADR-0001's perimeter never learns tenant address
+# space and ADR-0003 built egress only - so a broker on a tenant VM would mean
+# inventing one. Publishers reach OUT to it instead (see the tenant_transit ->
+# iot_backend rule in group_vars/all/firewall.yml).
+#
+# It is also not EdS-specific. EdS is simply the first consumer: the LP jacket
+# stand subscribes from IoT, lightd publishes from the eds tenant.
+
+infrastructure:
+  form: vm
+  interfaces:
+    eth0:
+      # Derived from the VMID by the allocator - see standards/mac-naming.
+      mac: "{{ deevnet_assigned_mac | default('') }}"
+
+env:
+  role: mqtt-broker
+  interfaces:
+    eth0:
+      ip: 10.20.35.20
+      purpose: iot-backend
+      segment: iot_backend
+      dns:
+        host_a_record: true
+        # No reservation: iot_backend has no DHCP pool (deevnet_vlans marks it
+        # "static mappings only") and opnsense_dhcp carries exactly one
+        # dhcp_subnet_uuid, the management subnet. There is no subnet for a
+        # reservation here to attach to, so the address is set by cloud-init -
+        # the same way tenant workloads are addressed on EVPN zones that have
+        # no DHCP at all (ADR-0002). The derived MAC still applies and is still
+        # asserted; what is given up is the reservation, not the identity.
+        dhcp_reservation: false
+        cnames:
+          # What publishers and devices connect to, so the broker can move
+          # hosts without every firmware image and tenant service being edited.
+          - mqtt
+
+mgmt_vm:
+  hypervisor: dv02hyp001p01
+  node: dv02hyp001p01
+  vmid: "{{ deevnet_assigned_vmid | default(0) }}"
+  template_prefix: "fedora-server-"
+  storage: local-lvm-big-thin
+  cores: 2
+  memory: 2048
+
+  # This host is the reason proxmox_vm learned to tag. vmbr0 is VLAN-aware and
+  # the switch port carrying dv02hyp001p01 is now a trunk (native 99), so a
+  # tagged interface lands on iot_backend while the hypervisor's own management
+  # stays untagged.
+  vlan_tag: 35
+
+  # No DHCP on this segment - see the dns block above.
+  static_ip: 10.20.35.20/24
+  static_gateway: 10.20.35.1
+
+  # Not the management gateway. The firewall carries no iot_backend ->
+  # management rule and network-segmentation.md forbids that path, so this host
+  # resolves through its own segment's gateway - the same core router.
+  nameserver: 10.20.35.1
