@@ -1,0 +1,26 @@
+---
+# Topic permissions for the MQTT broker.
+#
+# Kept in inventory rather than the role so that adding a device is an
+# inventory act, like adding a tenant. The credentials themselves are in the
+# vault as vault_mqtt_users; this file says only what each account may touch.
+#
+# Mosquitto denies anything not granted, so an account missing from this map
+# can authenticate and then do nothing.
+mqtt_acls:
+  # lightd, in the eds tenant. Publishes scenes to any stand and reads their
+  # presence; it never needs to write a stand's own status.
+  lightd:
+    - { access: write, topic: "eds/lightstand/+/scene" }
+    - { access: read, topic: "eds/lightstand/+/status" }
+    - { access: read, topic: "eds/lightstand/+/state" }
+    - { access: write, topic: "eds/lightd/status" }
+
+  # The LP jacket stand. Scoped to its OWN topics on purpose: a device
+  # credential that could write any stand's scene could repaint every stand in
+  # the house, and the IoT segment is rated Medium trust precisely because its
+  # devices are assumed reachable by things we did not write.
+  lp-stand-01:
+    - { access: read, topic: "eds/lightstand/lp-stand-01/scene" }
+    - { access: write, topic: "eds/lightstand/lp-stand-01/status" }
+    - { access: write, topic: "eds/lightstand/lp-stand-01/state" }
