@@ -38,6 +38,19 @@ firewall_zone_policies:
   # IoT Backend -> Platform (shared services)
   - { from_zone: iot_backend, to_zone: platform, action: pass }
 
+# Rules that are never deletion candidates on this substrate, on top of the two
+# anti-lockout rules the role protects by default.
+#
+# trusted -> management is the operator's own path to the management plane - it
+# is how a workstation on VLAN 10 reaches dv00bld001p01, and losing it means the
+# next repair happens at the console. It is a declared policy, so it is only at
+# risk if someone removes it from the matrix above AND enables deletion; naming
+# it here makes that combination harmless rather than merely unlikely.
+firewall_protected_descriptions:
+  - "ansible: anti-lockout HTTPS management"
+  - "ansible: anti-lockout SSH management"
+  - "ansible: trusted -> management"
+
 firewall_internet_zones:
   - management
   - trusted
