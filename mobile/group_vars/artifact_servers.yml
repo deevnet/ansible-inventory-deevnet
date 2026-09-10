@@ -92,6 +92,36 @@ artifacts_to_fetch:
     sha256: "1cdb6cfc7fbc6f73295a6342245e30893f6f2c1da4fcd5b281a5aa5e1e1a0e77"
 
   # =========================================================================
+  # SG2218 firmware (dv02acc001p01)
+  #
+  # Unlike the AP this is ONE hop, not a chain. The switch reports hardware
+  # 1.20 and runs 1.20.1 Build 20240115; none of the eight V1.20 builds since
+  # (1.20.4 .. 1.20.24) declares a minimum prior version or is flagged
+  # irreversible, so it goes straight to current.
+  #
+  # Mirrored anyway, for the same reason as the AP: the switch carries every
+  # wired path on site, the builder's own included. Once it reboots nothing
+  # reaches TP-Link until it is back, so the file has to be on hand first.
+  #
+  # The switch keeps two images and writes the upload into the backup one,
+  # so 1.20.1 stays on flash and rollback is a boot-config change - there is
+  # no older build to mirror.
+  #
+  # 1.20.24 recommends Omada Controller 6.2.0 or later.
+  #
+  # TP-Link publish no checksums; the sha256 is of the bytes mirrored on
+  # 2026-09-10. The zip carries SG2218v1_en_1.20.24_[20260509-rel23533]_up.bin,
+  # which is what the switch's web UI takes, extracted alongside. TP-Link's
+  # page lists it for V1.20 and V1.26 (Vx.x0 = Vx.x6).
+  # See docs/runbook/console-recovery/access-switch.
+  - name: "sg2218-fw-1.20.24"
+    type: "generic"
+    url: "https://static.tp-link.com/upload/firmware/2026/202605/20260529/SG2218(UN)_V1.20_1.20.24%20Build%2020260509.zip"
+    dest_subdir: "firmware/sg2218"
+    dest_filename: "SG2218_1.20_1.20.24_Build_20260509.zip"
+    sha256: "8dc7cf3258acb12ebcda29e1b5ff8b25bfa5951f30d5c5cd38d2de9c6b5658cd"
+
+  # =========================================================================
   # Fedora Server {{ deevnet_fedora_current.release }} (current)
   # All four entries derive from deevnet_fedora_current in group_vars/all.
   # =========================================================================
