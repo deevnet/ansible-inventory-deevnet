@@ -9,6 +9,18 @@
     - "SHOW_SERVER_LOGS=true"
     - "SHOW_MONGODB_LOGS=false"
 
-  # Omada controller API credentials (references vault)
+  # Omada controller API credentials (references vault).
+  #
+  # These are the `a_autoprov` account: a LOCAL account with the Admin role,
+  # scoped to the dvntm site. It is what every play talks to the controller with,
+  # and - unlike the Owner - its password can be changed through the API, so it
+  # can actually be rotated.
   omada_admin_user: "{{ vault_omada_admin_user }}"
   omada_admin_password: "{{ vault_omada_admin_password }}"
+
+  # The Owner account lives in the vault as vault_omada_owner_user /
+  # vault_omada_owner_password and is deliberately NOT mapped to a role variable
+  # here. It is for humans and the web UI. Automation used to run as the Owner;
+  # it no longer does, and mapping it back in would undo that. If a play ever
+  # genuinely needs Owner rights, reference the vault variable at that play
+  # rather than making it the group default.
