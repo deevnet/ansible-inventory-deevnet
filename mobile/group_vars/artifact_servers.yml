@@ -24,10 +24,29 @@ artifacts_podman_images:
     upstream_image: "docker.io/mbentley/omada-controller:5.12"
     dest_subdir: "container-images/omada-controller"
     tar_filename: "omada-controller-5.12.tar"
-  - name: "omada-controller"
+  # The two ways back from 6.3, both started on the 6.1.0.19 data snapshot in
+  # /opt/omada-controller-backup - never on the live data. A controller cannot
+  # open a database a newer one has upgraded, so an image alone is not a way
+  # back. See docs/runbook/omada-controller.
+  #
+  # 6.2.14.11 is the fallback: the mature line (July 2026), and what SG2218
+  # 1.20.24 was built against. Rehearsed 2026-09-10 on a copy of the snapshot -
+  # it upgraded the database, kept the site, and a_autoprov logged in.
+  - name: "omada-controller-6.2"
+    upstream_image: "docker.io/mbentley/omada-controller:6.2.14.11"
+    dest_subdir: "container-images/omada-controller"
+    tar_filename: "omada-controller-6.2.14.11.tar"
+  # 6.1 is the last resort: exactly what ran before, if 6.2 fails too.
+  - name: "omada-controller-6.1"
     upstream_image: "docker.io/mbentley/omada-controller:6.1"
     dest_subdir: "container-images/omada-controller"
     tar_filename: "omada-controller-6.1.tar"
+  # Pinned to the build, not the 6.3 minor tag, for the same reason as the
+  # resolver below: what a rebuild restores should be what was verified.
+  - name: "omada-controller"
+    upstream_image: "docker.io/mbentley/omada-controller:6.3.0.45"
+    dest_subdir: "container-images/omada-controller"
+    tar_filename: "omada-controller-6.3.0.45.tar"
     latest_symlink: "omada-controller-latest.tar"
   # Tenant authoritative DNS (ADR-0004). Pinned: an unpinned resolver is a
   # surprise waiting for a rebuild.
