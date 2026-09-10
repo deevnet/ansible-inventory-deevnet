@@ -27,7 +27,7 @@ artifacts_podman_images:
   # The two ways back from 6.3, both started on the 6.1.0.19 data snapshot in
   # /opt/omada-controller-backup - never on the live data. A controller cannot
   # open a database a newer one has upgraded, so an image alone is not a way
-  # back. See docs/runbook/omada-controller.
+  # back. See docs/runbook/recovery/omada-controller-recovery.
   #
   # 6.2.14.11 is the fallback: the mature line (July 2026), and what SG2218
   # 1.20.24 was built against. Rehearsed 2026-09-10 on a copy of the snapshot -
@@ -88,7 +88,7 @@ artifacts_to_fetch:
   #
   # The .bin inside is what the AP's web UI takes; the zip is what upstream
   # publishes, so the zip is what is declared here.
-  # See docs/runbook/console-recovery/wireless-ap.
+  # See docs/runbook/recovery/console-recovery/wireless-ap.
   - name: "eap650-outdoor-fw-1.2.5"
     type: "generic"
     url: "https://static.tp-link.com/upload/firmware/2025/202504/20250417/EAP650-Outdoor%201.0_Build%2020250321.zip"
@@ -132,7 +132,7 @@ artifacts_to_fetch:
   # 2026-09-10. The zip carries SG2218v1_en_1.20.24_[20260509-rel23533]_up.bin,
   # which is what the switch's web UI takes, extracted alongside. TP-Link's
   # page lists it for V1.20 and V1.26 (Vx.x0 = Vx.x6).
-  # See docs/runbook/console-recovery/access-switch.
+  # See docs/runbook/recovery/console-recovery/access-switch.
   - name: "sg2218-fw-1.20.24"
     type: "generic"
     url: "https://static.tp-link.com/upload/firmware/2026/202605/20260529/SG2218(UN)_V1.20_1.20.24%20Build%2020260509.zip"
