@@ -52,6 +52,18 @@ env:
 mgmt_vm:
   hypervisor: dv02hyp001p01
   node: dv02hyp001p01
+  # First of the management-plane VMs to come back, because the core router's
+  # Unbound delegates the tenant zone here (ADR-0004) - every tenant name on the
+  # substrate resolves through this host. `up` is the delay PVE waits before
+  # starting the NEXT VM in the order, not a readiness check: 45s covers a Fedora
+  # boot plus pdns coming up, which is as close to "ready" as PVE can express.
+  #
+  # Orders are spaced by 10 so a host can be inserted between two existing ones
+  # without renumbering the rest. `down` is PVE's shutdown grace before it kills
+  # the guest, and applies when the NODE is shut down - deevnet.mgmt's
+  # playbooks/shutdown.yml stops guests itself with its own timeout and never
+  # reaches this.
+  startup: "order=10,up=45,down=60"
   # Allocated once by deevnet.mgmt playbooks/vm-identity.yml and held in
   # identity.yml beside this file. The VM keeps this ID across rebuilds so the
   # hypervisor's own view of it is stable. Unrelated to the template's ID,
