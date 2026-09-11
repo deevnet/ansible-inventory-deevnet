@@ -81,7 +81,7 @@ switch_ports:
     # untagged-99 port is 1/0/16 - the builder, which runs the Omada controller
     # that AP recovery depends on. Borrowing it to recover the AP would take the
     # controller off the network at exactly the wrong moment.
-    # See docs/runbook/console-recovery/wireless-ap.
+    # See docs/runbook/recovery/console-recovery/wireless-ap.
     - interface: "gigabitEthernet 1/0/2"
       vlan_id: 99
       description: "operator laptop for console recovery"
