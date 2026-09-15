@@ -1,0 +1,56 @@
+---
+# Provisioning VM (ADR-0013 §1, §6).
+#
+# What a tenant's `terraform apply` talks to: the Deevnet API and its database
+# (ADR-0012), and the tenant Terraform state store (ADR-0007), folded in from
+# the retired dv02tst001v01.
+#
+# On Platform, not management: tenants reach it over tenant_transit -> platform,
+# and the segmentation standard keeps tenants off management.
+
+infrastructure:
+  form: vm
+  interfaces:
+    eth0:
+      # Derived from the VMID by the allocator - see identity.yml beside this file.
+      mac: "{{ deevnet_assigned_mac | default('') }}"
+
+env:
+  role: provisioning
+  interfaces:
+    eth0:
+      ip: 10.20.25.20
+      purpose: platform
+      segment: platform
+      dns:
+        host_a_record: true
+        # No reservation: Platform has no DHCP pool (deevnet_vlans marks it
+        # "static mappings only") and opnsense_dhcp has no subnet for one to
+        # attach to. The address is set by cloud-init below; the derived MAC is
+        # still asserted.
+        dhcp_reservation: false
+        cnames:
+          # Tenants reach the state store by this name, never by address (ADR-0007).
+          - tfstate
+          - api
+
+mgmt_vm:
+  hypervisor: dv02hyp001p01
+  node: dv02hyp001p01
+  # After identity: tenants reach both services here by name.
+  startup: "order=20,up=30,down=90"
+  vmid: "{{ deevnet_assigned_vmid | default(0) }}"
+  template_prefix: "fedora-server-"
+  storage: local-lvm-big-thin
+  cores: 2
+  # MinIO, PostgreSQL and the API.
+  memory: 4096
+
+  # vmbr0 is VLAN-aware and the switch port carrying dv02hyp001p01 is a trunk
+  # (native 99), so the tag puts this interface on Platform.
+  vlan_tag: 25
+  static_ip: 10.20.25.20/24
+  static_gateway: 10.20.25.1
+  # Its own segment's gateway. No platform -> management rule exists, so the
+  # management gateway is not a resolver this host may use.
+  nameserver: 10.20.25.1

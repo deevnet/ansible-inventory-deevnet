@@ -21,9 +21,9 @@ deevnet_tenants:
   #
   # The stand's MQTT broker is deliberately NOT in this tenant: MQTT clients
   # always dial the broker, so its segment must accept inbound, and the tenant
-  # fabric has no inbound path by design. The broker is dv02mqt001v01 on IoT
-  # Backend, and lightd reaches out to it - see the tenant_transit ->
-  # iot_backend rule in firewall.yml.
+  # fabric has no inbound path by design. The broker belongs in the device
+  # messaging VM (dv02msg001v01) on IoT Backend, and lightd reaches out to it -
+  # see the tenant_transit -> iot_backend rule in firewall.yml.
   #
   # Index 1 was released when tdemo was destroyed on 2026-09-05.
   - name: eds

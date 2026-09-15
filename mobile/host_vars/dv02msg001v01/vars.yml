@@ -1,0 +1,50 @@
+---
+# Device messaging VM (ADR-0013 §1).
+#
+# The VerneMQ broker and its auth database (ADR-0012 §7, §8), and later other
+# device rendezvous services. On IoT Backend, the segment that "accepts inbound
+# connections from IoT segment (sensor data, MQTT publish)"
+# (network-segmentation.md). MQTT clients always dial the broker, and the
+# tenant fabric has no inbound path, so publishers in tenants reach out to it
+# over tenant_transit -> iot_backend.
+#
+# Built empty. The `mqtt` name and the mqtt_brokers group membership arrive
+# with the broker, so nothing resolves to a broker that isn't there.
+
+infrastructure:
+  form: vm
+  interfaces:
+    eth0:
+      # Derived from the VMID by the allocator - see identity.yml beside this file.
+      mac: "{{ deevnet_assigned_mac | default('') }}"
+
+env:
+  role: device-messaging
+  interfaces:
+    eth0:
+      ip: 10.20.35.20
+      purpose: iot-backend
+      segment: iot_backend
+      dns:
+        host_a_record: true
+        # No reservation: IoT Backend has no DHCP pool ("static mappings only"),
+        # so the address is set by cloud-init below.
+        dhcp_reservation: false
+        cnames: []
+
+mgmt_vm:
+  hypervisor: dv02hyp001p01
+  node: dv02hyp001p01
+  startup: "order=40,up=30,down=60"
+  vmid: "{{ deevnet_assigned_vmid | default(0) }}"
+  template_prefix: "fedora-server-"
+  storage: local-lvm-big-thin
+  cores: 2
+  memory: 2048
+
+  vlan_tag: 35
+  static_ip: 10.20.35.20/24
+  static_gateway: 10.20.35.1
+  # Not the management gateway: there is no iot_backend -> management rule, and
+  # network-segmentation.md forbids that path.
+  nameserver: 10.20.35.1

@@ -1,0 +1,39 @@
+---
+# Substrate observability VM (ADR-0013 §1, §5).
+#
+# Substrate logs and metrics. On management because IoT Backend can't reach
+# management and no rule lets Platform reach it, so this host collects by PULL
+# over management -> platform and management -> iot_backend. Hosts on
+# management may push to it.
+#
+# Built empty: the collection tooling is not chosen yet.
+
+infrastructure:
+  form: vm
+  interfaces:
+    eth0:
+      # Derived from the VMID by the allocator - see identity.yml beside this file.
+      mac: "{{ deevnet_assigned_mac | default('') }}"
+
+env:
+  role: substrate-observability
+  interfaces:
+    eth0:
+      ip: 10.20.99.41
+      purpose: mgmt
+      segment: management
+      dns:
+        host_a_record: true
+        dhcp_reservation: true
+        cnames: []
+
+mgmt_vm:
+  hypervisor: dv02hyp001p01
+  node: dv02hyp001p01
+  # Last: it observes the others, and nothing waits for it.
+  startup: "order=50,up=0,down=60"
+  vmid: "{{ deevnet_assigned_vmid | default(0) }}"
+  template_prefix: "fedora-server-"
+  storage: local-lvm-big-thin
+  cores: 2
+  memory: 2048
