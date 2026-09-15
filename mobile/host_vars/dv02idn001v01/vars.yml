@@ -1,0 +1,49 @@
+---
+# Identity VM (ADR-0013 §1, §6).
+#
+# Naming and directory: tenant authoritative DNS (ADR-0004), folded in from the
+# retired dv02tdn001v01, and later an LDAP or Active Directory-compatible
+# directory. Serves tenants, and operators, since management can reach Platform.
+
+infrastructure:
+  form: vm
+  interfaces:
+    eth0:
+      # Derived from the VMID by the allocator - see identity.yml beside this file.
+      mac: "{{ deevnet_assigned_mac | default('') }}"
+
+env:
+  role: identity
+  interfaces:
+    eth0:
+      ip: 10.20.25.21
+      purpose: platform
+      segment: platform
+      dns:
+        host_a_record: true
+        # No reservation: Platform has no DHCP pool. See dv02prv001v01.
+        dhcp_reservation: false
+        cnames:
+          # Tenant Terraform's dynamic-update target. The zone apex NS uses
+          # this host's own A record instead, because an NS may not point at a
+          # CNAME (ADR-0005).
+          - tdns
+
+mgmt_vm:
+  hypervisor: dv02hyp001p01
+  node: dv02hyp001p01
+  # First of the domain VMs to come back: the core router's Unbound forwards
+  # every tenant zone here, so tenant names on the substrate resolve through
+  # this host. `up` is the delay before PVE starts the next VM, not a readiness
+  # check; 45s covers a Fedora boot plus pdns starting.
+  startup: "order=10,up=45,down=60"
+  vmid: "{{ deevnet_assigned_vmid | default(0) }}"
+  template_prefix: "fedora-server-"
+  storage: local-lvm-big-thin
+  cores: 2
+  memory: 2048
+
+  vlan_tag: 25
+  static_ip: 10.20.25.21/24
+  static_gateway: 10.20.25.1
+  nameserver: 10.20.25.1

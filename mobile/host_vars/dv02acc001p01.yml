@@ -48,13 +48,14 @@ switch_ports:
       allowed_vlans: [50, 51, 99]
     # dv02hyp001p01 management hypervisor. Was an ACCESS port on 99, which was
     # sufficient while every management-plane VM sat on the management segment.
-    # It is a trunk now so a VM can be placed on iot_backend (35): the MQTT
-    # broker belongs there per network-segmentation.md, and the box has a single
-    # NIC, so there is no second port to trunk instead.
+    # It is a trunk now so VMs can be placed on other segments, one segment per
+    # VM (ADR-0013): Platform (25) for the provisioning, identity and tenant
+    # observability VMs, and iot_backend (35) for device messaging. The box has a
+    # single NIC, so there is no second port to trunk instead.
     #
     # native_vlan 99, exactly like gi 1/0/13 above and for the same reason: the
     # hypervisor's own management stays UNTAGGED, so vmbr0 needs no change and
-    # the node cannot be lost by this edit. Only VLAN 35 is added, tagged, and
+    # the node cannot be lost by this edit. Only tagged VLANs are added, and
     # nothing that exists today moves.
     #
     # 99 appears in allowed_vlans and as the native VLAN: the role emits the
@@ -63,7 +64,7 @@ switch_ports:
     - interface: "gigabitEthernet 1/0/15"
       description: "dv02hyp001p01 management hypervisor"
       native_vlan: 99
-      allowed_vlans: [35, 99]
+      allowed_vlans: [25, 35, 99]
   access:
     # Management segment
     #

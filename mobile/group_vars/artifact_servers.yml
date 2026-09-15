@@ -64,6 +64,13 @@ artifacts_podman_images:
     dest_subdir: "container-images/minio"
     tar_filename: "minio-RELEASE.2025-09-07T16-13-09Z.tar"
     latest_symlink: "minio-latest.tar"
+  # PostgreSQL for the Deevnet API (ADR-0012). Pinned: a data directory belongs
+  # to its major version, and the API's database should not move under a rebuild.
+  - name: "postgres"
+    upstream_image: "docker.io/library/postgres:17.11"
+    dest_subdir: "container-images/postgres"
+    tar_filename: "postgres-17.11.tar"
+    latest_symlink: "postgres-latest.tar"
 
 # Artifacts that admin hosts (artifact servers) should host under nginx_artifacts_root
 artifacts_to_fetch:

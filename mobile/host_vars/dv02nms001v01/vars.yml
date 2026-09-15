@@ -1,0 +1,47 @@
+---
+# Network management VM (ADR-0013 §1, §7).
+#
+# The site's Omada controller runs here as a container, on the management
+# segment ADR-0009 requires for adoption. Network monitoring and config backup
+# join it later. Substrate-facing: no tenant path reaches this host.
+#
+# The Builder's controller (dv00bld001p01) is a cold fallback, not a peer. A
+# rebuild uses this one (ADR-0013 §8).
+
+infrastructure:
+  form: vm
+  interfaces:
+    eth0:
+      # Derived from the VMID by the allocator - see identity.yml beside this
+      # file and docs/standards/mac-naming. The DHCP reservation and the A
+      # record both key off it.
+      mac: "{{ deevnet_assigned_mac | default('') }}"
+
+env:
+  role: network-management
+  interfaces:
+    eth0:
+      ip: 10.20.99.40
+      purpose: mgmt
+      segment: management
+      dns:
+        host_a_record: true
+        dhcp_reservation: true
+        cnames:
+          # What operators and, later, the Deevnet API reach the controller by,
+          # so it can move hosts without them changing.
+          - omada
+
+mgmt_vm:
+  hypervisor: dv02hyp001p01
+  node: dv02hyp001p01
+  # After identity and provisioning. Adopted devices keep forwarding while the
+  # controller is down (ADR-0009), so nothing on site waits for it to boot.
+  # `down` covers the container's 120s stop timeout.
+  startup: "order=30,up=60,down=150"
+  vmid: "{{ deevnet_assigned_vmid | default(0) }}"
+  template_prefix: "fedora-server-"
+  storage: local-lvm-big-thin
+  cores: 2
+  # The controller image runs MongoDB inside it.
+  memory: 4096

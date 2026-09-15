@@ -23,3 +23,20 @@ env:
 proxmox_node: dv02hyp001p01
 proxmox_token_id: "{{ vault_proxmox_token_id }}"
 proxmox_token_secret: "{{ vault_proxmox_token_secret }}"
+
+# --- Bridge (ADR-0013, CHG-0008) ----------------------------------------------
+# Consumed by deevnet.net.proxmox_node_network, and only ever with
+# `--tags interfaces`. The domain VMs tag their NIC onto Platform (25) and IoT
+# Backend (35), so vmbr0 is VLAN-aware - the configuration Proxmox documents,
+# and the one dv02hyp002p02 already uses. Until CHG-0008 it was a plain bridge,
+# set by hand.
+#
+# Bridge only. No VLAN sub-interfaces, and management keeps its untagged
+# address and the default route: this node carries no tenant fabric, so the
+# role's packages, mgmt-routing, default-route and tenant-egress tags do not
+# apply here.
+proxmox_node_network:
+  bridge:
+    name: vmbr0
+    vlan_aware: true
+    vids: "2-4094"
