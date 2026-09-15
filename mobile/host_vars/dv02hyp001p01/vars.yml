@@ -40,3 +40,38 @@ proxmox_node_network:
     name: vmbr0
     vlan_aware: true
     vids: "2-4094"
+
+# --- Install disk and data-disk storage (rebuild) ------------------------------
+# Read on the node 2026-09-14. Consumed by the image factory's ISO build
+# (PVE_DISK_SERIAL) and by deevnet.builder's proxmox_node_storage; the order is
+# in runbook/building-recovery/build-management-plane.
+#
+# The OS disk, a Samsung PM871b 512GB. This is the udev ID_SERIAL the Proxmox
+# installer filters on - the /dev/disk/by-id/ata-* name without its prefix - not
+# the short serial lsblk prints. The installer must never choose for itself: the
+# other disk holds every VM.
+proxmox_install_disk_serial: "SAMSUNG_SSD_PM871b_M.2_2280_512GB_S3TZNB0K409229"
+
+# The data disk, a Crucial BX500 2TB with one partition, volume group vgbigdata.
+# Recorded as it is, not as it should be - see the Hypervisor Storage roadmap.
+# What the installer builds on the OS disk (local, local-lvm) is not listed.
+proxmox_node_storage:
+  volume_groups:
+    - name: vgbigdata
+      device: /dev/disk/by-id/ata-CT2000BX500SSD1_2328E6EDA04B-part1
+  thin_pools:
+    - vg: vgbigdata
+      name: bigthin
+      size: 1.07t
+  storages:
+    # The Fedora template and the management VMs.
+    - id: local-lvm-big-thin
+      type: lvmthin
+      vgname: vgbigdata
+      thinpool: bigthin
+      content: [images, rootdir]
+    # Thick volumes, used by VM 104 (vdvntm-winox, not in inventory).
+    - id: local-lvm-big
+      type: lvm
+      vgname: vgbigdata
+      content: [images, rootdir]
