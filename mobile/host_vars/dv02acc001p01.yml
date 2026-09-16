@@ -16,6 +16,11 @@ env:
         dhcp_reservation: true
         cnames: []
 
+# LLDP stays on. Firmware 1.20.24 enabled it by default (it was off on 1.20.1),
+# and it was kept deliberately so neighbours can be mapped port by port
+# (CHG-0006). Applied by switch_vlans, --tags mgmt.
+switch_lldp: true
+
 # Switch port definitions for switch_vlans role
 # Port naming follows TP-Link Omada CLI convention (Cisco-style)
 # Update interface names after confirming via: show interfaces status
