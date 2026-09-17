@@ -64,6 +64,13 @@ artifacts_podman_images:
     dest_subdir: "container-images/minio"
     tar_filename: "minio-RELEASE.2025-09-07T16-13-09Z.tar"
     latest_symlink: "minio-latest.tar"
+  # OpenBao, the substrate's runtime secrets (ADR-0016). Pinned: its storage
+  # format and seal belong to the version that wrote them.
+  - name: "openbao"
+    upstream_image: "quay.io/openbao/openbao:2.6.2"
+    dest_subdir: "container-images/openbao"
+    tar_filename: "openbao-2.6.2.tar"
+    latest_symlink: "openbao-latest.tar"
   # PostgreSQL for the Deevnet API (ADR-0012). Pinned: a data directory belongs
   # to its major version, and the API's database should not move under a rebuild.
   - name: "postgres"
