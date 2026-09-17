@@ -14,7 +14,8 @@
 #      vault_deevnet_api_token_hmac_key, in this group's vault
 #   6. deevnet_api_site: "{{ deevnet_substrate }}" below
 # The role refuses to start the API with any of these missing, and names them.
-deevnet_api_site: ""
+# All six were done in CHG-0010; setting this is what turned the API on.
+deevnet_api_site: "{{ deevnet_substrate }}"
 
 # ADR-0002 VNI bases for this site: 10000 + n for the VRF, 20000 + 10n + i for
 # VNets. The tenant module's defaults, stated here because the API allocates.
@@ -54,6 +55,13 @@ deevnet_api_proxmox_url: "https://{{ hostvars['dv02hyp002p02'].env.interfaces.et
 # certificate the openbao role fetched to the control node.
 deevnet_api_openbao_addr: "https://{{ hostvars[groups['tenant_dns'] | first].env.interfaces.eth0.ip }}:8200"
 deevnet_api_openbao_ca_local: "{{ playbook_dir }}/../.openbao/{{ groups['tenant_dns'] | first }}-listener.pem"
+
+# Ansible's own AppRole, which every role that configures OpenBao logs in with.
+# It is kept with OpenBao's other bootstrap secrets in group_vars/openbao, and
+# this host is not in that group, so it is read from the OpenBao host - the same
+# way the router's API key is read from the router above.
+deevnet_api_openbao_ansible_role_id: "{{ hostvars[groups['openbao'] | first].vault_openbao_ansible_role_id | default('') }}"
+deevnet_api_openbao_ansible_secret_id: "{{ hostvars[groups['openbao'] | first].vault_openbao_ansible_secret_id | default('') }}"
 
 # The API's backend credentials, written by the role into its OpenBao KV secret.
 # The vault stays their source; rotating one is a vault edit and a role run.
