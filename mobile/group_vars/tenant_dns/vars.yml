@@ -1,0 +1,6 @@
+---
+# PowerDNS's HTTP API answers the Deevnet API's host and nothing else
+# (ADR-0015 §6). It is only on when vault_powerdns_api_key exists.
+powerdns_api_allow_from: >-
+  {{ groups['deevnet_api'] | map('extract', hostvars, ['env', 'interfaces', 'eth0', 'ip'])
+     | map('regex_replace', '$', '/32') | list }}
