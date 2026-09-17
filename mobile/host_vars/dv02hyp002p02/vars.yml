@@ -92,11 +92,11 @@ tenant_fabric:
 proxmox_tenant_egress:
   enabled: true
   tenants: "{{ deevnet_tenants | map(attribute='name') | list }}"
-  # Set true once the egress agent runs here (ADR-0015 §7): the per-tenant FRR
-  # file becomes the agent's, rendered from the Deevnet API rather than from
-  # this list. The forwarding sysctl and the transit interface stay with the
+  # True since CHG-0010 step 8: the per-tenant FRR file is the agent's, rendered
+  # from the Deevnet API rather than from this list (ADR-0015 §7). The
+  # forwarding sysctl and the transit interface stay with the
   # proxmox_node_network role either way.
-  agent_managed: false
+  agent_managed: true
 
 # The tenant egress agent (deevnet.net tenant_egress_agent). It reads the VRF
 # list from the API with a token scoped to that one route, so this hypervisor
