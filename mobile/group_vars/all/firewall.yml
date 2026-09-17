@@ -49,6 +49,35 @@ firewall_zone_policies:
   # tenant from another even if it wanted to.
   - { from_zone: tenant_transit, to_zone: iot_backend, action: pass }
 
+  # The Deevnet API's two reaches outside Platform (ADR-0015, CHG-0010 step 7).
+  # Narrow on purpose: one source host, one destination, one port. The API holds
+  # the privileged credentials for the whole substrate, so what it may reach is
+  # worth stating exactly rather than opening Platform to management.
+  #
+  # Declared before they are needed. The router passes everything until CHG-0007
+  # applies this matrix, and these are what keep that change from cutting tenant
+  # provisioning off at the moment it starts enforcing.
+  - from_zone: platform
+    to_zone: management
+    action: pass
+    name: "deevnet-api -> tenant hypervisor API"
+    protocol: TCP
+    source_net: "{{ hostvars['dv02prv001v01'].env.interfaces.eth0.ip }}/32"
+    destination_net: "{{ hostvars['dv02hyp002p02'].env.interfaces.eth0.ip }}/32"
+    destination_port: "8006"
+
+  # The router's own API, reached at its address on Platform. Same zone in and
+  # out, which is not a transit rule at all: it is traffic to the firewall
+  # itself, and under a default-deny interface policy it needs stating.
+  - from_zone: platform
+    to_zone: platform
+    action: pass
+    name: "deevnet-api -> core router API"
+    protocol: TCP
+    source_net: "{{ hostvars['dv02prv001v01'].env.interfaces.eth0.ip }}/32"
+    destination_net: "{{ deevnet_vlans.platform.gateway }}/32"
+    destination_port: "443"
+
   # IoT -> IoT Backend (sensor data)
   - { from_zone: iot, to_zone: iot_backend, action: pass }
 
