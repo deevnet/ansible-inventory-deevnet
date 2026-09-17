@@ -3,14 +3,16 @@
 # per tenant comes from these site values and the tenant's index.
 #
 # OFF until deevnet_api_site is set. Turning it on needs, in this order:
-#   1. the API image that serves tenants staged, and deevnet_api_version bumped
-#   2. vault_powerdns_api_key in group_vars/all/vault.yml, and the powerdns role
+#   1. OpenBao deployed on the identity VM (openbao group, ADR-0016), and
+#      vault_openbao_ansible_role_id / _secret_id in the vault from its first run
+#   2. the API image that serves tenants staged, and deevnet_api_version bumped
+#   3. vault_powerdns_api_key in group_vars/all/vault.yml, and the powerdns role
 #      re-run on the tenant DNS host (turns on its HTTP API for this host only)
-#   3. vault_minio_deevnet_api_secret in group_vars/all/vault.yml, and the minio
+#   4. vault_minio_deevnet_api_secret in group_vars/all/vault.yml, and the minio
 #      role re-run (creates this API's own admin user)
-#   4. a read-only Proxmox token on the tenant hypervisor, in this group's vault
-#      as vault_deevnet_api_proxmox_token_id / _secret
-#   5. deevnet_api_site: "{{ deevnet_substrate }}" below
+#   5. a Proxmox token for the API on the tenant hypervisor, and
+#      vault_deevnet_api_token_hmac_key, in this group's vault
+#   6. deevnet_api_site: "{{ deevnet_substrate }}" below
 # The role refuses to start the API with any of these missing, and names them.
 deevnet_api_site: ""
 
@@ -43,9 +45,25 @@ deevnet_api_resolver_forward_to: "{{ hostvars[groups['tenant_dns'] | first].env.
 # over management (ADR-0015 Consequences: the narrow rules CHG-0007 must add).
 deevnet_api_powerdns_url: "http://{{ hostvars[groups['tenant_dns'] | first].env.interfaces.eth0.ip }}:8081"
 deevnet_api_opnsense_url: "https://{{ deevnet_vlans.platform.gateway }}/api"
-deevnet_api_opnsense_key: "{{ hostvars[groups['routers'] | first].vault_opnsense_api_key | default('') }}"
-deevnet_api_opnsense_secret: "{{ hostvars[groups['routers'] | first].vault_opnsense_api_secret | default('') }}"
 # Same VM as the state store: reached at the host's own address, where MinIO
 # publishes its port, from the API's podman network.
 deevnet_api_minio_endpoint: "{{ hostvars[groups['tenant_state'] | first].env.interfaces.eth0.ip }}:9000"
 deevnet_api_proxmox_url: "https://{{ hostvars['dv02hyp002p02'].env.interfaces.eth0.ip | default('10.20.99.22') }}:8006"
+
+# OpenBao (ADR-0016): where the API and Ansible reach it, and the listener
+# certificate the openbao role fetched to the control node.
+deevnet_api_openbao_addr: "https://{{ hostvars[groups['tenant_dns'] | first].env.interfaces.eth0.ip }}:8200"
+deevnet_api_openbao_ca_local: "{{ playbook_dir }}/../.openbao/{{ groups['tenant_dns'] | first }}-listener.pem"
+
+# The API's backend credentials, written by the role into its OpenBao KV secret.
+# The vault stays their source; rotating one is a vault edit and a role run.
+deevnet_api_backends:
+  powerdns_api_key: "{{ vault_powerdns_api_key | default('') }}"
+  opnsense_api_key: "{{ hostvars[groups['routers'] | first].vault_opnsense_api_key | default('') }}"
+  opnsense_api_secret: "{{ hostvars[groups['routers'] | first].vault_opnsense_api_secret | default('') }}"
+  minio_admin_access_key: deevnet-api
+  minio_admin_secret_key: "{{ vault_minio_deevnet_api_secret | default('') }}"
+  proxmox_token_id: "{{ vault_deevnet_api_proxmox_token_id | default('') }}"
+  proxmox_token_secret: "{{ vault_deevnet_api_proxmox_token_secret | default('') }}"
+  # Base64 of at least 32 bytes: head -c 32 /dev/urandom | base64
+  token_hmac_key: "{{ vault_deevnet_api_token_hmac_key | default('') }}"
