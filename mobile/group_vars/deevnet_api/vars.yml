@@ -60,6 +60,12 @@ deevnet_api_opnsense_url: "https://{{ deevnet_vlans.platform.gateway }}/api"
 deevnet_api_minio_endpoint: "{{ hostvars[groups['tenant_state'] | first].env.interfaces.eth0.ip }}:9000"
 deevnet_api_proxmox_url: "https://{{ hostvars['dv02hyp002p02'].env.interfaces.eth0.ip | default('10.20.99.22') }}:8006"
 
+# The wireless controller, for tenant Wi-Fi keys (CHG-0013). Setting this turns
+# key issuance on; empty leaves the wifi-keys routes refusing with a reason,
+# which is what a site with no controller gets. The trust classes the API serves
+# are derived from deevnet_vlans by the role, so they are not restated here.
+deevnet_api_omada_url: "https://{{ hostvars[groups['network_controllers'] | first].env.interfaces.eth0.ip }}:8043"
+
 # OpenBao (ADR-0016): where the API and Ansible reach it, and the listener
 # certificate the openbao role fetched to the control node.
 deevnet_api_openbao_addr: "https://{{ hostvars[groups['tenant_dns'] | first].env.interfaces.eth0.ip }}:8200"
@@ -84,3 +90,8 @@ deevnet_api_backends:
   proxmox_token_secret: "{{ vault_deevnet_api_proxmox_token_secret | default('') }}"
   # Base64 of at least 32 bytes: head -c 32 /dev/urandom | base64
   token_hmac_key: "{{ vault_deevnet_api_token_hmac_key | default('') }}"
+  # The API's OWN Open API client, not the one omada-wireless.yml uses. Read
+  # from the controller host, the same way the router's key is read from the
+  # router. Same permission, separate blast radius and audit trail (CHG-0013).
+  omada_client_id: "{{ hostvars[groups['network_controllers'] | first].vault_omada_api_client_id | default('') }}"
+  omada_client_secret: "{{ hostvars[groups['network_controllers'] | first].vault_omada_api_client_secret | default('') }}"
