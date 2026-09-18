@@ -25,6 +25,29 @@ firewall_zone_policies:
   - { from_zone: trusted, to_zone: iot_backend, action: pass }
   - { from_zone: trusted, to_zone: tenant_transit, action: pass }
 
+  # Operator access to tenant WORKLOADS (ADR-0018, CHG-0012).
+  #
+  # The two rules above reach tenant_transit, 10.20.50.0/24 - the segment the
+  # fabric exit node SNATs to. They do NOT reach a tenant's workloads, which
+  # live in the overlay at 10.20.128.0/18, because each rule's destination is
+  # rendered from its zone's own subnet. The override is what names the overlay.
+  #
+  # One aggregate route covers every tenant: ADR-0002 allocates the overlay as a
+  # /18, subnet 10.20.(128+index).0/24, so adding a tenant still changes nothing
+  # here. The core router carries the matching static route, by hand - no role
+  # manages OPNsense static routes yet (CHG-0012 follow-up).
+  #
+  # Declared before CHG-0007 enforces the matrix. Without these two rules that
+  # change would silently take operator access away again.
+  #
+  # One direction only: the operator reaches a tenant. Nothing here lets a
+  # tenant reach management or trusted, and no other zone gains a path - iot,
+  # iot_vendor and guest still cannot reach a workload.
+  - { from_zone: management, to_zone: tenant_transit, action: pass, destination_net: "10.20.128.0/18",
+      name: "tenant overlay (ADR-0018)" }
+  - { from_zone: trusted, to_zone: tenant_transit, action: pass, destination_net: "10.20.128.0/18",
+      name: "tenant overlay (ADR-0018)" }
+
   # Tenant fabric -> platform only (shared services).
   # Per ADR-0001 the core router sees the aggregate transit network, never an
   # individual tenant subnet: tenant traffic arrives here already SNATed by the
@@ -38,11 +61,13 @@ firewall_zone_policies:
   #
   # The direction matters and is the reason the broker is NOT a tenant VM. MQTT
   # clients always dial the broker, so whichever segment holds it must accept
-  # inbound - and the tenant fabric has no inbound path by design (ADR-0001's
-  # perimeter never learns tenant address space; ADR-0003 built egress only).
-  # IoT Backend is already the segment defined to accept inbound MQTT from IoT,
-  # so the broker lives there and the tenant reaches OUT to it, over the transit
-  # path that already works.
+  # inbound - and no device can dial a tenant. IoT Backend is already the segment
+  # defined to accept inbound MQTT from IoT, so the broker lives there and the
+  # tenant reaches OUT to it, over the transit path that already works.
+  #
+  # ADR-0018 later gave the operator networks a route into the tenant overlay,
+  # which does not change this: that route is management and trusted only, and
+  # iot and iot_vendor still have no path to a tenant.
   #
   # Like the rule above, this is zone-level rather than per-tenant: the core
   # router sees only SNATed transit traffic, so it could not distinguish one

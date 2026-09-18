@@ -14,3 +14,28 @@ dhcp_subnet_uuid: "60339c82-497e-41f7-8bbe-a7d0f490336a"
 
 # Physical LAN interface for VLAN sub-interfaces
 opnsense_vlan_parent: "re0"
+
+# Gateways and static routes (ADR-0018, CHG-0012).
+#
+# The tenant overlay lives behind the fabric exit node, so the core router needs
+# a route to reach a tenant's workloads. Without it, management and trusted can
+# reach tenant_transit (10.20.50.0/24) and nothing beyond it, which is why a
+# tenant workload could not be reached at all before this.
+#
+# ADR-0002 allocates the overlay as a /18 - subnet 10.20.(128+index).0/24,
+# indexes 1..62 - so this one aggregate covers every tenant that can exist at
+# this site, and adding a tenant changes nothing here.
+#
+# The gateway carries no monitoring and is never the default: dpinger deciding
+# an internal next hop is "down" would withdraw this route for no benefit, and a
+# second default gateway is how a router stops routing.
+opnsense_gateways:
+  - name: TENANT_FABRIC_GW
+    zone: tenant_transit
+    address: "10.20.50.22"
+    description: "Fabric exit node dv02hyp002p02 (ADR-0018)"
+
+opnsense_static_routes:
+  - network: "10.20.128.0/18"
+    gateway: TENANT_FABRIC_GW
+    description: "Tenant overlay via fabric exit node (ADR-0018, CHG-0012)"
