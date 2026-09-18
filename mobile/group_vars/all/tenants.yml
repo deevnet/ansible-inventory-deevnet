@@ -1,33 +1,27 @@
 ---
-# Tenant registry for this site.
+# The fabric attachment for this site.
 #
-# One row per tenant, allocated in the tenant factory's TENANTS.md. `index` is
-# the single number of ADR-0002 from which every other identifier derives - VRF
-# VNI, VNet VNI, overlay subnet, and (ADR-0004) the reverse DNS zone.
+# THE TENANT REGISTRY IS GONE FROM HERE. Tenants are registered in the Deevnet
+# API's database, which allocates their index and derives every identifier from
+# it (ADR-0015). Nothing in this inventory records which tenants exist, and
+# nothing should: the API allocates against its registry AND the live fabric, so
+# a second list here could only ever disagree with it.
 #
-# This list is the substrate's side of tenant onboarding. Two things consume it:
+# It disagreed, in fact, which is why it is gone. This file recorded eds as
+# index 1; the API allocated eds index 2, because tdemo had taken 1. Four roles
+# read this list and would have created objects for the wrong index - retired in
+# CHG-0010 step 11.
 #
-#   - proxmox_tenant_egress on the fabric exit node, giving each tenant VRF a
-#     way out (ADR-0003)
-#   - tenant DNS: zone creation and TSIG issue on the tenant_dns host, and the
-#     matching Unbound delegation on the core router (ADR-0004)
+# Where the things this list used to drive now come from:
 #
-# Adding a tenant here is an onboarding act, done once. Everything that recurs -
-# records, rebuilds, destroys - is the tenant's own Terraform and never touches
-# this file.
-deevnet_tenants:
-  # EdS - the intelligent music experience platform. Runs the palette extractor
-  # and lightd, which drive the LP jacket stand's RGB strip from cover art.
-  #
-  # The stand's MQTT broker is deliberately NOT in this tenant: MQTT clients
-  # always dial the broker, so its segment must accept inbound, and the tenant
-  # fabric has no inbound path by design. The broker belongs in the device
-  # messaging VM (dv02msg001v01) on IoT Backend, and lightd reaches out to it -
-  # see the tenant_transit -> iot_backend rule in firewall.yml.
-  #
-  # Index 1 was released when tdemo was destroyed on 2026-09-05.
-  - name: eds
-    index: 1
+#   - tenant zones, TSIG keys and their update ACL: the API, when it admits the
+#     tenant (was the powerdns role)
+#   - the Unbound delegation for both zones: the API (was the opnsense_dns role)
+#   - the state-store user and its scoped policy: the API (was the minio role)
+#   - each tenant VRF's route out: the exit node's agent, which reads the API
+#     (was proxmox_tenant_egress.tenants, ADR-0015 §7)
+#
+# Ask the API what exists: GET /v1/tenants with the operator token.
 
 # The fabric attachment the substrate ISSUES to a tenant at onboarding, beside
 # its TSIG key (ADR-0004) and its egress (ADR-0003). A tenant needs these two
