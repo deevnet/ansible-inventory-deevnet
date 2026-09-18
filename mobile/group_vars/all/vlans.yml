@@ -25,6 +25,13 @@ deevnet_vlans:
     dhcp_range_start: "10.20.30.100"
     dhcp_range_end: "10.20.30.200"
     wifi_ssid: "DVNTM-IOT"
+    # PPSK, not a shared key (CHG-0013). One key per tenant lives in the profile
+    # below, written by the Deevnet API, and no shared key for this segment
+    # exists in the vault. Inventory owns the SSID and the profile; the keys
+    # inside the profile are tenant content (ADR-0012 §6). Saying nothing here
+    # means a shared key, which is what the other three wireless segments do.
+    wifi_security: ppsk
+    wifi_ppsk_profile: "DVNTM-IOT"
   iot_vendor:
     vlan_id: 31
     subnet: "10.20.31.0/24"
