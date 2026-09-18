@@ -86,12 +86,12 @@ tenant_fabric:
 # in the tenant factory's TENANTS.md. The role fails if one of them has no VRF
 # on the node, so the two cannot drift silently.
 #
-# Derived from the site tenant registry (group_vars/all/tenants.yml) rather than
-# restated here. Tenant DNS (ADR-0004) consumes the same registry, so egress and
-# naming cannot disagree about which tenants exist.
+# No tenant list: the agent renders the per-tenant file from the Deevnet API
+# (ADR-0015 §7), and the role verifies the VRFs the node actually has rather than
+# ones inventory declared. The inventory registry this used to read was retired
+# in CHG-0010 step 11.
 proxmox_tenant_egress:
   enabled: true
-  tenants: "{{ deevnet_tenants | map(attribute='name') | list }}"
   # True since CHG-0010 step 8: the per-tenant FRR file is the agent's, rendered
   # from the Deevnet API rather than from this list (ADR-0015 §7). The
   # forwarding sysctl and the transit interface stay with the
