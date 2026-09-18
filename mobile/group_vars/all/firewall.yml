@@ -91,6 +91,24 @@ firewall_zone_policies:
     destination_net: "{{ hostvars['dv02hyp002p02'].env.interfaces.eth0.ip }}/32"
     destination_port: "8006"
 
+  # The wireless controller's Open API, for tenant Wi-Fi keys (ADR-0012 §3,
+  # CHG-0013). The API writes one PPSK key per tenant into the trust class's
+  # profile; the controller pushes it to the AP, and nothing calls the API at
+  # runtime.
+  #
+  # Declared while nothing enforces it, for the same reason as the rule above,
+  # and here the failure mode is unusually bad: when CHG-0007 starts enforcing,
+  # an undeclared path would break key issuance as a TIMEOUT inside a tenant's
+  # own `terraform apply`, which is about the worst signal to debug from.
+  - from_zone: platform
+    to_zone: management
+    action: pass
+    name: "deevnet-api -> wireless controller Open API"
+    protocol: TCP
+    source_net: "{{ hostvars['dv02prv001v01'].env.interfaces.eth0.ip }}/32"
+    destination_net: "{{ hostvars['dv02nms001v01'].env.interfaces.eth0.ip }}/32"
+    destination_port: "8043"
+
   # The router's own API, reached at its address on Platform. Same zone in and
   # out, which is not a transit rule at all: it is traffic to the firewall
   # itself, and under a default-deny interface policy it needs stating.
