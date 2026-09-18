@@ -41,6 +41,15 @@ deevnet_api_dns_update_from:
 # The core router forwards tenant zones to the tenant DNS host's address.
 deevnet_api_resolver_forward_to: "{{ hostvars[groups['tenant_dns'] | first].env.interfaces.eth0.ip }}"
 
+# What a tenant workload is given as its nameserver. NOT the address above:
+# that host is authoritative, so it answers its own tenant's zone and REFUSES
+# public names, substrate names and the Deevnet API's own name alike. A
+# workload needs a recursor, and the core router is one. It is reached at the
+# tenant_transit gateway, the first substrate hop a tenant's SNATed traffic
+# meets, and it already forwards every tenant zone to the address above - so a
+# workload resolves all three classes of name from this one server.
+deevnet_api_workload_resolver: "{{ deevnet_vlans.tenant_transit.gateway }}"
+
 # Backends. The API sits on Platform, so it reaches the router at its Platform
 # gateway, the DNS host and the state store directly, and the tenant hypervisor
 # over management (ADR-0015 Consequences: the narrow rules CHG-0007 must add).
