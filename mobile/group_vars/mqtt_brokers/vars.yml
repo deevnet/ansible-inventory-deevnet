@@ -24,3 +24,31 @@ mqtt_acls:
     - { access: read, topic: "eds/lightstand/lp-stand-01/scene" }
     - { access: write, topic: "eds/lightstand/lp-stand-01/status" }
     - { access: write, topic: "eds/lightstand/lp-stand-01/state" }
+
+# OpenBao, for the broker's TLS certificate (ADR-0016, CHG-0015).
+#
+# The broker serves TLS only, so without these it has no listener at all and
+# the role refuses to start rather than come up serving nothing.
+#
+# Both are used on the CONTROL NODE: every OpenBao call in the vernemq role is
+# delegated to localhost, so the messaging VM needs no path to OpenBao and
+# none is opened for it. IoT Backend reaching the substrate's secret store
+# would be a poor trade for a certificate that can be handed to it instead.
+#
+# groups['openbao'] rather than groups['tenant_dns'], which deevnet_api uses
+# for the same value. They resolve to the same host today because PowerDNS and
+# OpenBao share the identity VM, but only one of those names means "where the
+# secret store is".
+vernemq_openbao_addr: "https://{{ hostvars[groups['openbao'] | first].env.interfaces.eth0.ip }}:8200"
+vernemq_openbao_ca_local: "{{ playbook_dir }}/../.openbao/{{ groups['openbao'] | first }}-listener.pem"
+
+# Ansible's own AppRole, read across from the host that holds it.
+#
+# vault_openbao_ansible_role_id lives in group_vars/openbao/vault.yml, so it is
+# visible only to members of the openbao group - and this host is not one, nor
+# should it be. The role's default reads the bare variable, which is right for
+# a host inside that group and empty everywhere else; reaching through hostvars
+# is how deevnet_api solves the same problem, and it stays in inventory rather
+# than the role so the role does not have to know what the group is called.
+vernemq_openbao_ansible_role_id: "{{ hostvars[groups['openbao'] | first].vault_openbao_ansible_role_id | default('') }}"
+vernemq_openbao_ansible_secret_id: "{{ hostvars[groups['openbao'] | first].vault_openbao_ansible_secret_id | default('') }}"

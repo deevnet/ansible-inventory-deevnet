@@ -163,10 +163,11 @@ firewall_internet_zones:
 # reasons would otherwise roll back a correct policy. Checked 2026-09-19: all
 # of the below answered; two hosts named in CHG-0007's verification table did
 # not and are deliberately absent -
-#   - 10.20.35.20:1883, the MQTT broker. The VM is up, VerneMQ has never been
-#     deployed, so the port is closed. Port 22 on the same host stands in for
-#     it and proves the same zone boundary; the application port is checked by
-#     hand once the broker exists.
+#   - 10.20.35.20 is now probed on the BROKER's port, not on 22. VerneMQ was
+#     deployed by CHG-0015 and serves TLS on 8883, so the target can be the
+#     application itself rather than a stand-in that only proves the zone
+#     boundary. Note 8883 and not 1883: the broker has no plaintext listener,
+#     because the site CA existed by the time it was built.
 #   - 10.20.30.11, the Pi on the IoT segment. It does not answer at all, so no
 #     target on iot is listed. trusted, iot, iot_vendor, guest and storage have
 #     no live host to point at either; those segments are verified from clients
@@ -185,8 +186,8 @@ firewall_reachability_targets:
     port: 22
     why: "platform, via management -> platform"
   - host: "{{ hostvars['dv02msg001v01'].env.interfaces.eth0.ip }}"
-    port: 22
-    why: "iot_backend, via management -> iot_backend (stands in for the broker on 1883)"
+    port: 8883
+    why: "iot_backend, via management -> iot_backend (the VerneMQ broker itself)"
   # The exit node's transit address, not its management one. Probing
   # 10.20.99.22 would prove nothing: proxmox_mgmt_routing answers anything
   # sourced from that address out vmbr0, so it never crosses a zone boundary.
