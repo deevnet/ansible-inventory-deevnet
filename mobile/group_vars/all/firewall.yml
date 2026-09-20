@@ -121,6 +121,38 @@ firewall_zone_policies:
     destination_net: "{{ deevnet_vlans.platform.gateway }}/32"
     destination_port: "443"
 
+  # The broker account writer, for tenant MQTT accounts (ADR-0012 §3, §7;
+  # CHG-0016). This is the rule ADR-0012 §7 promised at API build time and
+  # never got: "platform -> iot_backend" was declared in the ADR and only
+  # "platform -> management" was ever written down.
+  #
+  # It was harmless while the router passed everything. It is not harmless now
+  # that CHG-0007 enforces, and the failure mode is the bad one this file
+  # already names above: an undeclared path breaks account issuance as a
+  # TIMEOUT inside a tenant's own `terraform apply`.
+  #
+  # Port 22, NOT the database port, and that is the whole of CHG-0016 option C.
+  # The broker's auth database is published to 127.0.0.1 on the messaging VM
+  # and is not reachable from any network, so there is no database port to
+  # open. The API sends one request to a program invoked by sshd as a forced
+  # command, pinned to a key with command=, restrict and from=.
+  #
+  # Port 22 on this host is reachable from VLAN 30 today regardless, because
+  # "iot -> iot_backend" below is a zone-level pass. The vernemq role's
+  # vernemq_ssh_restrict closes that with a firewalld rich rule on the host
+  # itself - which works for host INPUT traffic, unlike a published container
+  # port. Zone policy and host policy are doing different jobs here, and both
+  # are needed: see standards/network-segmentation, "Reachability and
+  # Permission".
+  - from_zone: platform
+    to_zone: iot_backend
+    action: pass
+    name: "deevnet-api -> broker account writer"
+    protocol: TCP
+    source_net: "{{ hostvars['dv02prv001v01'].env.interfaces.eth0.ip }}/32"
+    destination_net: "{{ hostvars['dv02msg001v01'].env.interfaces.eth0.ip }}/32"
+    destination_port: "22"
+
   # IoT -> IoT Backend (sensor data)
   - { from_zone: iot, to_zone: iot_backend, action: pass }
 
