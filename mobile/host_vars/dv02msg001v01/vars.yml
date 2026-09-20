@@ -8,8 +8,9 @@
 # tenant fabric has no inbound path, so publishers in tenants reach out to it
 # over tenant_transit -> iot_backend.
 #
-# Built empty. The `mqtt` name and the mqtt_brokers group membership arrive
-# with the broker, so nothing resolves to a broker that isn't there.
+# Both arrived with the broker in CHG-0015: the `mqtt` name below and this
+# host's membership of mqtt_brokers. Until then nothing resolved to a broker
+# that wasn't there.
 
 infrastructure:
   form: vm
@@ -30,7 +31,12 @@ env:
         # No reservation: IoT Backend has no DHCP pool ("static mappings only"),
         # so the address is set by cloud-init below.
         dhcp_reservation: false
-        cnames: []
+        cnames:
+          # The name tenants and devices are told to use. A device is flashed
+          # with whatever its tenant was given, so this is what the broker's
+          # certificate carries as a SAN beside the host's own name - flashing
+          # a device with a hostname it cannot verify is a field visit.
+          - mqtt
 
 mgmt_vm:
   hypervisor: dv02hyp001p01
