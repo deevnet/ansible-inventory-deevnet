@@ -52,3 +52,23 @@ vernemq_openbao_ca_local: "{{ playbook_dir }}/../.openbao/{{ groups['openbao'] |
 # than the role so the role does not have to know what the group is called.
 vernemq_openbao_ansible_role_id: "{{ hostvars[groups['openbao'] | first].vault_openbao_ansible_role_id | default('') }}"
 vernemq_openbao_ansible_secret_id: "{{ hostvars[groups['openbao'] | first].vault_openbao_ansible_secret_id | default('') }}"
+
+# Who may reach the broker's auth database (CHG-0016).
+#
+# The Deevnet API, and nothing else. Declaring this is what publishes the port
+# at all - an empty list leaves the database reachable only by the broker over
+# the private podman network.
+#
+# This is the enforcement the zone rule cannot express. `iot -> iot_backend` is
+# a zone-level pass, so a port on this segment is reachable from every device
+# on VLAN 30 whatever the narrow platform -> iot_backend rule says. The zone
+# rule states the intent; firewalld on this host decides which port.
+# See standards/network-segmentation "Reachability and Permission".
+# HELD EMPTY 2026-09-20. Declaring a source publishes the port, and a published
+# podman port is NOT filtered by the firewalld rich rule this role adds:
+# publishing is DNAT plus forward, so it never reaches the INPUT chain the rule
+# sits on, and netavark puts the container subnet in firewalld's trusted zone.
+# Proven, not assumed: with the rule in place, 5432 answered from a host that
+# is not an allowed source. Empty means the database keeps no published port
+# and is reachable only by the broker. See CHG-0016.
+vernemq_db_allowed_sources: []
