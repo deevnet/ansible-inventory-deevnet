@@ -66,6 +66,24 @@ deevnet_api_proxmox_url: "https://{{ hostvars['dv02hyp002p02'].env.interfaces.et
 # are derived from deevnet_vlans by the role, so they are not restated here.
 deevnet_api_omada_url: "https://{{ hostvars[groups['network_controllers'] | first].env.interfaces.eth0.ip }}:8043"
 
+# The broker account writer (ADR-0012 §3, §7; CHG-0016). Setting the address
+# turns broker accounts on; empty leaves those routes refusing with a reason,
+# which is what a site with no broker gets - the same shape as the wireless
+# controller above.
+#
+# The address is port 22 on the messaging VM, NOT a database port. The broker's
+# auth database is published to 127.0.0.1 there and is not reachable from any
+# network; the API sends one request to a program sshd runs as a forced
+# command. The narrow `platform -> iot_backend` rule in group_vars/all/firewall
+# is what lets this through, and it is the rule ADR-0012 §7 promised and never
+# got until CHG-0016.
+#
+# The host key the API pins is NOT set here. The role reads it from the
+# messaging host at deploy time, because a rebuilt VM gets a new one and a
+# value frozen in inventory would leave the API refusing to connect to the
+# host Ansible had just built. Set deevnet_api_broker_host_key to override.
+deevnet_api_broker_writer_addr: "{{ hostvars[groups['mqtt_brokers'] | first].env.interfaces.eth0.ip }}:22"
+
 # OpenBao (ADR-0016): where the API and Ansible reach it, and the listener
 # certificate the openbao role fetched to the control node.
 deevnet_api_openbao_addr: "https://{{ hostvars[groups['tenant_dns'] | first].env.interfaces.eth0.ip }}:8200"
@@ -95,3 +113,7 @@ deevnet_api_backends:
   # router. Same permission, separate blast radius and audit trail (CHG-0013).
   omada_client_id: "{{ hostvars[groups['network_controllers'] | first].vault_omada_api_client_id | default('') }}"
   omada_client_secret: "{{ hostvars[groups['network_controllers'] | first].vault_omada_api_client_secret | default('') }}"
+  # The API's OWN SSH key for the broker account writer (CHG-0016). Used for
+  # nothing else, so revoking it revokes exactly this capability. Its public
+  # half is pinned on the messaging VM as vernemq_writer_public_key.
+  broker_writer_key: "{{ vault_deevnet_api_broker_writer_key | default('') }}"

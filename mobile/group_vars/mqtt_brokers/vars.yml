@@ -53,3 +53,66 @@ vernemq_openbao_ca_local: "{{ playbook_dir }}/../.openbao/{{ groups['openbao'] |
 vernemq_openbao_ansible_role_id: "{{ hostvars[groups['openbao'] | first].vault_openbao_ansible_role_id | default('') }}"
 vernemq_openbao_ansible_secret_id: "{{ hostvars[groups['openbao'] | first].vault_openbao_ansible_secret_id | default('') }}"
 
+
+# --- The broker account writer (ADR-0012 §3, §7; CHG-0016) --------------------
+# How a tenant's MQTT account reaches the broker without the broker's auth
+# database being reachable from the network.
+#
+# The database is published to 127.0.0.1 only. The Deevnet API opens one SSH
+# connection to this host, sshd runs one program as a forced command, and that
+# program writes the account over the loopback port. The API never speaks to
+# the database and no database port is open anywhere.
+
+# The API's own public key. Its private half is
+# vault_deevnet_api_broker_writer_key in group_vars/deevnet_api/vault.yml.
+#
+# Declaring this is what installs the capability: the role installs no binary,
+# no account and no authorized_keys entry while it is empty. You cannot get the
+# writer without naming who may use it.
+vernemq_writer_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIhmewUa90HUsiEMhXeVheXNO5yXBUHNXiA2DVYl47it deevnet-api broker account writer (CHG-0016)"
+
+# Pinned in authorized_keys with from=, so the key is unusable from anywhere
+# else. Belt to the firewall's braces: it survives a firewall mistake, and it
+# is the one restriction that travels with the key rather than with the host.
+vernemq_writer_from: "{{ hostvars[groups['deevnet_api'] | first].env.interfaces.eth0.ip }}"
+
+# --- Restricting sshd on this host -------------------------------------------
+# `iot -> iot_backend` is a zone-level pass (group_vars/all/firewall), so every
+# device on VLAN 30 can reach port 22 here. That predates the writer and is
+# worth closing on its own merits; adding a key that writes broker accounts
+# makes it worth closing now.
+#
+# This is a firewalld rich rule on the host, filtering host INPUT traffic -
+# which is the one path PROVEN to work here. The same rule does NOTHING to a
+# published container port, because publishing is DNAT plus forward and never
+# reaches the INPUT chain (CHG-0016). That asymmetry is why the database is
+# bound to loopback instead of being filtered.
+#
+# Zone policy and host policy are doing different jobs, and both are needed:
+# the router decides which segments may reach this host at all, and this
+# decides who may reach one service on it. See standards/network-segmentation,
+# "Reachability and Permission".
+vernemq_ssh_restrict: true
+
+# The control node MUST be in this list. Ansible reaches this host over exactly
+# the port being restricted, so leaving it out locks the automation out and
+# costs a console session to undo - the role asserts it rather than trusting
+# whoever edits this file.
+#
+# vernemq_ssh_control_node is NOT set here. The role defaults it to the address
+# this host sees Ansible arrive from, which is the address the assert is really
+# about; naming one here would be inventory's belief about a route rather than
+# the route. Today that value is 10.20.99.95, checked on the host.
+vernemq_ssh_allowed_sources:
+  # The control node, by the value the role derived rather than an address
+  # repeated here.
+  - "{{ vernemq_ssh_control_node }}"
+  # Management, so a rebuilt or additional Builder still reaches this host
+  # without a firewall edit. Management already passes to iot_backend at the
+  # router, so this grants nothing the zone policy does not already allow.
+  - "{{ deevnet_vlans.management.subnet }}"
+  # Operator laptops on Trusted, which the zone policy also already passes.
+  - "{{ deevnet_vlans.trusted.subnet }}"
+  # The Deevnet API, which is the whole point: the writer's key is useless
+  # without a path to sshd.
+  - "{{ vernemq_writer_from }}/32"
