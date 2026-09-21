@@ -1,29 +1,19 @@
 ---
-# Topic permissions for the MQTT broker.
+# Topic permissions are NOT here any more (CHG-0017).
 #
-# Kept in inventory rather than the role so that adding a device is an
-# inventory act, like adding a tenant. The credentials themselves are in the
-# vault as vault_mqtt_users; this file says only what each account may touch.
+# `mqtt_acls` used to name what `lightd` and `lp-stand-01` could publish and
+# subscribe to, and the `mosquitto` role rendered it. Both of those are gone:
+# the broker is VerneMQ, which reads its accounts from its own database, and a
+# TENANT now declares its own topic permissions as `deevnet_iot_broker_account`
+# in its Terraform (ADR-0012 §3, §10; CHG-0016).
 #
-# Mosquitto denies anything not granted, so an account missing from this map
-# can authenticate and then do nothing.
-mqtt_acls:
-  # lightd, in the eds tenant. Publishes scenes to any stand and reads their
-  # presence; it never needs to write a stand's own status.
-  lightd:
-    - { access: write, topic: "eds/lightstand/+/scene" }
-    - { access: read, topic: "eds/lightstand/+/status" }
-    - { access: read, topic: "eds/lightstand/+/state" }
-    - { access: write, topic: "eds/lightd/status" }
-
-  # The LP jacket stand. Scoped to its OWN topics on purpose: a device
-  # credential that could write any stand's scene could repaint every stand in
-  # the house, and the IoT segment is rated Medium trust precisely because its
-  # devices are assumed reachable by things we did not write.
-  lp-stand-01:
-    - { access: read, topic: "eds/lightstand/lp-stand-01/scene" }
-    - { access: write, topic: "eds/lightstand/lp-stand-01/status" }
-    - { access: write, topic: "eds/lightstand/lp-stand-01/state" }
+# That is the point of the move, not a side effect. A tenant's permissions
+# belong to the tenant, so a rebuilt tenant restores them from its own state
+# and the substrate never has to hold a copy that can drift.
+#
+# The API writes the `<tenant>/` prefix itself, which is what confines a tenant
+# to its own topics - so the patterns a tenant declares are relative, and the
+# absolute form here would not even be accepted now.
 
 # OpenBao, for the broker's TLS certificate (ADR-0016, CHG-0015).
 #
