@@ -1,12 +1,13 @@
 ---
-# Substrate observability VM (ADR-0013 §1, §5).
+# Observability collection VM (ADR-0023 §1).
 #
-# Substrate logs and metrics. On management because IoT Backend can't reach
-# management and no rule lets Platform reach it, so this host collects by PULL
-# over management -> platform and management -> iot_backend. Hosts on
-# management may push to it.
+# Collects what cannot push: vmagent scrapes substrate targets and remote-writes
+# to the store (dv02obs001v01). It stores nothing itself. On management because
+# management reaches every zone, so a scraper here reaches every target over
+# rules that already exist, and nothing needs a path into management.
 #
-# Built empty: the collection tooling is not chosen yet.
+# Replaced dv02sob001v01 in CHG-0018. Built empty: its tooling is ADR-0023's
+# change, not CHG-0018's.
 
 infrastructure:
   form: vm
@@ -16,7 +17,7 @@ infrastructure:
       mac: "{{ deevnet_assigned_mac | default('') }}"
 
 env:
-  role: substrate-observability
+  role: observability-collection
   interfaces:
     eth0:
       ip: 10.20.99.41
