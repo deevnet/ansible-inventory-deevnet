@@ -1,0 +1,50 @@
+---
+# Observability store VM (ADR-0022 §1, ADR-0023 §2).
+#
+# The one store for every log and metric at the site, substrate and tenants
+# alike, partitioned by tenant index behind vmauth. On Platform because every
+# zone with something to log already reaches Platform (management, trusted,
+# tenant_transit, iot_backend -> platform), so everything pushes here with no
+# new zone rule.
+#
+# Replaced dv02tob001v01 in CHG-0018; the per-audience split its name
+# described no longer exists.
+
+infrastructure:
+  form: vm
+  interfaces:
+    eth0:
+      # Derived from the VMID by the allocator - see identity.yml beside this file.
+      mac: "{{ deevnet_assigned_mac | default('') }}"
+
+env:
+  role: observability-store
+  interfaces:
+    eth0:
+      ip: 10.20.25.22
+      purpose: platform
+      segment: platform
+      dns:
+        host_a_record: true
+        # No reservation: Platform has no DHCP pool. See dv02prv001v01.
+        dhcp_reservation: false
+        cnames: []
+
+mgmt_vm:
+  hypervisor: dv02hyp001p01
+  node: dv02hyp001p01
+  startup: "order=50,up=0,down=60"
+  vmid: "{{ deevnet_assigned_vmid | default(0) }}"
+  template_prefix: "fedora-server-"
+  storage: local-lvm-big-thin
+  cores: 2
+  # Built at 2 GB before logging had requirements; VictoriaLogs and vmauth now,
+  # and ADR-0023's metrics store and ADR-0024's Grafana later.
+  memory: 4096
+  # The store's data lives here, not on the OS disk (ADR-0022 §1).
+  data_disk: { device: scsi1, size: 100, storage: local-lvm-big-thin, mount: /srv }
+
+  vlan_tag: 25
+  static_ip: 10.20.25.22/24
+  static_gateway: 10.20.25.1
+  nameserver: 10.20.25.1
