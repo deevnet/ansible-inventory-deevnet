@@ -117,3 +117,6 @@ deevnet_api_backends:
   # nothing else, so revoking it revokes exactly this capability. Its public
   # half is pinned on the messaging VM as vernemq_writer_public_key.
   broker_writer_key: "{{ vault_deevnet_api_broker_writer_key | default('') }}"
+  # The API's OWN SSH key for the log store's user writer (CHG-0020). Its
+  # public half is pinned on the store as victorialogs_writer_public_key.
+  log_writer_key: "{{ vault_deevnet_api_log_writer_key | default('') }}"
