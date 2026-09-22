@@ -13,3 +13,14 @@ victorialogs_openbao_ansible_secret_id: "{{ hostvars[groups['openbao'] | first].
 
 # No syslog sources: ADR-0027 removed the unauthenticated syslog listener, so
 # the store takes nothing but authenticated writes through vmauth (CHG-0019).
+
+# --- The Deevnet API's access to the user writer (ADR-0027, CHG-0020) -----------
+# The public half of the API's own key. Its private half is in the API's vault
+# as vault_deevnet_api_log_writer_key, and it is used for nothing else, so
+# revoking this line revokes exactly the capability to write log users.
+#
+# from= pins it to the API's address. The API and the store share the Platform
+# segment, so this path crosses no zone rule at all - which makes the host-side
+# restrictions the only ones there are.
+victorialogs_writer_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG2Ewwg7dHbIOdLGVcIdt6I/Hz475wq6krDX8XiZT9oP deevnet-api log writer (CHG-0020)"
+victorialogs_writer_from: "{{ hostvars[groups['deevnet_api'] | first].env.interfaces.eth0.ip }}"
