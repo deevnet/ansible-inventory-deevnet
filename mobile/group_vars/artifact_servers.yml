@@ -78,6 +78,20 @@ artifacts_podman_images:
     dest_subdir: "container-images/postgres"
     tar_filename: "postgres-17.11.tar"
     latest_symlink: "postgres-latest.tar"
+  # The site's log store and the proxy that authenticates every caller in front
+  # of it (ADR-0022, CHG-0018). Pinned for the same reason as the resolver: the
+  # store's on-disk format and vmauth's config syntax should not move under a
+  # rebuild. vmauth ships on the VictoriaMetrics release line, not VictoriaLogs'.
+  - name: "victoria-logs"
+    upstream_image: "docker.io/victoriametrics/victoria-logs:v1.52.0"
+    dest_subdir: "container-images/victoria-logs"
+    tar_filename: "victoria-logs-v1.52.0.tar"
+    latest_symlink: "victoria-logs-latest.tar"
+  - name: "vmauth"
+    upstream_image: "docker.io/victoriametrics/vmauth:v1.152.0"
+    dest_subdir: "container-images/vmauth"
+    tar_filename: "vmauth-v1.152.0.tar"
+    latest_symlink: "vmauth-latest.tar"
 
 # Artifacts that admin hosts (artifact servers) should host under nginx_artifacts_root
 artifacts_to_fetch:
