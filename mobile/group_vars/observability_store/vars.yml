@@ -11,17 +11,5 @@ victorialogs_openbao_ca_local: "{{ playbook_dir }}/../.openbao/{{ groups['openba
 victorialogs_openbao_ansible_role_id: "{{ hostvars[groups['openbao'] | first].vault_openbao_ansible_role_id | default('') }}"
 victorialogs_openbao_ansible_secret_id: "{{ hostvars[groups['openbao'] | first].vault_openbao_ansible_secret_id | default('') }}"
 
-# --- Who may send syslog (the one unauthenticated path) -------------------------
-# Derived from inventory, not typed, so a readdressed device cannot silently
-# fall out of the list.
-#
-# The core router is the exception, and it is not a typo: this VM is on a
-# segment the router is directly attached to, so the router's syslog leaves on
-# its PLATFORM interface and arrives from the Platform gateway address, not
-# from its management address. Everything else is routed through the router
-# without NAT and keeps its own address.
-victorialogs_syslog_sources: >-
-  {{ [deevnet_vlans.platform.gateway]
-     + (groups['hypervisors'] + groups['switches'] + groups['aps'])
-       | map('extract', hostvars, ['env', 'interfaces', 'eth0', 'ip'])
-       | list }}
+# No syslog sources: ADR-0027 removed the unauthenticated syslog listener, so
+# the store takes nothing but authenticated writes through vmauth (CHG-0019).
