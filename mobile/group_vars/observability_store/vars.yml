@@ -1,0 +1,27 @@
+---
+# The observability store (ADR-0022, CHG-0018): VictoriaLogs behind vmauth.
+# Tokens are beside this file in vault.yml (the operator's) and in each
+# log_shippers host's own host_vars/<host>/vault.yml (its ingest token).
+
+# --- TLS from the site CA ----------------------------------------------------
+# The same settings as mqtt_brokers, and for the same reasons: every OpenBao
+# call runs on the control node, so this VM needs no path to OpenBao.
+victorialogs_openbao_addr: "https://{{ hostvars[groups['openbao'] | first].env.interfaces.eth0.ip }}:8200"
+victorialogs_openbao_ca_local: "{{ playbook_dir }}/../.openbao/{{ groups['openbao'] | first }}-listener.pem"
+victorialogs_openbao_ansible_role_id: "{{ hostvars[groups['openbao'] | first].vault_openbao_ansible_role_id | default('') }}"
+victorialogs_openbao_ansible_secret_id: "{{ hostvars[groups['openbao'] | first].vault_openbao_ansible_secret_id | default('') }}"
+
+# --- Who may send syslog (the one unauthenticated path) -------------------------
+# Derived from inventory, not typed, so a readdressed device cannot silently
+# fall out of the list.
+#
+# The core router is the exception, and it is not a typo: this VM is on a
+# segment the router is directly attached to, so the router's syslog leaves on
+# its PLATFORM interface and arrives from the Platform gateway address, not
+# from its management address. Everything else is routed through the router
+# without NAT and keeps its own address.
+victorialogs_syslog_sources: >-
+  {{ [deevnet_vlans.platform.gateway]
+     + (groups['hypervisors'] + groups['switches'] + groups['aps'])
+       | map('extract', hostvars, ['env', 'interfaces', 'eth0', 'ip'])
+       | list }}
