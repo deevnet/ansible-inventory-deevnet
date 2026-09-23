@@ -51,6 +51,17 @@ deevnet_vlans:
     dhcp_range_start: "10.20.40.50"
     dhcp_range_end: "10.20.40.250"
     wifi_ssid: "DVNTM-GUEST"
+  # Tenant developers' laptops (CHG-0022). Reaches the Deevnet API, the state
+  # store and the broker and nothing else inside the site, so a tenant applies
+  # from their own laptop instead of a trusted seat. A shared key, not PPSK: a
+  # ppsk segment becomes an API trust class, and this is not one.
+  tenant_dev:
+    vlan_id: 45
+    subnet: "10.20.45.0/24"
+    gateway: "10.20.45.1"
+    dhcp_range_start: "10.20.45.50"
+    dhcp_range_end: "10.20.45.250"
+    wifi_ssid: "DVNTM-TD"
   # --- Tenant fabric transport (ADR-0001 / ADR-0002) ---------------------------
   # Tenants are NOT VLANs. A tenant is an EVPN/VXLAN overlay owned by the tenant
   # hypervisor's own SDN fabric, with its own anycast gateway and IPAM. The

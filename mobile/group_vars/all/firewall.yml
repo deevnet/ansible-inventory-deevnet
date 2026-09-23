@@ -15,6 +15,7 @@ firewall_zone_policies:
   - { from_zone: management, to_zone: iot_vendor, action: pass }
   - { from_zone: management, to_zone: iot_backend, action: pass }
   - { from_zone: management, to_zone: guest, action: pass }
+  - { from_zone: management, to_zone: tenant_dev, action: pass }
   - { from_zone: management, to_zone: tenant_transit, action: pass }
 
   # Trusted -> broad access (not guest, not iot_vendor)
@@ -153,6 +154,32 @@ firewall_zone_policies:
     destination_net: "{{ hostvars['dv02msg001v01'].env.interfaces.eth0.ip }}/32"
     destination_port: "22"
 
+  # Tenant dev -> the three services a tenant's Terraform and test clients use
+  # (CHG-0022), and nothing else inside the site. The API and the state store
+  # share one host (api and tfstate are both names for dv02prv001v01); the
+  # broker is the TLS listener only.
+  - from_zone: tenant_dev
+    to_zone: platform
+    action: pass
+    name: "tenant dev -> deevnet API"
+    protocol: TCP
+    destination_net: "{{ hostvars['dv02prv001v01'].env.interfaces.eth0.ip }}/32"
+    destination_port: "8080"
+  - from_zone: tenant_dev
+    to_zone: platform
+    action: pass
+    name: "tenant dev -> tfstate"
+    protocol: TCP
+    destination_net: "{{ hostvars['dv02prv001v01'].env.interfaces.eth0.ip }}/32"
+    destination_port: "9000"
+  - from_zone: tenant_dev
+    to_zone: iot_backend
+    action: pass
+    name: "tenant dev -> MQTT broker"
+    protocol: TCP
+    destination_net: "{{ hostvars['dv02msg001v01'].env.interfaces.eth0.ip }}/32"
+    destination_port: "8883"
+
   # IoT -> IoT Backend (sensor data)
   - { from_zone: iot, to_zone: iot_backend, action: pass }
 
@@ -180,6 +207,7 @@ firewall_internet_zones:
   - iot_vendor
   - iot_backend
   - guest
+  - tenant_dev
   - tenant_transit
 
 # Paths the apply must not sever, checked from the control host immediately

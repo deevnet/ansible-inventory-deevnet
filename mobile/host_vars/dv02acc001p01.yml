@@ -33,7 +33,7 @@ switch_ports:
     - interface: "gigabitEthernet 1/0/4"
       description: "dv02wap001p01 wifi trunk"
       native_vlan: 99
-      allowed_vlans: [10, 30, 31, 40, 99]
+      allowed_vlans: [10, 30, 31, 40, 45, 99]
     # dv02hyp002p02 tenant hypervisor. Carries the tenant fabric's transit (50) and
     # underlay (51) segments plus management. Per ADR-0001 a tenant is an
     # overlay inside the fabric, so creating one never changes this line.
