@@ -29,6 +29,7 @@ deevnet_switch_profiles:
       - iot
       - iot_vendor
       - guest
+      - tenant_dev
   access_mgmt:
     mode: access
     vlan: management
