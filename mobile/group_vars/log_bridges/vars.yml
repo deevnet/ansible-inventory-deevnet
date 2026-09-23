@@ -1,0 +1,34 @@
+---
+# The MQTT log bridge (ADR-0027 §4, CHG-0021).
+#
+# It runs in the messaging VM beside the broker, holds a subscribe-only broker
+# account, and writes each tenant's device logs into that tenant's (index, 2)
+# partition of the log store.
+#
+# Almost nothing needs declaring here: the role derives the broker from this
+# host's own address and the store from the observability_store group, and both
+# credentials come from the vault. What is here is OpenBao, because the values
+# depend on which host holds it.
+
+# The image, staged by deevnet-log-bridge's `make stage`. Bump it here when a
+# new one is staged - the tag is the pin, and the tarball is named for it.
+log_bridge_version: "v0.1.1"
+
+# --- OpenBao, for the site CA -------------------------------------------------
+# The bridge verifies the broker and the store against the site CA and nothing
+# else. Both values below are used on the CONTROL NODE: the role's OpenBao
+# calls are delegated to localhost, so this VM needs no path to the secret
+# store, exactly as the broker's own certificate is fetched.
+#
+# They repeat the vernemq_* settings beside them rather than reading them,
+# because the two roles are not the same deployment: the bridge could be moved
+# to another host without the broker moving, and a default that silently
+# inherited the broker's would then be reading a value that no longer applies.
+log_bridge_openbao_addr: "https://{{ hostvars[groups['openbao'] | first].env.interfaces.eth0.ip }}:8200"
+log_bridge_openbao_ca_local: "{{ playbook_dir }}/../.openbao/{{ groups['openbao'] | first }}-listener.pem"
+
+# Ansible's own AppRole, read across from the host that holds it - see the
+# mqtt_brokers group vars for why it is reached through hostvars rather than
+# read directly.
+log_bridge_openbao_ansible_role_id: "{{ hostvars[groups['openbao'] | first].vault_openbao_ansible_role_id | default('') }}"
+log_bridge_openbao_ansible_secret_id: "{{ hostvars[groups['openbao'] | first].vault_openbao_ansible_secret_id | default('') }}"
