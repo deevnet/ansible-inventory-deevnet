@@ -120,3 +120,6 @@ deevnet_api_backends:
   # The API's OWN SSH key for the log store's user writer (CHG-0020). Its
   # public half is pinned on the store as victorialogs_writer_public_key.
   log_writer_key: "{{ vault_deevnet_api_log_writer_key | default('') }}"
+  # Grafana's server admin (CHG-0024), shared with Grafana on the store VM:
+  # creating an org is a server-admin act, and no org-scoped token can do it.
+  grafana_admin_password: "{{ vault_grafana_admin_password | default('') }}"
