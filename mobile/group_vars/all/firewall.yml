@@ -154,8 +154,8 @@ firewall_zone_policies:
     destination_net: "{{ hostvars['dv02msg001v01'].env.interfaces.eth0.ip }}/32"
     destination_port: "22"
 
-  # Tenant dev -> the three services a tenant's Terraform and test clients use
-  # (CHG-0022), and nothing else inside the site. The API and the state store
+  # Tenant dev -> the services a tenant's Terraform and test clients use
+  # (CHG-0022, CHG-0024), and nothing else inside the site. The API and the state store
   # share one host (api and tfstate are both names for dv02prv001v01); the
   # broker is the TLS listener only.
   - from_zone: tenant_dev
@@ -179,6 +179,24 @@ firewall_zone_policies:
     protocol: TCP
     destination_net: "{{ hostvars['dv02msg001v01'].env.interfaces.eth0.ip }}/32"
     destination_port: "8883"
+  # CHG-0024: the log store's front door and the tenant dashboards, so a laptop
+  # prototyping on DVNTM-TD can ship and read logs and use Grafana the way its
+  # workloads and the take-home Pi do. Both on the observability store, and
+  # both authenticate every request.
+  - from_zone: tenant_dev
+    to_zone: platform
+    action: pass
+    name: "tenant dev -> log store"
+    protocol: TCP
+    destination_net: "{{ hostvars['dv02obs001v01'].env.interfaces.eth0.ip }}/32"
+    destination_port: "8427"
+  - from_zone: tenant_dev
+    to_zone: platform
+    action: pass
+    name: "tenant dev -> dashboards"
+    protocol: TCP
+    destination_net: "{{ hostvars['dv02obs001v01'].env.interfaces.eth0.ip }}/32"
+    destination_port: "3000"
 
   # IoT -> IoT Backend (sensor data)
   - { from_zone: iot, to_zone: iot_backend, action: pass }

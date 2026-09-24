@@ -92,9 +92,32 @@ artifacts_podman_images:
     dest_subdir: "container-images/vmauth"
     tar_filename: "vmauth-v1.152.0.tar"
     latest_symlink: "vmauth-latest.tar"
+  # Tenant dashboards (ADR-0024, CHG-0024), beside the log store on the
+  # observability store VM. grafana/grafana IS the OSS edition; the separate
+  # grafana/grafana-oss repository has no 13.x tags. Pinned because its SQLite
+  # schema migrates forward only.
+  - name: "grafana"
+    upstream_image: "docker.io/grafana/grafana:13.2.2"
+    dest_subdir: "container-images/grafana"
+    tar_filename: "grafana-13.2.2.tar"
+    latest_symlink: "grafana-latest.tar"
 
 # Artifacts that admin hosts (artifact servers) should host under nginx_artifacts_root
 artifacts_to_fetch:
+  # The VictoriaLogs data source plugin for Grafana (Apache 2.0, signed by
+  # Grafana Labs), for tenant dashboards (CHG-0024). Mirrored because the
+  # observability store has no internet route, and Grafana installs plugins by
+  # download. One zip carries the backend for every platform, so the take-home
+  # Pi image (arm64) uses this same file. Upstream publishes a sha1
+  # (ccad07f3560214e1dc8056d0515f0f38fa30124c), which matched; the sha256 below
+  # is of those bytes.
+  - name: "grafana-victorialogs-datasource-0.32.0"
+    type: "generic"
+    url: "https://github.com/VictoriaMetrics/victorialogs-datasource/releases/download/v0.32.0/victoriametrics-logs-datasource-v0.32.0.zip"
+    dest_subdir: "grafana-plugins"
+    dest_filename: "victoriametrics-logs-datasource-v0.32.0.zip"
+    sha256: "8204d097b17f53b1c3a71761047734b7980bd983710c6cfcef8d938abe5eeef0"
+
   # =========================================================================
   # EAP650-Outdoor firmware (dv02wap001p01)
   #
