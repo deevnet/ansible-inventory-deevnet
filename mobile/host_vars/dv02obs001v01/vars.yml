@@ -28,7 +28,9 @@ env:
         host_a_record: true
         # No reservation: Platform has no DHCP pool. See dv02prv001v01.
         dhcp_reservation: false
-        cnames: []
+        cnames:
+          # Tenant developer downloads (CHG-0025), by name from DVNTM-TD.
+          - downloads
 
 mgmt_vm:
   hypervisor: dv02hyp001p01

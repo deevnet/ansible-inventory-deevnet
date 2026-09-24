@@ -18,6 +18,12 @@ grafana_openbao_ca_local: "{{ victorialogs_openbao_ca_local }}"
 grafana_openbao_ansible_role_id: "{{ victorialogs_openbao_ansible_role_id }}"
 grafana_openbao_ansible_secret_id: "{{ victorialogs_openbao_ansible_secret_id }}"
 
+# And the tenant downloads server (CHG-0025).
+tenant_downloads_openbao_addr: "{{ victorialogs_openbao_addr }}"
+tenant_downloads_openbao_ca_local: "{{ victorialogs_openbao_ca_local }}"
+tenant_downloads_openbao_ansible_role_id: "{{ victorialogs_openbao_ansible_role_id }}"
+tenant_downloads_openbao_ansible_secret_id: "{{ victorialogs_openbao_ansible_secret_id }}"
+
 # No syslog sources: ADR-0027 removed the unauthenticated syslog listener, so
 # the store takes nothing but authenticated writes through vmauth (CHG-0019).
 
