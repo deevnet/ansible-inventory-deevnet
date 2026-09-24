@@ -1,5 +1,6 @@
 ---
-# The observability store (ADR-0022, CHG-0018): VictoriaLogs behind vmauth.
+# The observability store (ADR-0022, CHG-0018): VictoriaLogs behind vmauth,
+# and Grafana for tenant dashboards (ADR-0024, CHG-0024).
 # Tokens are beside this file in vault.yml (the operator's) and in each
 # log_shippers host's own host_vars/<host>/vault.yml (its ingest token).
 
@@ -10,6 +11,12 @@ victorialogs_openbao_addr: "https://{{ hostvars[groups['openbao'] | first].env.i
 victorialogs_openbao_ca_local: "{{ playbook_dir }}/../.openbao/{{ groups['openbao'] | first }}-listener.pem"
 victorialogs_openbao_ansible_role_id: "{{ hostvars[groups['openbao'] | first].vault_openbao_ansible_role_id | default('') }}"
 victorialogs_openbao_ansible_secret_id: "{{ hostvars[groups['openbao'] | first].vault_openbao_ansible_secret_id | default('') }}"
+
+# Grafana (ADR-0024, CHG-0024) takes its certificate the same way.
+grafana_openbao_addr: "{{ victorialogs_openbao_addr }}"
+grafana_openbao_ca_local: "{{ victorialogs_openbao_ca_local }}"
+grafana_openbao_ansible_role_id: "{{ victorialogs_openbao_ansible_role_id }}"
+grafana_openbao_ansible_secret_id: "{{ victorialogs_openbao_ansible_secret_id }}"
 
 # No syslog sources: ADR-0027 removed the unauthenticated syslog listener, so
 # the store takes nothing but authenticated writes through vmauth (CHG-0019).
