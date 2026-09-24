@@ -96,6 +96,12 @@ artifacts_podman_images:
   # observability store VM. grafana/grafana IS the OSS edition; the separate
   # grafana/grafana-oss repository has no 13.x tags. Pinned because its SQLite
   # schema migrates forward only.
+  # The tenant downloads server (CHG-0025): static files, read-only.
+  - name: "nginx"
+    upstream_image: "docker.io/library/nginx:1.29.1-alpine"
+    dest_subdir: "container-images/nginx"
+    tar_filename: "nginx-1.29.1-alpine.tar"
+    latest_symlink: "nginx-latest.tar"
   - name: "grafana"
     upstream_image: "docker.io/grafana/grafana:13.2.2"
     dest_subdir: "container-images/grafana"
@@ -104,6 +110,104 @@ artifacts_podman_images:
 
 # Artifacts that admin hosts (artifact servers) should host under nginx_artifacts_root
 artifacts_to_fetch:
+  # =========================================================================
+  # Tenant downloads (CHG-0025)
+  #
+  # What a tenant developer's laptop needs, mirrored so a meetup on library
+  # internet does not pull it from the internet forty times. Everything under
+  # tenant/ is pushed to the observability store and served to DVNTM-TD at
+  # https://downloads.<site>.deevnet.net:8443 (deevnet.mgmt tenant_downloads).
+  # The deevnet provider and the scripts are staged into tenant/ by the
+  # provider repo's `make stage`; the Pi image by the image factory's
+  # `make pi-backend-publish`. The upstream checksums below are the vendors'
+  # own where they publish one.
+  # =========================================================================
+  - name: "tenant-terraform-1.16.4-darwin_amd64"
+    type: "generic"
+    url: "https://releases.hashicorp.com/terraform/1.16.4/terraform_1.16.4_darwin_amd64.zip"
+    dest_subdir: "tenant/terraform/1.16.4"
+    dest_filename: "terraform_1.16.4_darwin_amd64.zip"
+    sha256: "2ee4b62064086e4b24b0d6cf2e61718fbaf0556feba990f708a5e32557554b3b"
+  - name: "tenant-terraform-1.16.4-darwin_arm64"
+    type: "generic"
+    url: "https://releases.hashicorp.com/terraform/1.16.4/terraform_1.16.4_darwin_arm64.zip"
+    dest_subdir: "tenant/terraform/1.16.4"
+    dest_filename: "terraform_1.16.4_darwin_arm64.zip"
+    sha256: "42cfdf97ad722f79085fe2279b06d4b8680172de3534b22eeddd9a0fbbe7b8f1"
+  - name: "tenant-terraform-1.16.4-linux_amd64"
+    type: "generic"
+    url: "https://releases.hashicorp.com/terraform/1.16.4/terraform_1.16.4_linux_amd64.zip"
+    dest_subdir: "tenant/terraform/1.16.4"
+    dest_filename: "terraform_1.16.4_linux_amd64.zip"
+    sha256: "dc94af0eef1147718ad7c8daea792ed199e3e0492eec180d0adafa2a65a879df"
+  - name: "tenant-terraform-1.16.4-linux_arm64"
+    type: "generic"
+    url: "https://releases.hashicorp.com/terraform/1.16.4/terraform_1.16.4_linux_arm64.zip"
+    dest_subdir: "tenant/terraform/1.16.4"
+    dest_filename: "terraform_1.16.4_linux_arm64.zip"
+    sha256: "8263f301cb1a24489a4adeed147bf28504053f77237b3ea97a0ef2972659de30"
+  - name: "tenant-terraform-1.16.4-sums"
+    type: "generic"
+    url: "https://releases.hashicorp.com/terraform/1.16.4/terraform_1.16.4_SHA256SUMS"
+    dest_subdir: "tenant/terraform/1.16.4"
+    dest_filename: "terraform_1.16.4_SHA256SUMS"
+    sha256: "e8702b6a51705a6846412055205819091ac9a74d551611015ddf36087fe9a2b5"
+  # The grafana provider, for dashboards as code (CHG-0024); the version the
+  # tenant guide's example was tested with. install-provider.sh reads the
+  # zip and the SHA256SUMS file from here.
+  - name: "tenant-grafana-provider-4.46.0-darwin_amd64"
+    type: "generic"
+    url: "https://github.com/grafana/terraform-provider-grafana/releases/download/v4.46.0/terraform-provider-grafana_4.46.0_darwin_amd64.zip"
+    dest_subdir: "tenant/providers/grafana/4.46.0"
+    dest_filename: "terraform-provider-grafana_4.46.0_darwin_amd64.zip"
+    sha256: "8bab462c26fcfb2907b1c06dc28839c90cb90be92b5e3eb4e34a127562f1e840"
+  - name: "tenant-grafana-provider-4.46.0-darwin_arm64"
+    type: "generic"
+    url: "https://github.com/grafana/terraform-provider-grafana/releases/download/v4.46.0/terraform-provider-grafana_4.46.0_darwin_arm64.zip"
+    dest_subdir: "tenant/providers/grafana/4.46.0"
+    dest_filename: "terraform-provider-grafana_4.46.0_darwin_arm64.zip"
+    sha256: "9ba7771a967f517af8b7ea61255a40b3f3e30e08fdc21ff09028b93daa765799"
+  - name: "tenant-grafana-provider-4.46.0-linux_amd64"
+    type: "generic"
+    url: "https://github.com/grafana/terraform-provider-grafana/releases/download/v4.46.0/terraform-provider-grafana_4.46.0_linux_amd64.zip"
+    dest_subdir: "tenant/providers/grafana/4.46.0"
+    dest_filename: "terraform-provider-grafana_4.46.0_linux_amd64.zip"
+    sha256: "f3cacc1f46e79730cbe1ee26935053e889cb37ec4721899501478a3548d52aea"
+  - name: "tenant-grafana-provider-4.46.0-linux_arm64"
+    type: "generic"
+    url: "https://github.com/grafana/terraform-provider-grafana/releases/download/v4.46.0/terraform-provider-grafana_4.46.0_linux_arm64.zip"
+    dest_subdir: "tenant/providers/grafana/4.46.0"
+    dest_filename: "terraform-provider-grafana_4.46.0_linux_arm64.zip"
+    sha256: "cf56438233a38f2cfcb5d367ddb08c54c24ad046a3ff9016b65538a299b9777c"
+  - name: "tenant-grafana-provider-4.46.0-sums"
+    type: "generic"
+    url: "https://github.com/grafana/terraform-provider-grafana/releases/download/v4.46.0/terraform-provider-grafana_4.46.0_SHA256SUMS"
+    dest_subdir: "tenant/providers/grafana/4.46.0"
+    dest_filename: "terraform-provider-grafana_4.46.0_SHA256SUMS"
+    sha256: "d22e71e87c842d4aa1c14fe757908596e76e6cfc501cf18aecce879679cbc242"
+  # Raspberry Pi Imager, to flash the take-home card (GitHub's asset digests).
+  - name: "tenant-rpi-imager-2.0.11.1-macos"
+    type: "generic"
+    url: "https://github.com/raspberrypi/rpi-imager/releases/download/v2.0.11.1/rpi-imager-v2.0.11.1.dmg"
+    dest_subdir: "tenant/tools"
+    dest_filename: "rpi-imager-v2.0.11.1.dmg"
+    sha256: "2b4c5324c5ff04aa3bfb216795ae9e01cb54400752727353e13fb21e66c528a9"
+  - name: "tenant-rpi-imager-2.0.11.1-deb-amd64"
+    type: "generic"
+    url: "https://github.com/raspberrypi/rpi-imager/releases/download/v2.0.11.1/rpi-imager_2.0.11.1-1_amd64.deb"
+    dest_subdir: "tenant/tools"
+    dest_filename: "rpi-imager_2.0.11.1-1_amd64.deb"
+    sha256: "b6de5abbcd37efe68a636bf5ba9d3a5812fc855f1b8ed449ccef33beef338376"
+  # MicroPython for the Pico W (the walkthrough needs 1.23 or later).
+  # MicroPython publishes no checksum; the sha256 is of the bytes mirrored on
+  # 2026-09-24.
+  - name: "tenant-micropython-pico-w-1.29.0"
+    type: "generic"
+    url: "https://micropython.org/resources/firmware/RPI_PICO_W-20260824-v1.29.0.uf2"
+    dest_subdir: "tenant/tools"
+    dest_filename: "RPI_PICO_W-20260824-v1.29.0.uf2"
+    sha256: "f918c0a082c6daf53e27998b7f990ba5f065db2e298b21a34024532a20786794"
+
   # The VictoriaLogs data source plugin for Grafana (Apache 2.0, signed by
   # Grafana Labs), for tenant dashboards (CHG-0024). Mirrored because the
   # observability store has no internet route, and Grafana installs plugins by

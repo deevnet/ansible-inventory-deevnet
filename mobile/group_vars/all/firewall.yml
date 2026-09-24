@@ -197,6 +197,16 @@ firewall_zone_policies:
     protocol: TCP
     destination_net: "{{ hostvars['dv02obs001v01'].env.interfaces.eth0.ip }}/32"
     destination_port: "3000"
+  # CHG-0025: tenant developer downloads (the provider, Terraform, Pi Imager,
+  # the take-home image), read-only, so a meetup does not pull them over the
+  # venue's internet.
+  - from_zone: tenant_dev
+    to_zone: platform
+    action: pass
+    name: "tenant dev -> tenant downloads"
+    protocol: TCP
+    destination_net: "{{ hostvars['dv02obs001v01'].env.interfaces.eth0.ip }}/32"
+    destination_port: "8443"
 
   # IoT -> IoT Backend (sensor data)
   - { from_zone: iot, to_zone: iot_backend, action: pass }
