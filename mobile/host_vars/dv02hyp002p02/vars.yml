@@ -109,3 +109,54 @@ tenant_egress_agent_api_url: "https://api.{{ deevnet_substrate }}.{{ deevnet_roo
 # Fetched by the deevnet.mgmt openbao role. Anchored on the inventory rather
 # than the playbook, so it resolves the same from any collection.
 tenant_egress_agent_ca_src: "{{ inventory_dir }}/../../ansible-collection-deevnet.mgmt/.openbao/site-ca.pem"
+
+# Proxmox identities automation uses on this node, applied by deevnet.builder's
+# proxmox_node_access role (site.yml, tag proxmox-access). Read from the node on
+# 2026-09-27. Tokens are verified, never created: a missing one fails the run
+# with the manual step, because its secret is shown once.
+#
+# Not declared, and left alone: the role TerraformProv, which no ACL uses.
+proxmox_node_access:
+  roles:
+    # The Deevnet API's tenant builder (CHG-0010).
+    - id: DeevnetTenantBuilder
+      privs:
+        - Datastore.AllocateSpace
+        - Datastore.AllocateTemplate
+        - Datastore.Audit
+        - SDN.Allocate
+        - SDN.Audit
+        - SDN.Use
+        - VM.Allocate
+        - VM.Audit
+        - VM.Clone
+        - VM.Config.CPU
+        - VM.Config.Cloudinit
+        - VM.Config.Disk
+        - VM.Config.Memory
+        - VM.Config.Network
+        - VM.Config.Options
+        - VM.Migrate
+        - VM.PowerMgmt
+    - id: DeevnetNodeAudit
+      privs: [Sys.Audit]
+  users:
+    # vault_deevnet_api_proxmox_token_* (group_vars/deevnet_api/vault.yml)
+    - id: deevnet-api@pve
+      tokens: [tenants]
+    # Packer and the tenant fabric, through scripts/pve-creds
+    - id: terraform-prov@pve
+      tokens: [terraform-prov-token]
+  acls:
+    - path: /
+      role: DeevnetTenantBuilder
+      users: [deevnet-api@pve]
+      tokens: [deevnet-api@pve!tenants]
+    - path: /nodes
+      role: DeevnetNodeAudit
+      users: [deevnet-api@pve]
+      tokens: [deevnet-api@pve!tenants]
+    - path: /
+      role: Administrator
+      users: [terraform-prov@pve]
+      tokens: [terraform-prov@pve!terraform-prov-token]
