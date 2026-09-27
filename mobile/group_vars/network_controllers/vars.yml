@@ -24,3 +24,9 @@
   # it no longer does, and mapping it back in would undo that. If a play ever
   # genuinely needs Owner rights, reference the vault variable at that play
   # rather than making it the group default.
+
+  # The EAP ACL protocol list meaning "every protocol" (CHG-0029 step 2). The
+  # Open API spec defers protocol values to an access guide it does not publish,
+  # so this was read back from a rule made in the controller UI with protocols
+  # "All" on 6.3.0.45, and that rule deleted. Used by the client isolation ACLs.
+  omada_acl_protocols_all: [256]
