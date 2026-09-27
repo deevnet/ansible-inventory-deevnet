@@ -1,0 +1,28 @@
+# Settings for scripts/vault-examples.py.
+
+# A comment paragraph (the lines between two blank `#` lines) containing any of
+# these is left out of the examples. For comments that belong in the encrypted
+# vault but not in a public file.
+drop_paragraphs_matching:
+  - git history
+  - "TODO: fill these in"
+
+# Written above a key whose vault has no comment for it.
+hints:
+  vault_opnsense_api_key: |-
+    The core router's API key and secret, for the deevnet.net roles and the
+    Deevnet API. OPNsense generates them in its web UI; they cannot be chosen.
+  vault_switch_user: |-
+    The access switch's admin login, used over SSH by deevnet.net's switch_vlans.
+  vault_proxmox_token_id: |-
+    This node's automation token, e.g. terraform-prov@pve!tf-prov-token. Issued
+    by hand (Build Management Plane, Step 7); Proxmox shows the secret once.
+  vault_omada_admin_user: |-
+    The controller's local site Admin that automation logs in as (a_autoprov).
+  vault_omada_openapi_client_id: |-
+    Ansible's Open API client (omada-wireless.yml), created by the controller's
+    Owner in the UI.
+  vault_minio_root_user: |-
+    MinIO's root user, for the state store's own administration only.
+  vault_deevnet_api_token: |-
+    The operator's bearer token for the Deevnet API.  openssl rand -hex 32

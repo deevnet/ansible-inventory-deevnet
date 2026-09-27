@@ -12,4 +12,15 @@ for f in $(git diff --cached --name-only --diff-filter=ACM | grep 'vault\.yml$')
         FAIL=1
     fi
 done
+# An example vault must never carry a value. Every key is empty ("") or a
+# mapping of empty keys; anything else is a secret on its way to a public repo.
+for f in $(git diff --cached --name-only --diff-filter=ACM | grep 'vault\.example\.yml$'); do
+    bad=$(git show ":$f" | awk '/^[[:space:]]*#/ {next}
+        /^[[:space:]]*[A-Za-z_][A-Za-z0-9_-]*:[[:space:]]*[^[:space:]]/ && !/:[[:space:]]*""[[:space:]]*$/ {n++}
+        END {print n+0}')
+    if [ "$bad" -gt 0 ]; then
+        echo "ERROR: $f has a non-empty value. Example vaults hold keys only."
+        FAIL=1
+    fi
+done
 exit $FAIL
