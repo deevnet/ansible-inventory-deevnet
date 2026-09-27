@@ -1,0 +1,7 @@
+---
+# The state store (ADR-0007) serves TLS from the site CA (CHG-0030). A
+# tenant's state holds every secret the substrate issued it and crosses
+# DVNTM-TD, whose client isolation stops IP but not ARP spoofing (ADR-0029 §4).
+minio_tls_enabled: true
+minio_openbao_addr: "https://{{ hostvars[groups['openbao'] | first].env.interfaces.eth0.ip }}:8200"
+minio_openbao_ca_local: "{{ playbook_dir }}/../.openbao/{{ groups['openbao'] | first }}-listener.pem"
