@@ -75,3 +75,20 @@ proxmox_node_storage:
       type: lvm
       vgname: vgbigdata
       content: [images, rootdir]
+
+# Proxmox identities automation uses on this node, applied by deevnet.builder's
+# proxmox_node_access role (site.yml, tag proxmox-access). Read from the node on
+# 2026-09-27. The token is verified, never created: a missing one fails the run
+# with the manual step (Build Management Plane, Step 7).
+#
+# Not declared, and left alone: the user packer-prov@pve, which has no token.
+proxmox_node_access:
+  users:
+    # vault_proxmox_token_* (this host's vault.yml), fetched per run by pve-creds
+    - id: terraform-prov@pve
+      tokens: [tf-prov-token]
+  acls:
+    - path: /
+      role: Administrator
+      users: [terraform-prov@pve]
+      tokens: [terraform-prov@pve!tf-prov-token]
