@@ -1,6 +1,6 @@
 VAULT_FILES := $(shell find . -name 'vault.yml' -not -path './.git/*')
 
-.PHONY: help vault unvault install-hooks
+.PHONY: help vault unvault install-hooks vault-examples empty-vault
 
 default: help
 
@@ -13,6 +13,8 @@ help:
 	@echo "  vault           Encrypt all unencrypted vault.yml files"
 	@echo "  unvault         Decrypt all encrypted vault.yml files"
 	@echo "  install-hooks   Set git hooks path to hooks/"
+	@echo "  vault-examples  Regenerate vault.example.yml files (vaults must be decrypted)"
+	@echo "  empty-vault     Create empty vault.yml files from the examples (SITE=mobile)"
 
 vault:
 	@TO_ENCRYPT=""; \
@@ -49,3 +51,9 @@ unvault:
 install-hooks:
 	git config core.hooksPath hooks
 	@echo "Git hooks path set to hooks/."
+
+vault-examples:
+	@python3 scripts/vault-examples.py
+
+empty-vault:
+	@scripts/make-empty-vault.sh $(or $(SITE),mobile)
