@@ -207,6 +207,19 @@ firewall_zone_policies:
     protocol: TCP
     destination_net: "{{ hostvars['dv02obs001v01'].env.interfaces.eth0.ip }}/32"
     destination_port: "8443"
+  # ADR-0028 / CHG-0028: a tenant logs in to its own workloads from its laptop.
+  # SSH only, into the tenant overlay over ADR-0018's route. Zone-level like
+  # every tenant_transit rule: the router cannot tell one tenant's workload from
+  # another's, so what keeps tenant A out of tenant B's workload is the key -
+  # a workload accepts only the keys its own tenant gave it, on the tenant
+  # account, and carries no a_autoprov.
+  - from_zone: tenant_dev
+    to_zone: tenant_transit
+    action: pass
+    name: "tenant dev -> tenant workload SSH (ADR-0028)"
+    protocol: TCP
+    destination_net: "10.20.128.0/18"
+    destination_port: "22"
 
   # IoT -> IoT Backend (sensor data)
   - { from_zone: iot, to_zone: iot_backend, action: pass }
