@@ -2,8 +2,8 @@
 # Start a site's vault files from the committed examples.
 #
 # For every vault.example.yml under the site directory, create vault.yml beside
-# it with every key present and every value empty - unless vault.yml already
-# exists, which is never touched. Fill in the values (each key's comment says
+# it with every key present and every value empty. An existing vault.yml is
+# never overwritten: it is skipped, and the copy itself is --no-clobber. Fill in the values (each key's comment says
 # where it comes from), then run `make vault` before committing anything.
 #
 #   scripts/make-empty-vault.sh [site]     # default: mobile
@@ -22,7 +22,7 @@ while IFS= read -r -d '' ex; do
         echo "kept     $rel (already exists)"
         kept=$((kept + 1))
     else
-        cp "$ex" "$vault"
+        cp --no-clobber "$ex" "$vault"
         echo "created  $rel"
         created=$((created + 1))
     fi
