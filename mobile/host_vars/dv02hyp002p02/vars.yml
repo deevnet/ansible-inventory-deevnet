@@ -106,9 +106,8 @@ proxmox_tenant_egress:
 # without it. Add it with the API's DEEVNET_AGENT_TOKEN, then run
 # playbooks/tenant-egress-agent.yml and set agent_managed above.
 tenant_egress_agent_api_url: "https://api.{{ deevnet_substrate }}.{{ deevnet_root_domain }}:8080"
-# Fetched by the deevnet.mgmt openbao role. Anchored on the inventory rather
-# than the playbook, so it resolves the same from any collection.
-tenant_egress_agent_ca_src: "{{ inventory_dir }}/../../ansible-collection-deevnet.mgmt/.openbao/site-ca.pem"
+# The site root (ADR-0030), from the inventory.
+tenant_egress_agent_ca_src: "{{ site_root_ca_file }}"
 
 # Proxmox identities automation uses on this node, applied by deevnet.builder's
 # proxmox_node_access role (site.yml, tag proxmox-access). Read from the node on
