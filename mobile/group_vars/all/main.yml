@@ -1,6 +1,14 @@
 deevnet_root_domain: deevnet.net
 deevnet_substrate: mobile
 
+# The site root CA (ADR-0030): the only trust anchor, made once by deevnet.mgmt
+# playbooks/site-root-ca.yml. Its key is vault_site_root_ca_key. The bootstrap
+# intermediate signs what comes up before OpenBao: the core router and the
+# hypervisors (ADR-0030 §3).
+site_root_ca_name: "deevnet-{{ deevnet_substrate }}-root-ca.pem"
+site_root_ca_file: "{{ inventory_dir }}/pki/{{ site_root_ca_name }}"
+site_bootstrap_ca_file: "{{ inventory_dir }}/pki/deevnet-{{ deevnet_substrate }}-bootstrap-ca.pem"
+
 # Derive ansible_host from env.interfaces.<if>.ip
 ansible_host: >-
   {{
