@@ -30,3 +30,13 @@
   # so this was read back from a rule made in the controller UI with protocols
   # "All" on 6.3.0.45, and that rule deleted. Used by the client isolation ACLs.
   omada_acl_protocols_all: [256]
+
+  # --- TLS from the site CA (ADR-0030, CHG-0032) -------------------------------
+  # Off until CHG-0032's Omada step; then the controller serves a certificate
+  # from OpenBao through the image's /cert mount. Used on the CONTROL NODE.
+  omada_tls_enabled: false
+  omada_openbao_addr: "https://{{ hostvars[groups['openbao'] | first].env.interfaces.eth0.ip }}:8200"
+  omada_openbao_ca_local: "{{ playbook_dir }}/../.openbao/{{ groups['openbao'] | first }}-listener.pem"
+  # Ansible's own AppRole, read across from the host that holds it.
+  omada_openbao_ansible_role_id: "{{ hostvars[groups['openbao'] | first].vault_openbao_ansible_role_id | default('') }}"
+  omada_openbao_ansible_secret_id: "{{ hostvars[groups['openbao'] | first].vault_openbao_ansible_secret_id | default('') }}"
