@@ -34,7 +34,7 @@
   # --- TLS from the site CA (ADR-0030, CHG-0032) -------------------------------
   # Off until CHG-0032's Omada step; then the controller serves a certificate
   # from OpenBao through the image's /cert mount. Used on the CONTROL NODE.
-  omada_tls_enabled: false
+  omada_tls_enabled: true
   omada_openbao_addr: "https://{{ hostvars[groups['openbao'] | first].env.interfaces.eth0.ip }}:8200"
   omada_openbao_ca_local: "{{ playbook_dir }}/../.openbao/{{ groups['openbao'] | first }}-listener.pem"
   # Ansible's own AppRole, read across from the host that holds it.
