@@ -27,7 +27,7 @@ site_cert_ip_sans: >-
 # Whether clients verify each appliance's certificate (ADR-0030 §8, CHG-0032).
 # Each turns on once that device serves a site certificate; until then its
 # clients skip verification, as they always have.
-site_verify_proxmox: false
+site_verify_proxmox: true
 site_verify_opnsense: false
 site_verify_omada: false
 
