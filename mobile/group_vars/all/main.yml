@@ -11,6 +11,19 @@ site_root_ca_name: "deevnet-{{ deevnet_substrate }}-root-ca.pem"
 site_root_ca_file: "{{ inventory_dir }}/../pki/{{ deevnet_substrate }}/{{ site_root_ca_name }}"
 site_bootstrap_ca_file: "{{ inventory_dir }}/../pki/{{ deevnet_substrate }}/deevnet-{{ deevnet_substrate }}-bootstrap-ca.pem"
 
+# What a host's certificate names (ADR-0030 §5), derived from the same
+# env.interfaces data opnsense_dns publishes: the A record, every CNAME, every
+# address. A new alias reaches the certificate on its next renewal.
+site_cert_dns_names: >-
+  {{ [inventory_hostname ~ '.' ~ deevnet_substrate ~ '.' ~ deevnet_root_domain]
+     + ((env.interfaces | default({})).values()
+        | map(attribute='dns', default={}) | map(attribute='cnames', default=[]) | flatten
+        | map('regex_replace', '$', '.' ~ deevnet_substrate ~ '.' ~ deevnet_root_domain)
+        | list) }}
+site_cert_ip_sans: >-
+  {{ (env.interfaces | default({})).values() | map(attribute='ip', default='')
+     | select('match', '^[0-9]+[.][0-9]+[.][0-9]+[.][0-9]+$') | list }}
+
 # Derive ansible_host from env.interfaces.<if>.ip
 ansible_host: >-
   {{
