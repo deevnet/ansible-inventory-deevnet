@@ -6,8 +6,10 @@ deevnet_substrate: mobile
 # intermediate signs what comes up before OpenBao: the core router and the
 # hypervisors (ADR-0030 §3).
 site_root_ca_name: "deevnet-{{ deevnet_substrate }}-root-ca.pem"
-site_root_ca_file: "{{ inventory_dir }}/pki/{{ site_root_ca_name }}"
-site_bootstrap_ca_file: "{{ inventory_dir }}/pki/deevnet-{{ deevnet_substrate }}-bootstrap-ca.pem"
+# Kept OUTSIDE the inventory directory: Ansible parses every file in it as an
+# inventory source.
+site_root_ca_file: "{{ inventory_dir }}/../pki/{{ deevnet_substrate }}/{{ site_root_ca_name }}"
+site_bootstrap_ca_file: "{{ inventory_dir }}/../pki/{{ deevnet_substrate }}/deevnet-{{ deevnet_substrate }}-bootstrap-ca.pem"
 
 # Derive ansible_host from env.interfaces.<if>.ip
 ansible_host: >-
