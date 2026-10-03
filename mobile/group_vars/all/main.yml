@@ -1,15 +1,25 @@
 deevnet_root_domain: deevnet.net
 deevnet_substrate: mobile
 
-# The site root CA (ADR-0030): the only trust anchor, made once by deevnet.mgmt
-# playbooks/site-root-ca.yml. Its key is vault_site_root_ca_key. The bootstrap
-# intermediate signs what comes up before OpenBao: the core router and the
-# hypervisors (ADR-0030 §3).
-site_root_ca_name: "deevnet-{{ deevnet_substrate }}-root-ca.pem"
-# Kept OUTSIDE the inventory directory: Ansible parses every file in it as an
-# inventory source.
-site_root_ca_file: "{{ inventory_dir }}/../pki/{{ deevnet_substrate }}/{{ site_root_ca_name }}"
-site_bootstrap_ca_file: "{{ inventory_dir }}/../pki/{{ deevnet_substrate }}/deevnet-{{ deevnet_substrate }}-bootstrap-ca.pem"
+# The Deevnet PKI (ADR-0031). The Deevnet Root CA is the only trust anchor; the
+# Root CA's and Site CA's keys are offline and never here (Root of Trust
+# runbook). The Substrate CA signs every substrate certificate on the control
+# node, its key in this site's vault (vault_site_substrate_ca_key); the Tenant
+# Device CA's key is inside OpenBao. Certificates only, kept OUTSIDE the
+# inventory directory: Ansible parses every file in it as an inventory source.
+site_root_ca_name: deevnet-root-ca.pem
+site_root_ca_file: "{{ inventory_dir }}/../pki/{{ site_root_ca_name }}"
+site_ca_file: "{{ inventory_dir }}/../pki/{{ deevnet_substrate }}/deevnet-{{ deevnet_substrate }}-site-ca.pem"
+site_substrate_ca_file: "{{ inventory_dir }}/../pki/{{ deevnet_substrate }}/deevnet-{{ deevnet_substrate }}-substrate-ca.pem"
+site_tenant_device_ca_file: "{{ inventory_dir }}/../pki/{{ deevnet_substrate }}/deevnet-{{ deevnet_substrate }}-tenant-device-ca.pem"
+
+# The re-root from the ADR-0030 root (CHG-0033). While services move to the new
+# chain, every trust store holds both roots; once nothing serves the old chain,
+# the old root moves from _previous_files to _retired, and site_trust and the
+# roles that drop a CA beside a service remove it.
+site_root_ca_previous_files:
+  - "{{ inventory_dir }}/../pki/{{ deevnet_substrate }}/deevnet-{{ deevnet_substrate }}-root-ca.pem"
+site_root_ca_retired: []
 
 # What a host's certificate names (ADR-0030 §5), derived from the same
 # env.interfaces data opnsense_dns publishes: the A record, every CNAME, every
