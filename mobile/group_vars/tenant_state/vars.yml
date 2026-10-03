@@ -1,11 +1,5 @@
 ---
-# The state store (ADR-0007) serves TLS from the site CA (CHG-0030). A
+# The state store (ADR-0007) serves TLS from the Substrate CA (CHG-0030, ADR-0031). A
 # tenant's state holds every secret the substrate issued it and crosses
 # DVNTM-TD, whose client isolation stops IP but not ARP spoofing (ADR-0029 §4).
 minio_tls_enabled: true
-minio_openbao_addr: "https://{{ hostvars[groups['openbao'] | first].env.interfaces.eth0.ip }}:8200"
-minio_openbao_ca_local: "{{ playbook_dir }}/../.openbao/{{ groups['openbao'] | first }}-listener.pem"
-# Ansible's AppRole lives in the openbao group's vault; reach it the way the
-# other groups do.
-minio_openbao_ansible_role_id: "{{ hostvars[groups['openbao'] | first].vault_openbao_ansible_role_id | default('') }}"
-minio_openbao_ansible_secret_id: "{{ hostvars[groups['openbao'] | first].vault_openbao_ansible_secret_id | default('') }}"
