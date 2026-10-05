@@ -39,3 +39,10 @@ opnsense_static_routes:
   - network: "10.20.128.0/18"
     gateway: TENANT_FABRIC_GW
     description: "Tenant overlay via fabric exit node (ADR-0018, CHG-0012)"
+
+# The ADR-0030 root and bootstrap intermediate, retired by CHG-0033. The
+# router's certificate is the Substrate CA's, so nothing references them;
+# opnsense_cert deletes them once the GUI serves the site certificate.
+opnsense_cert_retired_cas:
+  - Deevnet mobile root CA
+  - Deevnet mobile bootstrap CA
