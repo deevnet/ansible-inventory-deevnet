@@ -13,13 +13,13 @@ site_ca_file: "{{ inventory_dir }}/../pki/{{ deevnet_substrate }}/deevnet-{{ dee
 site_substrate_ca_file: "{{ inventory_dir }}/../pki/{{ deevnet_substrate }}/deevnet-{{ deevnet_substrate }}-substrate-ca.pem"
 site_tenant_device_ca_file: "{{ inventory_dir }}/../pki/{{ deevnet_substrate }}/deevnet-{{ deevnet_substrate }}-tenant-device-ca.pem"
 
-# The re-root from the ADR-0030 root (CHG-0033). While services move to the new
-# chain, every trust store holds both roots; once nothing serves the old chain,
-# the old root moves from _previous_files to _retired, and site_trust and the
-# roles that drop a CA beside a service remove it.
-site_root_ca_previous_files:
-  - "{{ inventory_dir }}/../pki/{{ deevnet_substrate }}/deevnet-{{ deevnet_substrate }}-root-ca.pem"
-site_root_ca_retired: []
+# The re-root from the ADR-0030 root (CHG-0033) is done. The old root is
+# retired: site_trust removes its anchor, and the roles that drop a CA beside
+# a service remove the file under its old name. A future re-root lists the
+# outgoing root in _previous_files while services move, then here.
+site_root_ca_previous_files: []
+site_root_ca_retired:
+  - deevnet-mobile-root-ca.pem
 
 # What a host's certificate names (ADR-0030 §5), derived from the same
 # env.interfaces data opnsense_dns publishes: the A record, every CNAME, every

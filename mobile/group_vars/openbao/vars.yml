@@ -1,0 +1,6 @@
+---
+# The pre-ADR-0031 pki mount: OpenBao issued the substrate's certificates
+# from an intermediate there. Nothing does since CHG-0033; the openbao role
+# removes it. Its only PKI is the Tenant Device CA (pki-tenant-device).
+openbao_retired_mounts:
+  - pki
