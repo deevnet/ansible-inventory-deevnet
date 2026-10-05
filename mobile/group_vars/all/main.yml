@@ -38,7 +38,7 @@ site_cert_ip_sans: >-
 # Each turns on once that device serves a site certificate; until then its
 # clients skip verification, as they always have.
 site_verify_proxmox: true
-site_verify_opnsense: false
+site_verify_opnsense: true
 site_verify_omada: true
 
 # Derive ansible_host from env.interfaces.<if>.ip
