@@ -1,0 +1,14 @@
+# Reviewed secret-scan findings (CHG-0035). One fingerprint per line:
+# commit:file:rule:line. Never a value.
+#
+# vault.yml files committed decrypted in March 2026, before the pre-commit guard.
+# Every credential in them was checked by CHG-0035: rotated, or no longer in use.
+4379862f75b0f8b2b9f469afa1675470d6dce913:dvntm/group_vars/network_controllers/vault.yml:unencrypted-ansible-vault:1
+4379862f75b0f8b2b9f469afa1675470d6dce913:dvntm/group_vars/network_controllers/vault.yml:unencrypted-ansible-vault:2
+4901ab0650e8f774036d892253cc50ead1127489:dvntm-new/group_vars/routers/vault.yml:unencrypted-ansible-vault:1
+4901ab0650e8f774036d892253cc50ead1127489:dvntm-new/group_vars/routers/vault.yml:unencrypted-ansible-vault:2
+4901ab0650e8f774036d892253cc50ead1127489:dvntm-new/group_vars/switches/vault.yml:unencrypted-ansible-vault:1
+4901ab0650e8f774036d892253cc50ead1127489:dvntm-new/group_vars/switches/vault.yml:unencrypted-ansible-vault:2
+4901ab0650e8f774036d892253cc50ead1127489:dvntm-new/group_vars/switches/vault.yml:unencrypted-ansible-vault:3
+4901ab0650e8f774036d892253cc50ead1127489:dvntm/group_vars/routers/vault.yml:unencrypted-ansible-vault:1
+4901ab0650e8f774036d892253cc50ead1127489:dvntm/group_vars/routers/vault.yml:unencrypted-ansible-vault:2
