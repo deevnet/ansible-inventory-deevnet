@@ -84,3 +84,9 @@ vault_openbao_image_factory_secret_id: ""
 # in pki/<site>/. It signs every substrate server certificate on the control
 # node. The Root CA's and Site CA's keys are offline and never here.
 vault_site_substrate_ca_key: ""
+
+# Console passwords for the Builder's dev users, as SHA-512 crypt hashes, one
+# per user name. Never the password itself.
+#   openssl passwd -6
+vault_dev_user_password_hashes:
+  cdeever: ""
