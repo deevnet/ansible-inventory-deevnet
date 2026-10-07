@@ -46,6 +46,14 @@ mgmt_vm:
   # MinIO, PostgreSQL and the API.
   memory: 4096
 
+  # The backup drive (CHG-0039), a USB drive on the hypervisor passed through so
+  # the backup job runs here, beside what it backs up. By vendor and product: a
+  # replacement of the same model needs no change, a different model changes id.
+  usb:
+    - slot: usb0
+      mapping: deevnet-backup
+      id: "13fe:6300"
+
   # vmbr0 is VLAN-aware and the switch port carrying dv02hyp001p01 is a trunk
   # (native 99), so the tag puts this interface on Platform.
   vlan_tag: 25
