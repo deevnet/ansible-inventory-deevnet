@@ -22,8 +22,16 @@ deevnet_vlans:
     vlan_id: 30
     subnet: "10.20.30.0/24"
     gateway: "10.20.30.1"
-    dhcp_range_start: "10.20.30.100"
-    dhcp_range_end: "10.20.30.200"
+    # The segment in three parts (ADR-0035, CHG-0044). Below .25 is the
+    # substrate's: the gateway and the Pi lab, reserved from inventory. .25 to
+    # .200 is tenants': a tenant asks the Deevnet API for a fixed address for a
+    # device it has registered, and the API reserves one here. Nothing in
+    # inventory takes an address from that range. The dynamic pool sits above
+    # both, for every device that asked for nothing.
+    tenant_range_start: "10.20.30.25"
+    tenant_range_end: "10.20.30.200"
+    dhcp_range_start: "10.20.30.201"
+    dhcp_range_end: "10.20.30.254"
     wifi_ssid: "DVNTM-IOT"
     # PPSK, not a shared key (CHG-0013). One key per tenant lives in the profile
     # below, written by the Deevnet API, and no shared key for this segment
