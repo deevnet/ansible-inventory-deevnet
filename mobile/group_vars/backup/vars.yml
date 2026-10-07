@@ -1,0 +1,11 @@
+---
+# Backup to an attached drive (CHG-0039). Applied by deevnet.mgmt's `backup`
+# role to the host that holds what is backed up.
+
+# The public half of the backup key. Every archive is encrypted to it before it
+# reaches the drive, and it can only encrypt, so the host that writes backups
+# cannot read them. The private half is vault_backup_age_identity.
+backup_age_recipient: "age1adg6g0z47z3agve5ezzaamzuazms20y5m3d8vp543m4utzpjtcnsq8gd7f"
+
+# The private half, for a restore only. The role never puts it on a host.
+backup_age_identity: "{{ vault_backup_age_identity | default('') }}"
