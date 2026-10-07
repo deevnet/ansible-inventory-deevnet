@@ -46,6 +46,10 @@ mgmt_vm:
   # MinIO, PostgreSQL and the API.
   memory: 4096
 
+  # No full package upgrade on first boot: it is a bulk download through the
+  # core router, which has hung twice under one (INC-0004, INC-0005).
+  ciupgrade: false
+
   # The backup drive (CHG-0039), a USB drive on the hypervisor passed through so
   # the backup job runs here, beside what it backs up. By vendor and product: a
   # replacement of the same model needs no change, a different model changes id.
