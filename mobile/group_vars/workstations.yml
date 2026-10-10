@@ -5,10 +5,6 @@ dev_users:
     extra_groups:
       - wheel
     home: /home/cdeever
-    # For the console, which is the only way in when the network is down. A
-    # SHA-512 crypt hash (openssl passwd -6) kept in the vault; empty leaves the
-    # account's password as it is.
-    password_hash: "{{ (vault_dev_user_password_hashes | default({})).cdeever | default('') }}"
     github_keys_url: "https://github.com/cdeever.keys"
     git_name: "Chris Deever"
     git_email: "3679434+cdeever@users.noreply.github.com"
@@ -35,6 +31,7 @@ dev_tool_packages:
   - tmux
   - golang
   - nmap-ncat
+  - whois
   - jq
   - wget
   - curl
