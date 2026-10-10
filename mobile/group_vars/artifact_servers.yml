@@ -116,7 +116,7 @@ artifacts_to_fetch:
   # What a tenant developer's laptop needs, mirrored so a meetup on library
   # internet does not pull it from the internet forty times. Everything under
   # tenant/ is pushed to the observability store and served to DVNTM-TD at
-  # https://downloads.<site>.deevnet.net:8443 (deevnet.mgmt tenant_downloads).
+  # https://downloads.<site>.deevnet.net (deevnet.mgmt tenant_downloads).
   # The deevnet provider and the scripts are staged into tenant/ by the
   # provider repo's `make stage`; the Pi image by the image factory's
   # `make pi-backend-publish`. The upstream checksums below are the vendors'

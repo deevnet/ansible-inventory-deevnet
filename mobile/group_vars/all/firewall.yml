@@ -207,7 +207,25 @@ firewall_zone_policies:
     protocol: TCP
     destination_net: "{{ hostvars['dv02obs001v01'].env.interfaces.eth0.ip }}/32"
     destination_port: "8443"
-  # ADR-0028 / CHG-0028: a tenant logs in to its own workloads from its laptop.
+  # ADR-0036 / CHG-0046: the same services on 443, by name, through the service
+  # proxy on each host. The router admits the host and the port; WHICH services
+  # answer there is the proxy's server list (service_proxy_vhosts in the host's
+  # vars), and a name outside it gets no TLS handshake. The per-port rules
+  # above stay until the legacy ports are retired.
+  - from_zone: tenant_dev
+    to_zone: platform
+    action: pass
+    name: "tenant dev -> provisioning services (https)"
+    protocol: TCP
+    destination_net: "{{ hostvars['dv02prv001v01'].env.interfaces.eth0.ip }}/32"
+    destination_port: "443"
+  - from_zone: tenant_dev
+    to_zone: platform
+    action: pass
+    name: "tenant dev -> observability services (https)"
+    protocol: TCP
+    destination_net: "{{ hostvars['dv02obs001v01'].env.interfaces.eth0.ip }}/32"
+    destination_port: "443"
   # SSH only, into the tenant overlay over ADR-0018's route. Zone-level like
   # every tenant_transit rule: the router cannot tell one tenant's workload from
   # another's, so what keeps tenant A out of tenant B's workload is the key -
