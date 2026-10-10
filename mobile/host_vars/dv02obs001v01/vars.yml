@@ -31,6 +31,10 @@ env:
         cnames:
           # Tenant developer downloads (CHG-0025), by name from DVNTM-TD.
           - downloads
+          # Tenant dashboards (CHG-0045): the name tenants are told to use for
+          # Grafana, and what the API hands out as dashboard_url. The grafana
+          # role puts it on the certificate.
+          - grafana
 
 mgmt_vm:
   hypervisor: dv02hyp001p01
