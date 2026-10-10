@@ -1,5 +1,10 @@
 ---
-# The state store (ADR-0007) serves TLS from the Substrate CA (CHG-0030, ADR-0031). A
+# The state store (ADR-0007) is served over TLS by its host's service proxy
+# (ADR-0036, CHG-0046), with a certificate from the Substrate CA (ADR-0031). A
 # tenant's state holds every secret the substrate issued it and crosses
 # DVNTM-TD, whose client isolation stops IP but not ARP spoofing (ADR-0029 §4).
-minio_tls_enabled: true
+#
+# MinIO itself is plain HTTP, published on loopback only: nothing off the host
+# reaches it except through the proxy, and its console is not reachable at all.
+minio_tls_enabled: false
+minio_listen_address: 127.0.0.1

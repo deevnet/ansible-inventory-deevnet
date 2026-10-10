@@ -24,7 +24,12 @@ deevnet_api_vnet_vni_base: 20000
 
 # What tenants are told, by name, so the services can move hosts.
 deevnet_api_dns_update_server: "tdns.{{ deevnet_substrate }}.{{ deevnet_root_domain }}"
-deevnet_api_state_endpoint: "https://tfstate.{{ deevnet_substrate }}.{{ deevnet_root_domain }}:9000"
+# No port: the provisioning VM's service proxy serves it on 443 (CHG-0046).
+deevnet_api_state_endpoint: "https://tfstate.{{ deevnet_substrate }}.{{ deevnet_root_domain }}"
+
+# Published on loopback only; tenants reach the API on 443 through the service
+# proxy on this host (ADR-0036, CHG-0046).
+deevnet_api_listen_address: 127.0.0.1
 
 # ADR-0005: the apex NS and SOA primary of every tenant zone is the tenant DNS
 # host's own A record (tdns is a CNAME, which an NS may not point at).
@@ -55,10 +60,11 @@ deevnet_api_workload_resolver: "{{ deevnet_vlans.tenant_transit.gateway }}"
 # over management (ADR-0015 Consequences: the narrow rules CHG-0007 must add).
 deevnet_api_powerdns_url: "http://{{ hostvars[groups['tenant_dns'] | first].env.interfaces.eth0.ip }}:8081"
 deevnet_api_opnsense_url: "https://{{ deevnet_vlans.platform.gateway }}/api"
-# Same VM as the state store: reached at the host's own address, where MinIO
-# publishes its port, from the API's podman network.
-deevnet_api_minio_endpoint: "{{ hostvars[groups['tenant_state'] | first].env.interfaces.eth0.ip }}:9000"
-# The state store serves TLS (CHG-0030); the certificate carries this address.
+# Same VM as the state store, but MinIO is on the host's loopback, which the
+# API's podman network cannot reach. It dials the store's service name, on 443
+# at the service proxy, as a tenant does (CHG-0046).
+deevnet_api_minio_endpoint: "tfstate.{{ deevnet_substrate }}.{{ deevnet_root_domain }}"
+# Over TLS, verified: the proxy's certificate carries the name.
 deevnet_api_minio_tls: true
 deevnet_api_proxmox_url: "https://{{ hostvars['dv02hyp002p02'].env.interfaces.eth0.ip | default('10.20.99.22') }}:8006"
 
