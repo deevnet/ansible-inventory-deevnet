@@ -23,7 +23,9 @@ site_root_ca_retired:
 
 # What a host's certificate names (ADR-0030 §5), derived from the same
 # env.interfaces data opnsense_dns publishes: the A record, every CNAME, every
-# address. A new alias reaches the certificate on its next renewal.
+# address. A new alias reaches the certificate when the role that issues it
+# next runs, where that role compares names (site_cert does, CHG-0045), and
+# otherwise at its next renewal.
 site_cert_dns_names: >-
   {{ [inventory_hostname ~ '.' ~ deevnet_substrate ~ '.' ~ deevnet_root_domain]
      + ((env.interfaces | default({})).values()
