@@ -32,9 +32,25 @@ env:
           # Tenant developer downloads (CHG-0025), by name from DVNTM-TD.
           - downloads
           # Tenant dashboards (CHG-0045): the name tenants are told to use for
-          # Grafana, and what the API hands out as dashboard_url. The grafana
-          # role puts it on the certificate.
+          # Grafana, and what the API hands out as dashboard_url.
           - grafana
+          # The log store (CHG-0046): what the API hands out as log_endpoint.
+          - logs
+
+# What this host serves on 443, by name (ADR-0036, CHG-0046). Each name is an
+# alias above, which is also where the proxy's certificate gets it. Each
+# service listens on loopback; legacy_port keeps the address tenants already
+# hold working until those ports are retired.
+service_proxy_vhosts:
+  - name: grafana
+    upstream: http://127.0.0.1:3000
+    legacy_port: 3000
+  - name: logs
+    upstream: http://127.0.0.1:8427
+    legacy_port: 8427
+  - name: downloads
+    upstream: http://127.0.0.1:8443
+    legacy_port: 8443
 
 mgmt_vm:
   hypervisor: dv02hyp001p01
