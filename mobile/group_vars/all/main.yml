@@ -12,6 +12,9 @@ site_root_ca_file: "{{ inventory_dir }}/../pki/{{ site_root_ca_name }}"
 site_ca_file: "{{ inventory_dir }}/../pki/{{ deevnet_substrate }}/deevnet-{{ deevnet_substrate }}-site-ca.pem"
 site_substrate_ca_file: "{{ inventory_dir }}/../pki/{{ deevnet_substrate }}/deevnet-{{ deevnet_substrate }}-substrate-ca.pem"
 site_tenant_device_ca_file: "{{ inventory_dir }}/../pki/{{ deevnet_substrate }}/deevnet-{{ deevnet_substrate }}-tenant-device-ca.pem"
+# The Tenant Service CA (ADR-0037): server certificates for names in a tenant's
+# own zone. Its key is in OpenBao too; this is its certificate, from the ceremony.
+site_tenant_service_ca_file: "{{ inventory_dir }}/../pki/{{ deevnet_substrate }}/deevnet-{{ deevnet_substrate }}-tenant-service-ca.pem"
 
 # The re-root from the ADR-0030 root (CHG-0033) is done. The old root is
 # retired: site_trust removes its anchor, and the roles that drop a CA beside
