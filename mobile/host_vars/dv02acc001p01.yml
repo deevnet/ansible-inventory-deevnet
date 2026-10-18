@@ -106,3 +106,8 @@ switch_ports:
     - interface: "gigabitEthernet 1/0/5"
       vlan_id: 30
       description: "dv02rpi004p01 iot"
+    # dv02rpi003p01 was cabled here while the port was undeclared - untagged
+    # VLAN 1, no DHCP, no route - as dv02rpi004p01 was on 1/0/5 (CHG-0027).
+    - interface: "gigabitEthernet 1/0/11"
+      vlan_id: 30
+      description: "dv02rpi003p01 iot"
