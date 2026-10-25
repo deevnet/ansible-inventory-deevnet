@@ -25,3 +25,8 @@ vault_openbao_ansible_secret_id: ""
 # it is what generates a new root token when one is needed, so it is kept and
 # not used. One share, threshold one.
 vault_openbao_recovery_key: ""
+
+# The Transit key that seals tenant secrets: 32 random bytes, base64. Made by
+# deevnet.mgmt playbooks/transit-key.yml and imported by the openbao role
+# (ADR-0042 §4, CHG-0036).
+vault_openbao_transit_key: ""

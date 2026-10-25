@@ -84,3 +84,8 @@ vault_openbao_image_factory_secret_id: ""
 # in pki/<site>/. It signs every substrate server certificate on the control
 # node. The Root CA's and Site CA's keys are offline and never here.
 vault_site_substrate_ca_key: ""
+
+# The tenant CAs' keys, PEM. Made by deevnet.mgmt playbooks/tenant-cas.yml and
+# imported into OpenBao with their certificates (ADR-0042 §4, CHG-0036).
+vault_tenant_service_ca_key: ""
+vault_tenant_device_ca_key: ""
