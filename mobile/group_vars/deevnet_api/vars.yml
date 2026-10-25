@@ -131,3 +131,8 @@ deevnet_api_backends:
   # Grafana's server admin (CHG-0024), shared with Grafana on the store VM:
   # creating an org is a server-admin act, and no org-scoped token can do it.
   grafana_admin_password: "{{ vault_grafana_admin_password | default('') }}"
+
+# The sites a tenant's certificate may name beside its site-less names
+# (ADR-0040, CHG-0054): this one, where tenants are built, and home, where
+# a tenant's Deevnet Pi runs.
+deevnet_api_certificate_sites: [mobile, home]
