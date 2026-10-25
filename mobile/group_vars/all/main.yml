@@ -21,11 +21,12 @@ site_tenant_service_ca_file: "{{ inventory_dir }}/../pki/{{ deevnet_substrate }}
 
 # The Transit key that seals tenant secrets in the API's database: imported
 # from the openbao vault (vault_openbao_transit_key) by the openbao role, and
-# used by the Deevnet API. The previous key is the one made inside OpenBao,
-# kept for the API to read with until `deevnet-api reseal` has moved every
-# stored value (CHG-0036); then it is emptied.
+# used by the Deevnet API. openbao_transit_key_previous names a key being
+# replaced while `deevnet-api reseal` moves stored values to the new one; it
+# is empty otherwise. CHG-0036 moved everything off the key made inside
+# OpenBao (tenant-secrets) on 2026-10-25.
 openbao_transit_key: tenant-secrets-v2
-openbao_transit_key_previous: tenant-secrets
+openbao_transit_key_previous: ""
 
 # The re-root from the ADR-0030 root (CHG-0033) is done. The old root is
 # retired: site_trust removes its anchor, and the roles that drop a CA beside
