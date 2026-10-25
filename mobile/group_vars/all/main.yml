@@ -4,16 +4,19 @@ deevnet_substrate: mobile
 # The Deevnet PKI (ADR-0031). The Deevnet Root CA is the only trust anchor; the
 # Root CA's and Site CA's keys are offline and never here (Root of Trust
 # runbook). The Substrate CA signs every substrate certificate on the control
-# node, its key in this site's vault (vault_site_substrate_ca_key); the Tenant
-# Device CA's key is inside OpenBao. Certificates only, kept OUTSIDE the
-# inventory directory: Ansible parses every file in it as an inventory source.
+# node, its key in this site's vault (vault_site_substrate_ca_key). The Tenant
+# Device CA's and Tenant Service CA's keys are in this vault too
+# (vault_tenant_device_ca_key, vault_tenant_service_ca_key), imported into
+# OpenBao with their certificates (ADR-0042 §4). Certificates only, kept
+# OUTSIDE the inventory directory: Ansible parses every file in it as an
+# inventory source.
 site_root_ca_name: deevnet-root-ca.pem
 site_root_ca_file: "{{ inventory_dir }}/../pki/{{ site_root_ca_name }}"
 site_ca_file: "{{ inventory_dir }}/../pki/{{ deevnet_substrate }}/deevnet-{{ deevnet_substrate }}-site-ca.pem"
 site_substrate_ca_file: "{{ inventory_dir }}/../pki/{{ deevnet_substrate }}/deevnet-{{ deevnet_substrate }}-substrate-ca.pem"
 site_tenant_device_ca_file: "{{ inventory_dir }}/../pki/{{ deevnet_substrate }}/deevnet-{{ deevnet_substrate }}-tenant-device-ca.pem"
-# The Tenant Service CA (ADR-0037): server certificates for names in a tenant's
-# own zone. Its key is in OpenBao too; this is its certificate, from the ceremony.
+# The Tenant Service CA (ADR-0037): server certificates for tenants' services.
+# Its certificate, from the ceremony; its key is in the vault.
 site_tenant_service_ca_file: "{{ inventory_dir }}/../pki/{{ deevnet_substrate }}/deevnet-{{ deevnet_substrate }}-tenant-service-ca.pem"
 
 # The re-root from the ADR-0030 root (CHG-0033) is done. The old root is
