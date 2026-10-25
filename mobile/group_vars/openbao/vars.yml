@@ -5,3 +5,18 @@
 # (pki-tenant-device) and the Tenant Service CA (pki-tenant-service, ADR-0037).
 openbao_retired_mounts:
   - pki
+
+# Where each AppRole may log in from (CHG-0036): the addresses OpenBao's audit
+# log showed for each on 2026-10-25, not where a caller thinks it is. The
+# openbao role's own calls on this host come through podman's bridge, so from
+# its gateway, 10.88.0.1. The temporary builder repaves the Builder, and runs
+# the same plays.
+openbao_api_cidrs:
+  - 10.20.25.20/32   # dv02prv001v01, the Deevnet API
+openbao_ansible_cidrs:
+  - 10.88.0.1/32     # this host, through podman's bridge
+  - 10.20.99.95/32   # dv00bld001p01, the Builder
+  - 10.20.99.97/32   # dv02bld001v01, the temporary builder
+openbao_image_factory_cidrs:
+  - 10.20.99.95/32   # dv00bld001p01, the Builder (scripts/pve-creds)
+  - 10.20.99.97/32   # dv02bld001v01, the temporary builder
