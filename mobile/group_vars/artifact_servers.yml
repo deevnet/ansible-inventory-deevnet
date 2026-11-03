@@ -146,6 +146,18 @@ artifacts_to_fetch:
     dest_subdir: "tenant/terraform/1.16.4"
     dest_filename: "terraform_1.16.4_linux_arm64.zip"
     sha256: "8263f301cb1a24489a4adeed147bf28504053f77237b3ea97a0ef2972659de30"
+  - name: "tenant-terraform-1.16.4-windows_amd64"
+    type: "generic"
+    url: "https://releases.hashicorp.com/terraform/1.16.4/terraform_1.16.4_windows_amd64.zip"
+    dest_subdir: "tenant/terraform/1.16.4"
+    dest_filename: "terraform_1.16.4_windows_amd64.zip"
+    sha256: "5c736ed6b0f13e98bc5029fe159574cca33634c3477466c56442c28b513a7054"
+  - name: "tenant-terraform-1.16.4-windows_arm64"
+    type: "generic"
+    url: "https://releases.hashicorp.com/terraform/1.16.4/terraform_1.16.4_windows_arm64.zip"
+    dest_subdir: "tenant/terraform/1.16.4"
+    dest_filename: "terraform_1.16.4_windows_arm64.zip"
+    sha256: "ee984c4416d5592debc6e314f931adb222ca445b8ab23ce756c777225389e9f6"
   - name: "tenant-terraform-1.16.4-sums"
     type: "generic"
     url: "https://releases.hashicorp.com/terraform/1.16.4/terraform_1.16.4_SHA256SUMS"
@@ -153,8 +165,8 @@ artifacts_to_fetch:
     dest_filename: "terraform_1.16.4_SHA256SUMS"
     sha256: "e8702b6a51705a6846412055205819091ac9a74d551611015ddf36087fe9a2b5"
   # The grafana provider, for dashboards as code (CHG-0024); the version the
-  # tenant guide's example was tested with. install-provider.sh reads the
-  # zip and the SHA256SUMS file from here.
+  # tenant guide's example was tested with. install-provider.sh (and .ps1 on
+  # Windows) reads the zip and the SHA256SUMS file from here.
   - name: "tenant-grafana-provider-4.46.0-darwin_amd64"
     type: "generic"
     url: "https://github.com/grafana/terraform-provider-grafana/releases/download/v4.46.0/terraform-provider-grafana_4.46.0_darwin_amd64.zip"
@@ -179,6 +191,18 @@ artifacts_to_fetch:
     dest_subdir: "tenant/providers/grafana/4.46.0"
     dest_filename: "terraform-provider-grafana_4.46.0_linux_arm64.zip"
     sha256: "cf56438233a38f2cfcb5d367ddb08c54c24ad046a3ff9016b65538a299b9777c"
+  - name: "tenant-grafana-provider-4.46.0-windows_amd64"
+    type: "generic"
+    url: "https://github.com/grafana/terraform-provider-grafana/releases/download/v4.46.0/terraform-provider-grafana_4.46.0_windows_amd64.zip"
+    dest_subdir: "tenant/providers/grafana/4.46.0"
+    dest_filename: "terraform-provider-grafana_4.46.0_windows_amd64.zip"
+    sha256: "f98e7cbf283c02073155136a073298e6ea4a10924cb185fbaf7e601a8fd6bd57"
+  - name: "tenant-grafana-provider-4.46.0-windows_arm64"
+    type: "generic"
+    url: "https://github.com/grafana/terraform-provider-grafana/releases/download/v4.46.0/terraform-provider-grafana_4.46.0_windows_arm64.zip"
+    dest_subdir: "tenant/providers/grafana/4.46.0"
+    dest_filename: "terraform-provider-grafana_4.46.0_windows_arm64.zip"
+    sha256: "26638a04481a13030ad03f35d0e583d915bbca3c1ea8c00254292d3fddec4745"
   - name: "tenant-grafana-provider-4.46.0-sums"
     type: "generic"
     url: "https://github.com/grafana/terraform-provider-grafana/releases/download/v4.46.0/terraform-provider-grafana_4.46.0_SHA256SUMS"
@@ -198,6 +222,12 @@ artifacts_to_fetch:
     dest_subdir: "tenant/tools"
     dest_filename: "rpi-imager_2.0.11.1-1_amd64.deb"
     sha256: "b6de5abbcd37efe68a636bf5ba9d3a5812fc855f1b8ed449ccef33beef338376"
+  - name: "tenant-rpi-imager-2.0.11.1-windows"
+    type: "generic"
+    url: "https://github.com/raspberrypi/rpi-imager/releases/download/v2.0.11.1/imager-v2.0.11.1.exe"
+    dest_subdir: "tenant/tools"
+    dest_filename: "imager-v2.0.11.1.exe"
+    sha256: "94ffded522f3e2a38bdb9505440229e1411b80992a616ba16b2d7e73bd794130"
   # MicroPython for the Pico W (the walkthrough needs 1.23 or later).
   # MicroPython publishes no checksum; the sha256 is of the bytes mirrored on
   # 2026-09-24.
