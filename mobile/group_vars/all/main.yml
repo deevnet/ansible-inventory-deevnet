@@ -18,6 +18,12 @@ site_tenant_device_ca_file: "{{ inventory_dir }}/../pki/{{ deevnet_substrate }}/
 # The Tenant Service CA (ADR-0037): server certificates for tenants' services.
 # Its certificate, from the ceremony; its key is in the vault.
 site_tenant_service_ca_file: "{{ inventory_dir }}/../pki/{{ deevnet_substrate }}/deevnet-{{ deevnet_substrate }}-tenant-service-ca.pem"
+# The sites a tenant's certificate may name beside its site-less names
+# (ADR-0040, CHG-0054): this one, where tenants are built, and home, where a
+# tenant's Deevnet Pi runs. Site-wide because two roles read it: the API asks
+# for no other, and the CEL role OpenBao signs through allows no other
+# (CHG-0059).
+site_tenant_certificate_sites: [mobile, home]
 
 # The Transit key that seals tenant secrets in the API's database: imported
 # from the openbao vault (vault_openbao_transit_key) by the openbao role, and
