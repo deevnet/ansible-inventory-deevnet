@@ -20,3 +20,9 @@ openbao_ansible_cidrs:
 openbao_image_factory_cidrs:
   - 10.20.99.95/32   # dv00bld001p01, the Builder (scripts/pve-creds)
   - 10.20.99.97/32   # dv02bld001v01, the temporary builder
+
+# How OpenBao is sealed (ADR-0042 §1, CHG-0053). static: it unseals itself
+# with vault_openbao_seal_key on every start. After the migration
+# (deevnet.mgmt make bao-seal-migrate) this becomes shamir, and the seal key
+# leaves the vault.
+openbao_seal_type: static
