@@ -6,12 +6,11 @@
 # OpenBao's bootstrap secrets (ADR-0016 §2). ansible-vault stays the root of
 # trust for what OpenBao cannot hold about itself.
 
-# The static seal key: 32 bytes, base64. OpenBao unseals itself with it on every
-# start, so anyone holding this key and a copy of the Raft data reads every
-# secret. It gets the same care as the vault password.
-#   head -c 32 /dev/urandom | base64
-vault_openbao_seal_key: ""
-vault_openbao_seal_key_id: ""
+# Unseal share 1 of 3 (ADR-0042 §1, CHG-0053). OpenBao is sealed by Shamir
+# shares, any two of which unseal it; `make bao-open` in deevnet.mgmt sends this
+# one and asks for one more. Shares 2 and 3 are never in this repository or on
+# the kit. The static seal key this replaces was removed on 2026-11-08.
+vault_openbao_unseal_share: ""
 
 # Ansible's AppRole, which configures OpenBao after the root token is revoked.
 # Written by the openbao role's first run on empty storage, to
@@ -21,12 +20,6 @@ vault_openbao_seal_key_id: ""
 vault_openbao_ansible_role_id: ""
 vault_openbao_ansible_secret_id: ""
 
-# The recovery key. The static seal means this is never needed to start OpenBao;
-# it is what generates a new root token when one is needed, so it is kept and
-# not used. One share, threshold one.
-vault_openbao_recovery_key: ""
-
-# The Transit key that seals tenant secrets: 32 random bytes, base64. Made by
-# deevnet.mgmt playbooks/transit-key.yml and imported by the openbao role
-# (ADR-0042 §4, CHG-0036).
+# BEGIN ADR-0042 Transit key
 vault_openbao_transit_key: ""
+# END ADR-0042 Transit key
