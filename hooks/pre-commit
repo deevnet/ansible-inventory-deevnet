@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Prevent committing unencrypted vault files
+# Prevent committing unencrypted vault files and router backups
 #
 # --diff-filter=ACM restricts this to paths that still exist in the index:
 # added, copied, modified. Without it a deletion is listed too, `git show ":$f"`
@@ -9,6 +9,15 @@ FAIL=0
 for f in $(git diff --cached --name-only --diff-filter=ACM | grep 'vault\.yml$'); do
     if ! git show ":$f" | head -1 | grep -q '^\$ANSIBLE_VAULT'; then
         echo "ERROR: $f is not encrypted. Run 'make vault' before committing."
+        FAIL=1
+    fi
+done
+# Router backups (backups/<site>/<host>/config.xml.vault) hold a whole router
+# configuration: private keys, pre-shared keys, password hashes. Everything
+# under backups/ but a README is ciphertext, or it does not go in.
+for f in $(git diff --cached --name-only --diff-filter=ACM | grep '^backups/' | grep -v 'README\.md$'); do
+    if ! git show ":$f" | head -1 | grep -q '^\$ANSIBLE_VAULT'; then
+        echo "ERROR: $f is not vault-encrypted. Seal router backups with 'make backup-router' in ansible-collection-deevnet.net."
         FAIL=1
     fi
 done
