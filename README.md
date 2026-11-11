@@ -52,6 +52,27 @@ A pre-commit hook (`hooks/pre-commit`) blocks any commit that includes an unencr
 
 If the hook rejects your commit, run `make vault`, re-stage, and commit again.
 
+It also blocks any file under `backups/` (other than a README) that is not vault-encrypted.
+
+---
+
+## Router Backups
+
+`backups/<site>/<host>/config.xml.vault` is the core router's whole `config.xml`, encrypted with
+the inventory vault password. The file is overwritten by each backup; git history holds the earlier
+ones. `make backup-router` in `ansible-collection-deevnet.net` writes it, asking for the vault
+password once, and the firewall role's pre-apply snapshot writes it too. Commit it through a pull
+request like any other inventory change.
+
+To restore, decrypt it on any machine with this repository and the vault password, and load it on
+the router's configuration backup page:
+
+```bash
+ansible-vault decrypt --output config.xml backups/mobile/dv02cor002p01/config.xml.vault
+```
+
+The plaintext holds the router's private keys; delete it once the router has taken it.
+
 ### Example vaults
 
 Beside every `vault.yml` is a plaintext `vault.example.yml`: the same keys, every value empty, and
