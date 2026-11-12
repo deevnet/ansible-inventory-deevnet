@@ -72,13 +72,6 @@ vault_victorialogs_bridge_token: ""
 #   openssl rand -hex 32
 vault_grafana_admin_password: ""
 
-# The image-factory AppRole (CHG-0026): read-only on image-factory/proxmox/*,
-# 15-minute three-use tokens. scripts/pve-creds (image factory, tenant fabric)
-# logs in with these to fetch the Proxmox API token per build. Issued by the
-# openbao role; rotate by issuing a new secret-id there.
-vault_openbao_image_factory_role_id: ""
-vault_openbao_image_factory_secret_id: ""
-
 # The site's Substrate CA's private key (ADR-0031 §3). Written by deevnet.mgmt's
 # playbooks/substrate-ca.yml; its certificate, signed offline by the Site CA, is
 # in pki/<site>/. It signs every substrate server certificate on the control
