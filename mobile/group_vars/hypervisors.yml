@@ -1,0 +1,29 @@
+---
+# The role each hypervisor's automation token holds in place of Administrator
+# (CHG-0037). The token (terraform-prov@pve, vault_proxmox_token_*) serves the
+# substrate's automation on that node: Packer's template builds, the tenant
+# fabric, proxmox_vm's service VMs, vm_identity's survey and shutdown.yml. Each
+# privilege is what a call they make requires, per Proxmox VE 9.2's API
+# schema. The node-specific extras (USB mappings, SDN) are granted in the
+# node's host_vars, on narrower paths.
+proxmox_automation_role:
+  id: DeevnetAutomation
+  privs:
+    - Datastore.AllocateSpace   # disks, cloud-init drives, clones
+    - Datastore.Audit           # read storage and the ISO on local:iso
+    - SDN.Use                   # attach a NIC to a bridge or VLAN
+    - Sys.Audit                 # task status, node reads
+    - VM.Allocate               # create, convert to template, delete
+    - VM.Audit                  # VM info, config, pending changes
+    - VM.Clone                  # proxmox_vm clones the newest template
+    - VM.Config.CDROM           # the install ISO, attached and removed
+    - VM.Config.CPU
+    - VM.Config.Cloudinit
+    - VM.Config.Disk            # includes resize
+    - VM.Config.HWType          # SCSI controller, USB devices
+    - VM.Config.Memory
+    - VM.Config.Network
+    - VM.Config.Options         # onboot, startup order, agent, name
+    - VM.Console                # Packer types the boot command (PUT sendkey)
+    - VM.GuestAgent.Audit       # Packer reads the VM's address from the agent
+    - VM.PowerMgmt              # start, stop, shutdown

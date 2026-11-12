@@ -82,12 +82,29 @@ proxmox_node_storage:
 # with the manual step (Build Management Plane, Step 7).
 #
 # Not declared, and left alone: the user packer-prov@pve, which has no token.
+#
+# The automation token holds DeevnetAutomation (group_vars/hypervisors.yml),
+# not Administrator (CHG-0037), and may manage USB mappings, for prv's
+# passthrough.
 proxmox_node_access:
+  roles:
+    - "{{ proxmox_automation_role }}"
+    - id: DeevnetUsbMapping
+      privs: [Mapping.Audit, Mapping.Modify, Mapping.Use]
   users:
-    # vault_proxmox_token_* (this host's vault.yml), fetched per run by pve-creds
+    # vault_proxmox_token_* (this host's vault.yml), read per run by pve-creds
     - id: terraform-prov@pve
       tokens: [tf-prov-token]
   acls:
+    - path: /
+      role: DeevnetAutomation
+      users: [terraform-prov@pve]
+      tokens: [terraform-prov@pve!tf-prov-token]
+    - path: /mapping/usb
+      role: DeevnetUsbMapping
+      users: [terraform-prov@pve]
+      tokens: [terraform-prov@pve!tf-prov-token]
+  acls_absent:
     - path: /
       role: Administrator
       users: [terraform-prov@pve]
