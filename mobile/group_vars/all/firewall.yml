@@ -35,8 +35,8 @@ firewall_zone_policies:
   #
   # One aggregate route covers every tenant: ADR-0002 allocates the overlay as a
   # /18, subnet 10.20.(128+index).0/24, so adding a tenant still changes nothing
-  # here. The core router carries the matching static route, by hand - no role
-  # manages OPNsense static routes yet (CHG-0012 follow-up).
+  # here. The core router carries the matching static route, declared in
+  # group_vars/routers and applied by opnsense_routes (CHG-0012).
   #
   # Declared before CHG-0007 enforces the matrix. Without these two rules that
   # change would silently take operator access away again.
