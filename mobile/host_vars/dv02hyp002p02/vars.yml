@@ -18,6 +18,8 @@ env:
           - pve2
 
 proxmox_node: dv02hyp002p02
+# Read from the node 2026-11-12: pve-manager 9.2.11.
+proxmox_ve_major: 9
 proxmox_token_id: "{{ vault_proxmox_token_id }}"
 proxmox_token_secret: "{{ vault_proxmox_token_secret }}"
 
@@ -115,8 +117,19 @@ tenant_egress_agent_ca_src: "{{ site_root_ca_file }}"
 # with the manual step, because its secret is shown once.
 #
 # Not declared, and left alone: the role TerraformProv, which no ACL uses.
+#
+# The automation token holds DeevnetAutomation (group_vars/hypervisors.yml),
+# not Administrator (CHG-0037), and what the tenant fabric needs besides: SDN
+# on /sdn, and Sys.Modify on this node alone, which a fabric node requires.
+# A narrower path can override what / gives, so each repeats what its subtree
+# still needs (SDN.Use, Sys.Audit).
 proxmox_node_access:
   roles:
+    - "{{ proxmox_automation_role }}"
+    - id: DeevnetFabric
+      privs: [SDN.Allocate, SDN.Audit, SDN.Use]
+    - id: DeevnetFabricNode
+      privs: [Sys.Audit, Sys.Modify]
     # The Deevnet API's tenant builder (CHG-0010).
     - id: DeevnetTenantBuilder
       privs:
@@ -155,6 +168,19 @@ proxmox_node_access:
       role: DeevnetNodeAudit
       users: [deevnet-api@pve]
       tokens: [deevnet-api@pve!tenants]
+    - path: /
+      role: DeevnetAutomation
+      users: [terraform-prov@pve]
+      tokens: [terraform-prov@pve!terraform-prov-token]
+    - path: /sdn
+      role: DeevnetFabric
+      users: [terraform-prov@pve]
+      tokens: [terraform-prov@pve!terraform-prov-token]
+    - path: /nodes/dv02hyp002p02
+      role: DeevnetFabricNode
+      users: [terraform-prov@pve]
+      tokens: [terraform-prov@pve!terraform-prov-token]
+  acls_absent:
     - path: /
       role: Administrator
       users: [terraform-prov@pve]
