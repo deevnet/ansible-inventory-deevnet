@@ -18,6 +18,8 @@ env:
           - pve2
 
 proxmox_node: dv02hyp002p02
+# Read from the node 2026-11-12: pve-manager 9.2.11.
+proxmox_ve_major: 9
 proxmox_token_id: "{{ vault_proxmox_token_id }}"
 proxmox_token_secret: "{{ vault_proxmox_token_secret }}"
 

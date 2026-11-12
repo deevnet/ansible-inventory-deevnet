@@ -21,6 +21,8 @@ env:
 # vm-identity allocator surveys every host in `hypervisors` for VMIDs in use,
 # and cannot infer a node name from another host's mgmt_vm block.
 proxmox_node: dv02hyp001p01
+# Read from the node 2026-11-12: pve-manager 8.4.21.
+proxmox_ve_major: 8
 proxmox_token_id: "{{ vault_proxmox_token_id }}"
 proxmox_token_secret: "{{ vault_proxmox_token_secret }}"
 
