@@ -3,8 +3,11 @@
 # from an intermediate there. Nothing does since CHG-0033; the openbao role
 # removes it. Its PKI is the two tenant CAs: the Tenant Device CA
 # (pki-tenant-device) and the Tenant Service CA (pki-tenant-service, ADR-0037).
+# The image-factory mount held the Proxmox tokens builds once read; they read
+# the vault since CHG-0037, and OpenBao serves tenants only.
 openbao_retired_mounts:
   - pki
+  - image-factory
 
 # Where each AppRole may log in from (CHG-0036): the addresses OpenBao's audit
 # log showed for each on 2026-10-25, not where a caller thinks it is. The
