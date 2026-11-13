@@ -33,3 +33,10 @@ proxmox_automation_privs:
   - VM.Config.Options         # onboot, startup order, agent, name
   - VM.Console                # Packer types the boot command (PUT sendkey)
   - VM.PowerMgmt              # start, stop, shutdown
+
+# The Fedora DVD ISOs Packer's template build boots from, for each release the
+# factory builds, staged into local:iso from the artifact server by
+# deevnet.builder's proxmox_node_isos role (site.yml --tags isos, CHG-0037).
+proxmox_node_isos:
+  - "{{ bootstrap_artifact_server }}/fedora/{{ deevnet_fedora_current.release }}/iso/Fedora-Server-dvd-x86_64-{{ deevnet_fedora_current.release }}-{{ deevnet_fedora_current.build }}.iso"
+  - "{{ bootstrap_artifact_server }}/fedora/{{ deevnet_fedora_previous.release }}/iso/Fedora-Server-dvd-x86_64-{{ deevnet_fedora_previous.release }}-{{ deevnet_fedora_previous.build }}.iso"
