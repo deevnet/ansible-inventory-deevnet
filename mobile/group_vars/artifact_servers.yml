@@ -375,6 +375,16 @@ artifacts_to_fetch:
     dest_subdir: "fedora/{{ deevnet_fedora_previous.release }}/iso"
     dest_filename: "Fedora-Server-netinst-x86_64-{{ deevnet_fedora_previous.release }}-{{ deevnet_fedora_previous.build }}.iso"
 
+  # Installer ISO - full DVD, so the previous release's template stays buildable
+  # on a reinstalled hypervisor (proxmox_node_isos stages it from here).
+  - name: "fedora-server-{{ deevnet_fedora_previous.release }}-dvd-x86_64"
+    type: "fedora_iso"
+    iso_url: "{{ deevnet_fedora_mirror }}/{{ deevnet_fedora_previous.release }}/Server/x86_64/iso/Fedora-Server-dvd-x86_64-{{ deevnet_fedora_previous.release }}-{{ deevnet_fedora_previous.build }}.iso"
+    checksum_url: "{{ deevnet_fedora_mirror }}/{{ deevnet_fedora_previous.release }}/Server/x86_64/iso/Fedora-Server-{{ deevnet_fedora_previous.release }}-{{ deevnet_fedora_previous.build }}-x86_64-CHECKSUM"
+    gpg_key_url: "https://fedoraproject.org/fedora.gpg"
+    dest_subdir: "fedora/{{ deevnet_fedora_previous.release }}/iso"
+    dest_filename: "Fedora-Server-dvd-x86_64-{{ deevnet_fedora_previous.release }}-{{ deevnet_fedora_previous.build }}.iso"
+
   - name: "fedora-server-{{ deevnet_fedora_previous.release }}-netboot-x86_64"
     type: "netboot_tftp"
     base_url: "{{ deevnet_fedora_mirror }}/{{ deevnet_fedora_previous.release }}/Server/x86_64/os/images/pxeboot"
