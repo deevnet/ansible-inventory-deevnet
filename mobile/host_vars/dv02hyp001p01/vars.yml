@@ -83,7 +83,8 @@ proxmox_node_storage:
 # 2026-09-27. The token is verified, never created: a missing one fails the run
 # with the manual step (Build Management Plane, Step 7).
 #
-# Not declared, and left alone: the user packer-prov@pve, which has no token.
+# packer-prov@pve, Packer's user before CHG-0037, held Administrator and no
+# token; it is removed (step 4), with its ACL entry.
 #
 # The automation token holds DeevnetAutomation (group_vars/hypervisors.yml),
 # not Administrator (CHG-0037), and may manage USB mappings, for prv's
@@ -111,3 +112,4 @@ proxmox_node_access:
       role: Administrator
       users: [terraform-prov@pve]
       tokens: [terraform-prov@pve!tf-prov-token]
+  users_absent: [packer-prov@pve]

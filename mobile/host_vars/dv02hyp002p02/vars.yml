@@ -116,7 +116,8 @@ tenant_egress_agent_ca_src: "{{ site_root_ca_file }}"
 # 2026-09-27. Tokens are verified, never created: a missing one fails the run
 # with the manual step, because its secret is shown once.
 #
-# Not declared, and left alone: the role TerraformProv, which no ACL uses.
+# TerraformProv, the fabric's role before CHG-0037, is unused and removed
+# (step 4).
 #
 # The automation token holds DeevnetAutomation (group_vars/hypervisors.yml),
 # not Administrator (CHG-0037), and what the tenant fabric needs besides: SDN
@@ -185,3 +186,4 @@ proxmox_node_access:
       role: Administrator
       users: [terraform-prov@pve]
       tokens: [terraform-prov@pve!terraform-prov-token]
+  roles_absent: [TerraformProv]
