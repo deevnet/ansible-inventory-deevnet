@@ -1,0 +1,77 @@
+---
+# Object storage VM (ADR-0026 §2, CHG-0068).
+#
+# The one object store on the site, for every use: tenants' Terraform state
+# (ADR-0007) and, after CHG-0069, tenants' own buckets. Silo, the maintained
+# MinIO fork, built from source by deevnet-container-image-factory. It replaces
+# MinIO on dv02prv001v01, so the provisioning VM keeps only the Deevnet API.
+#
+# On Platform: tenants' workloads reach it over tenant_transit -> platform, and
+# tenants' laptops from tenant_dev, as they reach the state store today.
+
+infrastructure:
+  form: vm
+  interfaces:
+    eth0:
+      # Derived from the VMID by the allocator - see identity.yml beside this file.
+      mac: "{{ deevnet_assigned_mac | default('') }}"
+
+env:
+  role: object-storage
+  interfaces:
+    eth0:
+      ip: 10.20.25.23
+      purpose: platform
+      segment: platform
+      dns:
+        host_a_record: true
+        # No reservation: Platform has no DHCP pool. See dv02prv001v01.
+        dhcp_reservation: false
+        cnames:
+          # The store's name (ADR-0026 §5). `tfstate` joins it here at CHG-0068
+          # Step 7, when it leaves dv02prv001v01.
+          - s3
+
+# What this host serves on 443, by name (ADR-0036). Silo is plain HTTP on
+# loopback, and the proxy holds the certificate. legacy_port keeps
+# tfstate.<site>:9000, the address tenants' backends hold, answering once
+# `tfstate` moves here.
+service_proxy_vhosts:
+  - name: s3
+    upstream: http://127.0.0.1:9000
+    legacy_port: 9000
+
+# Silo, not MinIO (ADR-0026 §2). Set on the host, not on tenant_state, so the
+# provisioning VM keeps running MinIO until CHG-0068 retires it there. The image
+# keeps MinIO's environment, data format and `mc`, so the role is unchanged.
+minio_image_name: "localhost/deevnet-silo"
+minio_image_tag: "RELEASE.2026-11-12T00-00-00Z"
+minio_tarball: "silo/silo-{{ minio_image_tag }}.tar"
+
+mgmt_vm:
+  hypervisor: dv02hyp001p01
+  node: dv02hyp001p01
+  # Before provisioning: the API's admin client dials it, and tenants' state is
+  # here.
+  startup: "order=15,up=20,down=90"
+  vmid: "{{ deevnet_assigned_vmid | default(0) }}"
+  template_prefix: "fedora-server-"
+  storage: local-lvm-big-thin
+  cores: 2
+  # Silo alone, plus the service proxy.
+  memory: 2048
+  # Every object lives here, never on the OS disk (ADR-0026 §2). 100 GB: a 5 GB
+  # reserve for state, and 95 GB of tenant quota (§3). Grown with `qm resize`
+  # and xfs_growfs.
+  data_disk: { device: scsi1, size: 100, storage: local-lvm-big-thin, mount: /srv }
+
+  # No full package upgrade on first boot: it is a bulk download through the
+  # core router, which has hung twice under one (INC-0004, INC-0005).
+  ciupgrade: false
+
+  vlan_tag: 25
+  static_ip: 10.20.25.23/24
+  static_gateway: 10.20.25.1
+  # Its own segment's gateway. No platform -> management rule exists, so the
+  # management gateway is not a resolver this host may use.
+  nameserver: 10.20.25.1
