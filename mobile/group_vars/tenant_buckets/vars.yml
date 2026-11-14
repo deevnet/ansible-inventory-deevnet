@@ -11,3 +11,18 @@ tenant_buckets_container_name: silo-buckets
 tenant_buckets_data_root: /srv/buckets
 tenant_buckets_api_port: 9100
 tenant_buckets_console_port: 9101
+
+# The Deevnet API's admin actions on this store (CHG-0069): the state store's
+# user and policy administration, plus bucket quotas.
+tenant_buckets_api_admin_actions:
+  - admin:CreateUser
+  - admin:DeleteUser
+  - admin:GetUser
+  - admin:ListUsers
+  - admin:CreatePolicy
+  - admin:DeletePolicy
+  - admin:GetPolicy
+  - admin:AttachUserOrGroupPolicy
+  - admin:ListUserPolicies
+  - admin:SetBucketQuota
+  - admin:GetBucketQuota

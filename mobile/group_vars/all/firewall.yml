@@ -255,6 +255,18 @@ firewall_zone_policies:
   # IoT Backend -> Platform (shared services)
   - { from_zone: iot_backend, to_zone: platform, action: pass }
 
+  # IoT -> the tenant bucket store, 443 only (ADR-0026 §5, CHG-0069): a tenant's
+  # devices read objects from a bucket the tenant made public_read, such as
+  # firmware or static assets. One host, one port; every bucket but a
+  # public_read one still needs a key, and the store is never on the internet.
+  - from_zone: iot
+    to_zone: platform
+    action: pass
+    name: "iot -> object store (https)"
+    protocol: TCP
+    destination_net: "{{ hostvars['dv02obj001v01'].env.interfaces.eth0.ip }}/32"
+    destination_port: "443"
+
 # Rules that are never deletion candidates on this substrate, on top of the two
 # anti-lockout rules the role protects by default.
 #
