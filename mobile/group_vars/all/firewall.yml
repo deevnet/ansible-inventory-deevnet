@@ -226,6 +226,24 @@ firewall_zone_policies:
     protocol: TCP
     destination_net: "{{ hostvars['dv02obs001v01'].env.interfaces.eth0.ip }}/32"
     destination_port: "443"
+  # CHG-0068 / ADR-0026: the object store, on its own VM. 443 by name (s3, and
+  # tfstate from Step 7), and 9000 for the address tenants' backends hold until
+  # the legacy ports are retired. The rules to dv02prv001v01 on 9000 go when
+  # MinIO leaves it (Step 9).
+  - from_zone: tenant_dev
+    to_zone: platform
+    action: pass
+    name: "tenant dev -> object store (https)"
+    protocol: TCP
+    destination_net: "{{ hostvars['dv02obj001v01'].env.interfaces.eth0.ip }}/32"
+    destination_port: "443"
+  - from_zone: tenant_dev
+    to_zone: platform
+    action: pass
+    name: "tenant dev -> object store"
+    protocol: TCP
+    destination_net: "{{ hostvars['dv02obj001v01'].env.interfaces.eth0.ip }}/32"
+    destination_port: "9000"
   # SSH only, into the tenant overlay over ADR-0018's route. Zone-level like
   # every tenant_transit rule: the router cannot tell one tenant's workload from
   # another's, so what keeps tenant A out of tenant B's workload is the key -
