@@ -28,6 +28,9 @@ env:
           # this host's own A record instead, because an NS may not point at a
           # CNAME (ADR-0005).
           - tdns
+          # OpenBao by name, for tenant workloads reading their secrets
+          # (ADR-0021, CHG-0067). The listener's certificate carries it.
+          - bao
 
 mgmt_vm:
   hypervisor: dv02hyp001p01

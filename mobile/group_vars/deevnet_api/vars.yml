@@ -97,6 +97,12 @@ deevnet_api_broker_writer_addr: "{{ hostvars[groups['mqtt_brokers'] | first].env
 deevnet_api_openbao_addr: "https://{{ hostvars[groups['tenant_dns'] | first].env.interfaces.eth0.ip }}:8200"
 deevnet_api_openbao_ca_local: "{{ playbook_dir }}/../.openbao/{{ groups['tenant_dns'] | first }}-listener.pem"
 
+# Tenant secrets (ADR-0021, CHG-0067): each tenant's namespace under
+# `tenants`. The openbao role must have run first (it makes the parent and
+# the API's grants under it); the address tenants are given is bao.<site>,
+# the alias on the OpenBao host below its own name.
+deevnet_api_tenant_secrets_namespace: tenants
+
 # Ansible's own AppRole, which every role that configures OpenBao logs in with.
 # It is kept with OpenBao's other bootstrap secrets in group_vars/openbao, and
 # this host is not in that group, so it is read from the OpenBao host - the same
