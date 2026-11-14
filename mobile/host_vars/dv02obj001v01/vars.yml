@@ -1,10 +1,18 @@
 ---
 # Object storage VM (ADR-0026 §2, CHG-0068).
 #
-# The one object store on the site, for every use: tenants' Terraform state
-# (ADR-0007) and, after CHG-0069, tenants' own buckets. Silo, the maintained
-# MinIO fork, built from source by deevnet-container-image-factory. It replaces
-# MinIO on dv02prv001v01, so the provisioning VM keeps only the Deevnet API.
+# The one object store on the site, for every use, as two instances of silo
+# (the maintained MinIO fork, built from source by
+# deevnet-container-image-factory), each on a disk of its own:
+#   - the state store: tenants' Terraform state (ADR-0007), container `minio`,
+#     loopback 9000, on the 5 GB state disk at /srv/state
+#   - the bucket store: tenants' own buckets (CHG-0069), container
+#     `silo-buckets`, loopback 9100, on the 100 GB data disk at /srv
+# Two, because silo enforces a bucket quota about a minute behind its writes
+# (CHG-0068): a tenant can overrun its quota for that long, and on separate
+# disks it can never fill the disk under anyone's state (ADR-0026 §3).
+# It replaces MinIO on dv02prv001v01, so the provisioning VM keeps only the
+# Deevnet API.
 #
 # On Platform: tenants' workloads reach it over tenant_transit -> platform, and
 # tenants' laptops from tenant_dev, as they reach the state store today.
@@ -28,25 +36,32 @@ env:
         # No reservation: Platform has no DHCP pool. See dv02prv001v01.
         dhcp_reservation: false
         cnames:
-          # The store's name (ADR-0026 §5). `tfstate` joins it here at CHG-0068
-          # Step 7, when it leaves dv02prv001v01.
+          # The bucket store (ADR-0026 §5).
           - s3
+          # The state store. Tenants reach it by this name, never by address
+          # (ADR-0007); it moved here from dv02prv001v01 in CHG-0068.
+          - tfstate
 
-# What this host serves on 443, by name (ADR-0036). Silo is plain HTTP on
-# loopback, and the proxy holds the certificate. legacy_port keeps
-# tfstate.<site>:9000, the address tenants' backends hold, answering once
-# `tfstate` moves here.
+# What this host serves on 443, by name (ADR-0036). Both instances are plain
+# HTTP on loopback, and the proxy holds the certificate. legacy_port keeps
+# tfstate.<site>:9000, the address tenants' backends hold, answering.
 service_proxy_vhosts:
   - name: s3
+    upstream: http://127.0.0.1:9100
+  - name: tfstate
     upstream: http://127.0.0.1:9000
     legacy_port: 9000
 
-# Silo, not MinIO (ADR-0026 §2). Set on the host, not on tenant_state, so the
-# provisioning VM keeps running MinIO until CHG-0068 retires it there. The image
-# keeps MinIO's environment, data format and `mc`, so the role is unchanged.
+# Silo, not MinIO (ADR-0026 §2), for both instances. Set on the host, not on
+# tenant_state, so the provisioning VM keeps running MinIO until CHG-0068
+# retires it there. The image keeps MinIO's environment, data format and `mc`,
+# so the role is unchanged.
 minio_image_name: "localhost/deevnet-silo"
 minio_image_tag: "RELEASE.2026-11-12T00-00-00Z"
 minio_tarball: "silo/silo-{{ minio_image_tag }}.tar"
+# The state store's data, on the state disk. The bucket store's is set in
+# group_vars/tenant_buckets.
+minio_data_root: /srv/state/minio
 
 mgmt_vm:
   hypervisor: dv02hyp001p01
@@ -58,12 +73,15 @@ mgmt_vm:
   template_prefix: "fedora-server-"
   storage: local-lvm-big-thin
   cores: 2
-  # Silo alone, plus the service proxy.
+  # Two silo instances, each a few hundred MB idle, plus the service proxy.
   memory: 2048
-  # Every object lives here, never on the OS disk (ADR-0026 §2). 100 GB: a 5 GB
-  # reserve for state, and 95 GB of tenant quota (§3). Grown with `qm resize`
-  # and xfs_growfs.
+  # Tenants' buckets, never on the OS disk (ADR-0026 §2): the bucket store's
+  # capacity for quotas. Grown with `qm resize` and xfs_growfs.
   data_disk: { device: scsi1, size: 100, storage: local-lvm-big-thin, mount: /srv }
+  # Terraform state, on a disk no tenant bucket can fill: ADR-0026's state
+  # reserve, made a disk of its own.
+  extra_disks:
+    - { device: scsi2, size: 5, storage: local-lvm-big-thin, serial: deevnet-state, label: dvnt-state, mount: /srv/state }
 
   # No full package upgrade on first boot: it is a bulk download through the
   # core router, which has hung twice under one (INC-0004, INC-0005).

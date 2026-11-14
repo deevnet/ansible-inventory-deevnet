@@ -60,9 +60,9 @@ deevnet_api_workload_resolver: "{{ deevnet_vlans.tenant_transit.gateway }}"
 # over management (ADR-0015 Consequences: the narrow rules CHG-0007 must add).
 deevnet_api_powerdns_url: "http://{{ hostvars[groups['tenant_dns'] | first].env.interfaces.eth0.ip }}:8081"
 deevnet_api_opnsense_url: "https://{{ deevnet_vlans.platform.gateway }}/api"
-# Same VM as the state store, but MinIO is on the host's loopback, which the
-# API's podman network cannot reach. It dials the store's service name, on 443
-# at the service proxy, as a tenant does (CHG-0046).
+# The state store, on the object storage VM since CHG-0068. The API dials its
+# service name, on 443 at that host's service proxy, as a tenant does
+# (CHG-0046). Not `s3`: that is the bucket store.
 deevnet_api_minio_endpoint: "tfstate.{{ deevnet_substrate }}.{{ deevnet_root_domain }}"
 # Over TLS, verified: the proxy's certificate carries the name.
 deevnet_api_minio_tls: true

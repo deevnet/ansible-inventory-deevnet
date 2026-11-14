@@ -155,9 +155,9 @@ firewall_zone_policies:
     destination_port: "22"
 
   # Tenant dev -> the services a tenant's Terraform and test clients use
-  # (CHG-0022, CHG-0024), and nothing else inside the site. The API and the state store
-  # share one host (api and tfstate are both names for dv02prv001v01); the
-  # broker is the TLS listener only.
+  # (CHG-0022, CHG-0024), and nothing else inside the site. The state store is on
+  # the object storage VM since CHG-0068 (its rules are below, with the other
+  # 443 rules); the broker is the TLS listener only.
   - from_zone: tenant_dev
     to_zone: platform
     action: pass
@@ -165,13 +165,6 @@ firewall_zone_policies:
     protocol: TCP
     destination_net: "{{ hostvars['dv02prv001v01'].env.interfaces.eth0.ip }}/32"
     destination_port: "8080"
-  - from_zone: tenant_dev
-    to_zone: platform
-    action: pass
-    name: "tenant dev -> tfstate"
-    protocol: TCP
-    destination_net: "{{ hostvars['dv02prv001v01'].env.interfaces.eth0.ip }}/32"
-    destination_port: "9000"
   - from_zone: tenant_dev
     to_zone: iot_backend
     action: pass
@@ -226,10 +219,9 @@ firewall_zone_policies:
     protocol: TCP
     destination_net: "{{ hostvars['dv02obs001v01'].env.interfaces.eth0.ip }}/32"
     destination_port: "443"
-  # CHG-0068 / ADR-0026: the object store, on its own VM. 443 by name (s3, and
-  # tfstate from Step 7), and 9000 for the address tenants' backends hold until
-  # the legacy ports are retired. The rules to dv02prv001v01 on 9000 go when
-  # MinIO leaves it (Step 9).
+  # CHG-0068 / ADR-0026: the object store, on its own VM. 443 by name (s3 and
+  # tfstate), and 9000 for the address tenants' backends hold (tfstate) until
+  # the legacy ports are retired.
   - from_zone: tenant_dev
     to_zone: platform
     action: pass
