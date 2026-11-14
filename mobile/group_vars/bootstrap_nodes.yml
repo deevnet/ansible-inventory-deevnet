@@ -86,6 +86,16 @@ bootstrap_grub_mac_configs:
       inst.stage2={{ bootstrap_artifact_server }}/fedora/{{ deevnet_fedora_current.release }}/mirror
       inst.ks={{ bootstrap_artifact_server }}/kickstart/builder-node-{{ deevnet_fedora_current.release }}.ks
 
+  # THROWAWAY: CHG-0037 Step 5's network-install test. Removed with the host.
+  - hostname: dv02bld003v01
+    mac: "{{ hostvars['dv02bld003v01'].infrastructure.interfaces.eth0.mac }}"
+    image_name: "Fedora {{ deevnet_fedora_current.release }} Server"
+    dest_subdir: "fedora/{{ deevnet_fedora_current.release }}"
+    boot_options: >-
+      inst.repo={{ bootstrap_artifact_server }}/fedora/{{ deevnet_fedora_current.release }}/mirror
+      inst.stage2={{ bootstrap_artifact_server }}/fedora/{{ deevnet_fedora_current.release }}/mirror
+      inst.ks={{ bootstrap_artifact_server }}/kickstart/builder-node-{{ deevnet_fedora_current.release }}.ks
+
 # DNS Configuration
 # ------------------------------------------------------------------------------
 # Enable DNS forwarding (upstream servers populated dynamically by playbook)
