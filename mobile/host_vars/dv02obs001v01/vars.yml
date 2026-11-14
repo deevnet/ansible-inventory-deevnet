@@ -36,6 +36,9 @@ env:
           - grafana
           # The log store (CHG-0046): what the API hands out as log_endpoint.
           - logs
+          # Tenants' metrics store (CHG-0070), behind the same vmauth: what
+          # the API hands out as metrics_endpoint.
+          - metrics
 
 # What this host serves on 443, by name (ADR-0036, CHG-0046). Each name is an
 # alias above, which is also where the proxy's certificate gets it. Each
@@ -48,6 +51,10 @@ service_proxy_vhosts:
   - name: logs
     upstream: http://127.0.0.1:8427
     legacy_port: 8427
+  # The same vmauth as logs: each tenant token's routes are what separate the
+  # two stores, not the name (CHG-0070). No legacy port: new on 443 only.
+  - name: metrics
+    upstream: http://127.0.0.1:8427
   - name: downloads
     upstream: http://127.0.0.1:8443
     legacy_port: 8443
@@ -60,8 +67,10 @@ mgmt_vm:
   template_prefix: "fedora-server-"
   storage: local-lvm-big-thin
   cores: 2
-  # Built at 2 GB before logging had requirements; VictoriaLogs and vmauth now,
-  # and ADR-0023's metrics store and ADR-0024's Grafana later.
+  # Built at 2 GB before logging had requirements. 4 GB carries VictoriaLogs,
+  # vmauth, Grafana, downloads and the metrics store, whose caches are capped
+  # (CHG-0070, Step 2: 817 MB used before the metrics store, which held 20,000
+  # series in about 120 MB). Resize if measurement says so.
   memory: 4096
   # The store's data lives here, not on the OS disk (ADR-0022 §1).
   data_disk: { device: scsi1, size: 100, storage: local-lvm-big-thin, mount: /srv }

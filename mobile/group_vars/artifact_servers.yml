@@ -92,6 +92,24 @@ artifacts_podman_images:
     dest_subdir: "container-images/vmauth"
     tar_filename: "vmauth-v1.152.0.tar"
     latest_symlink: "vmauth-latest.tar"
+  # Tenants' metrics store (ADR-0023, CHG-0070): a VictoriaMetrics cluster, one
+  # of each component, behind the vmauth above. Pinned together, on one
+  # release, for the same reason as the log store: the on-disk format.
+  - name: "vmstorage"
+    upstream_image: "docker.io/victoriametrics/vmstorage:v1.156.0-cluster"
+    dest_subdir: "container-images/vmstorage"
+    tar_filename: "vmstorage-v1.156.0-cluster.tar"
+    latest_symlink: "vmstorage-latest.tar"
+  - name: "vminsert"
+    upstream_image: "docker.io/victoriametrics/vminsert:v1.156.0-cluster"
+    dest_subdir: "container-images/vminsert"
+    tar_filename: "vminsert-v1.156.0-cluster.tar"
+    latest_symlink: "vminsert-latest.tar"
+  - name: "vmselect"
+    upstream_image: "docker.io/victoriametrics/vmselect:v1.156.0-cluster"
+    dest_subdir: "container-images/vmselect"
+    tar_filename: "vmselect-v1.156.0-cluster.tar"
+    latest_symlink: "vmselect-latest.tar"
   # Tenant dashboards (ADR-0024, CHG-0024), beside the log store on the
   # observability store VM. grafana/grafana IS the OSS edition; the separate
   # grafana/grafana-oss repository has no 13.x tags. Pinned because its SQLite
