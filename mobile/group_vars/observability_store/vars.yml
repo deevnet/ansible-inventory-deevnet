@@ -1,6 +1,7 @@
 ---
 # The observability store (ADR-0022, CHG-0018): VictoriaLogs behind vmauth,
-# and Grafana for tenant dashboards (ADR-0024, CHG-0024).
+# Grafana for tenant dashboards (ADR-0024, CHG-0024), and tenants' metrics
+# store behind the same vmauth (ADR-0023, CHG-0070).
 # Tokens are beside this file in vault.yml (the operator's) and in each
 # log_shippers host's own host_vars/<host>/vault.yml (its ingest token).
 
@@ -20,3 +21,11 @@
 # restrictions the only ones there are.
 victorialogs_writer_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG2Ewwg7dHbIOdLGVcIdt6I/Hz475wq6krDX8XiZT9oP deevnet-api log writer (CHG-0020)"
 victorialogs_writer_from: "{{ hostvars[groups['deevnet_api'] | first].env.interfaces.eth0.ip }}"
+
+# --- Tenants' metrics store (ADR-0023, CHG-0070) ---------------------------------
+# The metrics_store role's vminsert and vmselect, on this host's loopback. Set,
+# the writer renders each tenant's metrics routes in vmauth and purges a
+# removed tenant's series, the API tells tenants metrics_endpoint, and Grafana
+# gains a metrics data source per organization. Needs the writer at v0.24.0.
+victorialogs_metrics_insert: "http://127.0.0.1:8480"
+victorialogs_metrics_select: "http://127.0.0.1:8481"
