@@ -102,6 +102,11 @@ deevnet_api_openbao_ca_local: "{{ playbook_dir }}/../.openbao/{{ groups['tenant_
 # the API's grants under it); the address tenants are given is bao.<site>,
 # the alias on the OpenBao host below its own name.
 deevnet_api_tenant_secrets_namespace: tenants
+# Readers are bound to the tenant fabric's exit node, dv02hyp002p02 on
+# tenant_transit: it source-NATs everything leaving the fabric, so OpenBao sees
+# this address for every workload (CHG-0067). A per-workload binding needs
+# tenant->platform traffic exempted from that SNAT.
+deevnet_api_tenant_secrets_source_cidrs: ["10.20.50.22/32"]
 
 # Ansible's own AppRole, which every role that configures OpenBao logs in with.
 # It is kept with OpenBao's other bootstrap secrets in group_vars/openbao, and
