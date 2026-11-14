@@ -9,3 +9,9 @@ backup_age_recipient: "age1adg6g0z47z3agve5ezzaamzuazms20y5m3d8vp543m4utzpjtcnsq
 
 # The private half, for a restore only. The role never puts it on a host.
 backup_age_identity: "{{ vault_backup_age_identity | default('') }}"
+
+# The state store, on the object storage VM since CHG-0068: by name over TLS,
+# with silo's mc as the client. The image is loaded on this host for this alone;
+# it is the store's own build, so client and server move together.
+backup_state_image: "localhost/deevnet-silo:{{ hostvars[groups['tenant_state'] | first].minio_image_tag }}"
+backup_state_url: "https://tfstate.{{ deevnet_substrate }}.{{ deevnet_root_domain }}"

@@ -36,17 +36,21 @@ env:
         # No reservation: Platform has no DHCP pool. See dv02prv001v01.
         dhcp_reservation: false
         cnames:
-          # The store's name (ADR-0026 §5). `tfstate` joins it here at CHG-0068
-          # Step 7, when it leaves dv02prv001v01.
+          # The bucket store (ADR-0026 §5).
           - s3
+          # The state store. Tenants reach it by this name, never by address
+          # (ADR-0007); it moved here from dv02prv001v01 in CHG-0068.
+          - tfstate
 
 # What this host serves on 443, by name (ADR-0036). Both instances are plain
-# HTTP on loopback, and the proxy holds the certificate. `tfstate` joins at
-# CHG-0068 Step 7, to 127.0.0.1:9000 with legacy_port 9000, the address
-# tenants' backends hold.
+# HTTP on loopback, and the proxy holds the certificate. legacy_port keeps
+# tfstate.<site>:9000, the address tenants' backends hold, answering.
 service_proxy_vhosts:
   - name: s3
     upstream: http://127.0.0.1:9100
+  - name: tfstate
+    upstream: http://127.0.0.1:9000
+    legacy_port: 9000
 
 # Silo, not MinIO (ADR-0026 §2), for both instances. Set on the host, not on
 # tenant_state, so the provisioning VM keeps running MinIO until CHG-0068

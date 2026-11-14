@@ -30,21 +30,16 @@ env:
         # still asserted.
         dhcp_reservation: false
         cnames:
-          # Tenants reach the state store by this name, never by address (ADR-0007).
-          - tfstate
           - api
 
-# What this host serves on 443, by name (ADR-0036, CHG-0046). The state store
-# is plain HTTP on loopback. The API keeps its own certificate there, because
-# its TLS directory also holds the trust anchors for its outbound calls, and
-# the proxy verifies it on the way in.
+# What this host serves on 443, by name (ADR-0036, CHG-0046). The API keeps
+# its own certificate there, because its TLS directory also holds the trust
+# anchors for its outbound calls, and the proxy verifies it on the way in. The
+# state store moved to dv02obj001v01 in CHG-0068.
 service_proxy_vhosts:
   - name: api
     upstream: https://127.0.0.1:8080
     legacy_port: 8080
-  - name: tfstate
-    upstream: http://127.0.0.1:9000
-    legacy_port: 9000
 
 mgmt_vm:
   hypervisor: dv02hyp001p01
