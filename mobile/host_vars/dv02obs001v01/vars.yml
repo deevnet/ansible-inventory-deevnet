@@ -39,6 +39,9 @@ env:
           # Tenants' metrics store (CHG-0070), behind the same vmauth: what
           # the API hands out as metrics_endpoint.
           - metrics
+          # Tenants' alert notifications (CHG-0071): what their phones
+          # subscribe to, and what the API hands out as notify.endpoint.
+          - ntfy
 
 # What this host serves on 443, by name (ADR-0036, CHG-0046). Each name is an
 # alias above, which is also where the proxy's certificate gets it. Each
@@ -55,6 +58,10 @@ service_proxy_vhosts:
   # two stores, not the name (CHG-0070). No legacy port: new on 443 only.
   - name: metrics
     upstream: http://127.0.0.1:8427
+  # ntfy (CHG-0071). Phones hold a WebSocket or a long poll open; the proxy
+  # passes Upgrade on and does not buffer. No legacy port: new on 443 only.
+  - name: ntfy
+    upstream: http://127.0.0.1:2586
   - name: downloads
     upstream: http://127.0.0.1:8443
     legacy_port: 8443

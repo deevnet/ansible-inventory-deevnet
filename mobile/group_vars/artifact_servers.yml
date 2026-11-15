@@ -104,6 +104,24 @@ artifacts_podman_images:
     dest_subdir: "container-images/vmselect"
     tar_filename: "vmselect-v1.156.0-cluster.tar"
     latest_symlink: "vmselect-latest.tar"
+  # Tenant alerting (CHG-0071), on the observability store. vmalert is the
+  # metrics store's release; the alerting role runs it as a binary taken from
+  # this image. Pinned, like the rest of the store.
+  - name: "vmalert"
+    upstream_image: "docker.io/victoriametrics/vmalert:v1.156.0"
+    dest_subdir: "container-images/vmalert"
+    tar_filename: "vmalert-v1.156.0.tar"
+    latest_symlink: "vmalert-latest.tar"
+  - name: "alertmanager"
+    upstream_image: "quay.io/prometheus/alertmanager:v0.35.0"
+    dest_subdir: "container-images/alertmanager"
+    tar_filename: "alertmanager-v0.35.0.tar"
+    latest_symlink: "alertmanager-latest.tar"
+  - name: "ntfy"
+    upstream_image: "docker.io/binwiederhier/ntfy:v2.38.0"
+    dest_subdir: "container-images/ntfy"
+    tar_filename: "ntfy-v2.38.0.tar"
+    latest_symlink: "ntfy-latest.tar"
   # Tenant dashboards (ADR-0024, CHG-0024), beside the log store on the
   # observability store VM. grafana/grafana IS the OSS edition; the separate
   # grafana/grafana-oss repository has no 13.x tags. Pinned because its SQLite

@@ -29,3 +29,9 @@ victorialogs_writer_from: "{{ hostvars[groups['deevnet_api'] | first].env.interf
 # gains a metrics data source per organization. Needs the writer at v0.24.0.
 victorialogs_metrics_insert: "http://127.0.0.1:8480"
 victorialogs_metrics_select: "http://127.0.0.1:8481"
+
+# Tenant alerting (ADR-0023 §5, CHG-0071): the writer carries each tenant's
+# rules and ntfy login, and the alerting role runs a vmalert per tenant,
+# Alertmanager and ntfy. Needs deevnet-log-user v0.25.0.
+victorialogs_alerting: true
+alerting_ntfy_base_url: "https://ntfy.{{ deevnet_substrate }}.{{ deevnet_root_domain }}"
