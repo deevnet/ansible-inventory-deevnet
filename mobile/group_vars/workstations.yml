@@ -57,6 +57,9 @@ virtualization_packages:
   - libvirt-daemon-kvm
   - virt-install
   - virt-manager
+  # arm64 emulated on the Builder, for the take-home v4 proof (CHG-0077)
+  - qemu-system-aarch64-core
+  - edk2-aarch64
 
 x11_packages:
   - firefox              # GUI browser for X11 over SSH
