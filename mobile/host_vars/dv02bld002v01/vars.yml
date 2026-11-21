@@ -54,3 +54,10 @@ env:
 # PXE-built VM needs a deterministic MAC exactly as much as a cloned one does.
 mgmt_vm:
   vmid: "{{ deevnet_assigned_vmid | default(0) }}"
+
+# Differs from the VM hardware profile on purpose (ADR-0046 §2): this VM exists
+# to prove the UEFI PXE install path, so it boots OVMF on q35.
+vm_profile_exceptions:
+  reason: UEFI PXE test target
+  bios: ovmf
+  machine: q35
