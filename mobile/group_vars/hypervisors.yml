@@ -40,3 +40,8 @@ proxmox_automation_privs:
 proxmox_node_isos:
   - "{{ bootstrap_artifact_server }}/fedora/{{ deevnet_fedora_current.release }}/iso/Fedora-Server-dvd-x86_64-{{ deevnet_fedora_current.release }}-{{ deevnet_fedora_current.build }}.iso"
   - "{{ bootstrap_artifact_server }}/fedora/{{ deevnet_fedora_previous.release }}/iso/Fedora-Server-dvd-x86_64-{{ deevnet_fedora_previous.release }}-{{ deevnet_fedora_previous.build }}.iso"
+
+# Where each node's notifications go (backups, failed jobs, package updates):
+# deevnet.builder's proxmox_node_notify role (site.yml --tags notifications,
+# CHG-0079). The address is personal, so it is in the vault.
+proxmox_node_notify_email: "{{ vault_proxmox_notify_email }}"
