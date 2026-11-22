@@ -1,0 +1,26 @@
+---
+# The hardware profile of every VM Deevnet builds on a Proxmox hypervisor:
+# service VMs and tenant workloads alike (ADR-0046). Declared once, here, and
+# read by every builder. Each VM's size (cores, memory, disk) is its own.
+#
+# A VM that must differ declares `vm_profile_exceptions` in its host_vars: the
+# keys it differs in and a `reason`. Anything else that differs is drift, which
+# `make vm-profile` in deevnet.mgmt reports; it never changes a VM.
+deevnet_vm_profile:
+  # Proxmox's recommendation, and the default for new Linux VMs since PVE 7.3:
+  # one controller per disk, so IO Thread works per disk (INC-0006).
+  scsihw: virtio-scsi-single
+  # Every disk on the SCSI bus, so device names stay /dev/sdX.
+  disk_bus: scsi
+  disk:
+    iothread: "1"      # disk I/O off the vCPU threads
+    discard: "on"      # freed blocks go back to the thin pool
+    cache: none        # no host cache, as before
+  net_model: virtio
+  # Each hypervisor is its own cluster and nothing live-migrates.
+  cpu: host
+  # Chosen on purpose (ADR-0046 §1): no VM uses passthrough, and SeaBIOS lets an
+  # existing VM move to the profile in place. Changing it revises the ADR.
+  bios: seabios
+  machine: ""          # Proxmox's default (i440fx)
+  agent: true
