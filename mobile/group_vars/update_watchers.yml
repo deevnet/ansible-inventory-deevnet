@@ -2,9 +2,6 @@
 # The update watcher on the Builder (deevnet.builder update_watch role,
 # Patch Management v2).
 
-# The operator's address, the same one the hypervisors' notifications use.
-update_watch_mail_to: "{{ vault_proxmox_notify_email }}"
-
 # A VIEW-ONLY Omada Open API client, made by the Owner in the controller for the
 # watcher alone (role: viewer; the device firmware check needs "Site Device
 # Manager View Only"). Kept in group_vars/all/vault.yml. Until both are set the
