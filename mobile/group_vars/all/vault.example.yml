@@ -86,3 +86,9 @@ vault_tenant_device_ca_key: ""
 # The operator's address for the hypervisors' notifications: backups, failed
 # jobs, package updates (deevnet.builder proxmox_node_notify, CHG-0079).
 vault_proxmox_notify_email: ""
+
+# A view-only Omada Open API client for the update watcher (deevnet.builder
+# update_watch, Patch Management v2): made by the Owner in the controller,
+# role viewer, used for nothing else.
+vault_omada_watch_client_id: ""
+vault_omada_watch_client_secret: ""
