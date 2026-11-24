@@ -1,4 +1,7 @@
 ---
+# INACTIVE since CHG-0088 (2026-11-24): declared, not built. Kept, with its
+# identity, as a temporary builder for repaving the Builder: see the `inactive` group in hosts.yml.
+#
 # Second provisioner: a full peer of dv00bld001p01 - builder, artifact server
 # and PXE/TFTP host - built by cloning the image-factory template
 # (deevnet.mgmt roles/proxmox_vm). Its counterpart dv02bld002v01 is the same

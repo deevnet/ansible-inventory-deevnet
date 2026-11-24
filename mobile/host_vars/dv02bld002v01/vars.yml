@@ -1,4 +1,7 @@
 ---
+# INACTIVE since CHG-0088 (2026-11-24): declared, not built. Kept, with its
+# identity, as the UEFI PXE install test target: see the `inactive` group in hosts.yml.
+#
 # Third provisioner: a lean builder node, installed by PXE rather than cloned.
 #
 # It exists to keep the netboot path exercised and to prove the Fedora
