@@ -12,14 +12,14 @@ openbao_retired_mounts:
 # Where each AppRole may log in from (CHG-0036): the addresses OpenBao's audit
 # log showed for each on 2026-10-25, not where a caller thinks it is. The
 # openbao role's own calls on this host come through podman's bridge, so from
-# its gateway, 10.88.0.1. The temporary builder repaves the Builder, and runs
-# the same plays.
+# its gateway, 10.88.0.1. The temporary builder (dv02bld001v01, 10.20.99.97)
+# repaves the Builder and runs the same plays: add its address back here when
+# it is active.
 openbao_api_cidrs:
   - 10.20.25.20/32   # dv02prv001v01, the Deevnet API
 openbao_ansible_cidrs:
   - 10.88.0.1/32     # this host, through podman's bridge
   - 10.20.99.95/32   # dv00bld001p01, the Builder
-  - 10.20.99.97/32   # dv02bld001v01, the temporary builder
 
 # How OpenBao is sealed (ADR-0042 §1, CHG-0053): Shamir shares, any two of
 # three. It starts sealed and is opened for a work session (make bao-open).
