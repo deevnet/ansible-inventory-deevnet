@@ -77,6 +77,15 @@ bootstrap_grub_timeout: 30
 # These create grub.cfg-XX-XX-XX-XX-XX-XX files for automated installs
 bootstrap_grub_mac_configs:
 
+  - hostname: dv02bld001v01
+    mac: "{{ hostvars['dv02bld001v01'].infrastructure.interfaces.eth0.mac }}"
+    image_name: "Fedora {{ deevnet_fedora_current.release }} Server"
+    dest_subdir: "fedora/{{ deevnet_fedora_current.release }}"
+    boot_options: >-
+      inst.repo={{ bootstrap_artifact_server }}/fedora/{{ deevnet_fedora_current.release }}/mirror
+      inst.stage2={{ bootstrap_artifact_server }}/fedora/{{ deevnet_fedora_current.release }}/mirror
+      inst.ks={{ bootstrap_artifact_server }}/kickstart/builder-node-{{ deevnet_fedora_current.release }}.ks
+
   - hostname: dv02bld002v01
     mac: "{{ hostvars['dv02bld002v01'].infrastructure.interfaces.eth0.mac }}"
     image_name: "Fedora {{ deevnet_fedora_current.release }} Server"
