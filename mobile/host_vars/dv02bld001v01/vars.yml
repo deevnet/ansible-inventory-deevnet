@@ -44,11 +44,12 @@ env:
       dns:
         host_a_record: true
         dhcp_reservation: true
-        # Deliberately empty. `artifacts` and `pxe` stay pointed at
-        # dv00bld001p01 until this host's mirror is populated and verified -
-        # moving a service CNAME is how you cut over, and it is a separate,
-        # reversible decision from building the host.
-        cnames: []
+        # CHG-0092: `artifacts` and `pxe` point here while the Builder is
+        # repaved, and go back to dv00bld001p01 in its Step 9. Between repaves
+        # this list is empty: moving a service CNAME is how you cut over.
+        cnames:
+          - artifacts
+          - pxe
         pxe_boot:
           tftp_server: "10.20.99.95"
           # grubx64.efi, not pxelinux.0: this guest boots OVMF and the kickstart
