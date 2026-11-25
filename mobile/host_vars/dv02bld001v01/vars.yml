@@ -57,18 +57,25 @@ env:
           # overrides the subnet's boot file.
           boot_file: "grubx64.efi"
 
-# Identity only. This host is PXE-installed, never cloned, so it has no
-# hypervisor/node/template and site.yml skips proxmox_vm for it. It is in
-# `management_plane` because that is the group the VMID allocator scans.
-#
-# Created by hand on dv02hyp001p01 (runbook: Build a Management-Hypervisor VM,
-# Approach B), sized as:
-#   cores 4, memory 6144, one 320G scsi0 on local-lvm-big-thin,
-#   startup order=30,down=60
-# 320G lays out as / 50G, /home 60G, swap 16G and /srv ~190G: the artifact
-# mirror (~21G fetched by `artifacts`), the checkouts, and room to carry the
-# Builder's /srv off before its repave.
+# Created empty by deevnet.mgmt roles/proxmox_vm (source: pxe) on dv02hyp001p01,
+# then installed over the network by anaconda: no template, no cloud-init, no
+# static_ip - it installs on its DHCP reservation and base makes the address
+# static afterwards (runbook: Build a Management-Hypervisor VM, Approach B).
 mgmt_vm:
+  source: pxe
+  hypervisor: dv02hyp001p01
+  node: dv02hyp001p01
+  # Last of the management VMs: it runs terraform against the state store and
+  # resolves tenant names, so both of its dependencies start ahead of it.
+  startup: "order=30,down=60"
   # Allocated once by deevnet.mgmt playbooks/vm-identity.yml and held in
   # identity.yml beside this file. Changing it is a renumbering, not a resize.
   vmid: "{{ deevnet_assigned_vmid | default(0) }}"
+  storage: local-lvm-big-thin
+  cores: 4
+  memory: 6144
+  # One disk; the builder-node kickstart lays it out as /boot + ESP, / 50G,
+  # /home 60G, swap 16G and /srv the rest (~190G): the artifact mirror (~30G),
+  # the checkouts, and room to carry the Builder's /srv off before its repave.
+  # The kickstart's floor is about 128 GiB.
+  os_disk_size: 320
