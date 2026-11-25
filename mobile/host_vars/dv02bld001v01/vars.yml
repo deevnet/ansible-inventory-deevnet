@@ -1,11 +1,14 @@
 ---
-# INACTIVE since CHG-0088 (2026-11-24): declared, not built. Kept, with its
-# identity, as a temporary builder for repaving the Builder: see the `inactive` group in hosts.yml.
+# The temporary builder for repaving the Builder: a full peer of dv00bld001p01 -
+# builder, artifact server and PXE/TFTP host. Active again since CHG-0091
+# (2026-11), after being inactive under CHG-0088.
 #
-# Second provisioner: a full peer of dv00bld001p01 - builder, artifact server
-# and PXE/TFTP host - built by cloning the image-factory template
-# (deevnet.mgmt roles/proxmox_vm). Its counterpart dv02bld002v01 is the same
-# tier built the other way, by PXE, so both paths stay exercised.
+# Installed by PXE from the Builder with the builder kickstart
+# (builder-node-<release>.ks), then configured by deevnet.builder site.yml - the
+# same path the hardware Builder takes when it is repaved, so building this VM
+# rehearses that path. It was once cloned from the image-factory template; the
+# kickstart's single-disk layout (/, /home, swap, /srv) replaces the clone's
+# separate data disk.
 
 infrastructure:
   form: vm
@@ -46,36 +49,26 @@ env:
         # moving a service CNAME is how you cut over, and it is a separate,
         # reversible decision from building the host.
         cnames: []
+        pxe_boot:
+          tftp_server: "10.20.99.95"
+          # grubx64.efi, not pxelinux.0: this guest boots OVMF and the kickstart
+          # lays out a UEFI system only (/boot/efi, no biosboot). See
+          # dv02bld002v01 and PXE-TROUBLESHOOTING.md: a per-host Kea reservation
+          # overrides the subnet's boot file.
+          boot_file: "grubx64.efi"
 
-# Cloned by deevnet.mgmt roles/proxmox_vm on dv02hyp001p01. The template is matched by
-# name prefix, never by VMID: Proxmox assigns the next free ID on every
-# image-factory rebuild, so a pinned ID goes stale silently.
+# Identity only. This host is PXE-installed, never cloned, so it has no
+# hypervisor/node/template and site.yml skips proxmox_vm for it. It is in
+# `management_plane` because that is the group the VMID allocator scans.
+#
+# Created by hand on dv02hyp001p01 (runbook: Build a Management-Hypervisor VM,
+# Approach B), sized as:
+#   cores 4, memory 6144, one 320G scsi0 on local-lvm-big-thin,
+#   startup order=30,down=60
+# 320G lays out as / 50G, /home 60G, swap 16G and /srv ~190G: the artifact
+# mirror (~21G fetched by `artifacts`), the checkouts, and room to carry the
+# Builder's /srv off before its repave.
 mgmt_vm:
-  hypervisor: dv02hyp001p01
-  node: dv02hyp001p01
-  # Last of the three: this host runs terraform against the state store and
-  # resolves tenant names, so both of its dependencies start ahead of it.
-  startup: "order=30,down=60"
   # Allocated once by deevnet.mgmt playbooks/vm-identity.yml and held in
-  # identity.yml beside this file. 0 means "not yet allocated" and is what the
-  # allocator looks for. Changing it is a renumbering, not a resize.
+  # identity.yml beside this file. Changing it is a renumbering, not a resize.
   vmid: "{{ deevnet_assigned_vmid | default(0) }}"
-  template_prefix: "fedora-server-"
-  storage: local-lvm-big-thin
-  cores: 2
-  memory: 4096
-  # Grown from the template's 32G before first boot; cloud-init's growpart extends
-  # the root filesystem to match. This host runs `workstation` (terraform, packer,
-  # libvirt) on top of `base`, and packer's own cache holds multi-GB ISOs - 32G of
-  # root is tight for that. Bulk storage is NOT this: the artifact mirror lives on
-  # the data disk below.
-  os_disk_size: 64
-  # The artifact mirror does not belong on the OS disk: that disk is replaced
-  # whenever the image is rebuilt (architecture/substrate/storage.md), and 21 GB
-  # of mirrors today - the docs budget 100-200 GB per Fedora release for a full
-  # dnf mirror - would not fit on the template's 32 G anyway.
-  data_disk:
-    device: scsi1
-    size: 250
-    storage: local-lvm-big-thin
-    mount: /srv
