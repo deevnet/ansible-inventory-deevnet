@@ -44,12 +44,11 @@ env:
       dns:
         host_a_record: true
         dhcp_reservation: true
-        # CHG-0092: `artifacts` and `pxe` point here while the Builder is
-        # repaved, and go back to dv00bld001p01 in its Step 9. Between repaves
-        # this list is empty: moving a service CNAME is how you cut over.
-        cnames:
-          - artifacts
-          - pxe
+        # Empty between repaves. `artifacts` and `pxe` move here while the
+        # Builder is repaved (Repave the Builder, Step 2): moving a service
+        # CNAME is how you cut over, and `pxe` also moves the subnet's
+        # next-server.
+        cnames: []
         pxe_boot:
           tftp_server: "10.20.99.95"
           # grubx64.efi, not pxelinux.0: this guest boots OVMF and the kickstart

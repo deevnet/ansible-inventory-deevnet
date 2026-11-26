@@ -86,16 +86,6 @@ bootstrap_grub_mac_configs:
       inst.stage2={{ bootstrap_artifact_server }}/fedora/{{ deevnet_fedora_current.release }}/mirror
       inst.ks={{ bootstrap_artifact_server }}/kickstart/builder-node-{{ deevnet_fedora_current.release }}.ks
 
-  # CHG-0092: the Builder's repave, from dv02bld001v01. Removed in its Step 9.
-  - hostname: dv00bld001p01
-    mac: "{{ hostvars['dv00bld001p01'].infrastructure.interfaces.eth0.mac }}"
-    image_name: "Fedora {{ deevnet_fedora_current.release }} Server"
-    dest_subdir: "fedora/{{ deevnet_fedora_current.release }}"
-    boot_options: >-
-      inst.repo={{ bootstrap_artifact_server }}/fedora/{{ deevnet_fedora_current.release }}/mirror
-      inst.stage2={{ bootstrap_artifact_server }}/fedora/{{ deevnet_fedora_current.release }}/mirror
-      inst.ks={{ bootstrap_artifact_server }}/kickstart/builder-node-{{ deevnet_fedora_current.release }}.ks
-
   - hostname: dv02bld002v01
     mac: "{{ hostvars['dv02bld002v01'].infrastructure.interfaces.eth0.mac }}"
     image_name: "Fedora {{ deevnet_fedora_current.release }} Server"
