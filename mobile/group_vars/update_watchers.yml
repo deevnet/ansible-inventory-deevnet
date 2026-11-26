@@ -8,3 +8,8 @@
 # watcher skips the devices and says so in its mail.
 update_watch_omada_client_id: "{{ vault_omada_watch_client_id | default('') }}"
 update_watch_omada_client_secret: "{{ vault_omada_watch_client_secret | default('') }}"
+
+# The watcher's SSH key (OpenSSH ed25519 private key), kept in
+# group_vars/all/vault.yml so a rebuilt Builder comes back with the same key and
+# every host still trusts it. Unset: the role makes a new key on the Builder.
+update_watch_private_key: "{{ vault_update_watch_private_key | default('') }}"
