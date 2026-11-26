@@ -23,45 +23,5 @@ hashicorp_packages:
 #   - vault
 #   - consul
 
-# General dev tool packages
-dev_tool_packages:
-  - acl
-  - git
-  - vim
-  - tmux
-  - golang
-  - nmap-ncat
-  - whois
-  - jq
-  - wget
-  - curl
-  - tftp
-  - zip
-  - unzip
-  - tar
-  - tree
-
-# ISO/image building tools
-iso_packages:
-  - squashfs-tools
-  - genisoimage
-  - xorriso
-  - syslinux
-
-# Virtualization packages for KVM/libvirt
-virtualization_packages:
-  - qemu-kvm
-  - libvirt
-  - libvirt-daemon
-  - libvirt-daemon-config-network
-  - libvirt-daemon-kvm
-  - virt-install
-  - virt-manager
-  # arm64 emulated on the Builder, for the take-home v4 proof (CHG-0077)
-  - qemu-system-aarch64-core
-  - edk2-aarch64
-
-x11_packages:
-  - firefox              # GUI browser for X11 over SSH
-  - xorg-x11-xauth       # needed for SSH X11 forwarding
-  - xeyes                # another X test app (optional)
+# Package lists (dev tools, ISO, X11, virtualization) come from the
+# deevnet.builder workstation role defaults; override here only to diverge.
