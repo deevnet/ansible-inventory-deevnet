@@ -28,10 +28,8 @@ env:
       dns:
         host_a_record: true
         dhcp_reservation: true
-        # CHG-0092: artifacts and pxe on dv02bld001v01 while the Builder is repaved.
-        pxe_boot:
-          tftp_server: "10.20.99.97"
-          boot_file: "grubx64.efi"
+        # CHG-0092: installed. No pxe_boot, so the Builder's network boot is
+        # offered no boot file, times out, and the firmware boots the disk.
     eth1:
       ip: dhcp
       purpose: transit
