@@ -28,8 +28,12 @@ env:
       dns:
         host_a_record: true
         dhcp_reservation: true
-        # CHG-0092: installed. No pxe_boot, so the Builder's network boot is
-        # offered no boot file, times out, and the firmware boots the disk.
+        cnames:
+          - artifacts
+          - pxe
+        # No pxe_boot: the Builder's own network boot is offered no boot file,
+        # so it times out and the firmware boots the disk (CHG-0092). A repave
+        # adds it, pointing at the temporary builder, for the install only.
     eth1:
       ip: dhcp
       purpose: transit
