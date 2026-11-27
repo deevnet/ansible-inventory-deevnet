@@ -12,6 +12,9 @@ deevnet_substrate: mobile
 # inventory source.
 site_root_ca_name: deevnet-root-ca.pem
 site_root_ca_file: "{{ inventory_dir }}/../pki/{{ site_root_ca_name }}"
+# The site's SSH host keys (CHG-0099), the builders' /etc/ssh/ssh_known_hosts.
+# Public keys, outside the inventory directory like the PKI's certificates.
+site_ssh_known_hosts_file: "{{ inventory_dir }}/../ssh/{{ deevnet_substrate }}/known_hosts"
 site_ca_file: "{{ inventory_dir }}/../pki/{{ deevnet_substrate }}/deevnet-{{ deevnet_substrate }}-site-ca.pem"
 site_substrate_ca_file: "{{ inventory_dir }}/../pki/{{ deevnet_substrate }}/deevnet-{{ deevnet_substrate }}-substrate-ca.pem"
 site_tenant_device_ca_file: "{{ inventory_dir }}/../pki/{{ deevnet_substrate }}/deevnet-{{ deevnet_substrate }}-tenant-device-ca.pem"
