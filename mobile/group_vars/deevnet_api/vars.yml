@@ -98,10 +98,11 @@ deevnet_api_omada_url: "https://{{ hostvars[groups['network_controllers'] | firs
 # host Ansible had just built. Set deevnet_api_broker_host_key to override.
 deevnet_api_broker_writer_addr: "{{ hostvars[groups['mqtt_brokers'] | first].env.interfaces.eth0.ip }}:22"
 
-# OpenBao (ADR-0016): where the API and Ansible reach it, and the listener
-# certificate the openbao role fetched to the control node.
+# OpenBao (ADR-0016): where the API and Ansible reach it, and the anchor its
+# listener is checked against: the Deevnet Root CA, from inventory, so a
+# repaved Builder needs nothing local (CHG-0098).
 deevnet_api_openbao_addr: "https://{{ hostvars[groups['tenant_dns'] | first].env.interfaces.eth0.ip }}:8200"
-deevnet_api_openbao_ca_local: "{{ playbook_dir }}/../.openbao/{{ groups['tenant_dns'] | first }}-listener.pem"
+deevnet_api_openbao_ca_local: "{{ site_root_ca_file }}"
 
 # Tenant secrets (ADR-0021, CHG-0067): each tenant's namespace under
 # `tenants`. The openbao role must have run first (it makes the parent and
