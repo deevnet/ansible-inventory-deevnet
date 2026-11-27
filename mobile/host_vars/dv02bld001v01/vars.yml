@@ -79,3 +79,12 @@ mgmt_vm:
   # the checkouts, and room to carry the Builder's /srv off before its repave.
   # The kickstart's floor is about 128 GiB.
   os_disk_size: 320
+
+# Differs from the VM hardware profile on purpose (ADR-0046 §2): it is installed
+# by UEFI network boot from the builder kickstart, which lays out a UEFI system
+# only (/boot/efi, no biosboot), so it boots OVMF on q35. Its disk is on the
+# profile (CHG-0097).
+vm_profile_exceptions:
+  reason: UEFI network install from the builder kickstart
+  bios: ovmf
+  machine: q35
